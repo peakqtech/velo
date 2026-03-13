@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { locales } from "@/content/content.config";
-import { getContent } from "@/lib/i18n";
+import { locales, getContent } from "@/lib/i18n";
 import "../globals.css";
 
 export async function generateMetadata({

@@ -1,13 +1,14 @@
 "use client";
 
-import { Hero, heroScrollConfig } from "@/sections/hero";
-import { ProductShowcase, productShowcaseScrollConfig } from "@/sections/product-showcase";
-import { BrandStory, brandStoryScrollConfig } from "@/sections/brand-story";
-import { ProductGrid, productGridScrollConfig } from "@/sections/product-grid";
-import { Testimonials, testimonialsScrollConfig } from "@/sections/testimonials";
-import { Footer, footerScrollConfig } from "@/sections/footer";
-import { useScrollEngine } from "@/lib/scroll-engine";
-import type { VelocityContent } from "@/lib/types";
+import { Hero, heroScrollConfig } from "@velocity/hero";
+import { ProductShowcase, productShowcaseScrollConfig } from "@velocity/product-showcase";
+import { BrandStory, brandStoryScrollConfig } from "@velocity/brand-story";
+import { ProductGrid, productGridScrollConfig } from "@velocity/product-grid";
+import { Testimonials, testimonialsScrollConfig } from "@velocity/testimonials";
+import { Footer, footerScrollConfig } from "@velocity/footer";
+import { useScrollEngine } from "@velocity/scroll-engine";
+import type { VelocityContent } from "@velocity/types";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 
 const scrollConfigs = [
   heroScrollConfig,
@@ -32,7 +33,7 @@ export function PageClient({ content }: PageClientProps) {
       <BrandStory content={content.brandStory} />
       <ProductGrid content={content.productGrid} />
       <Testimonials content={content.testimonials} />
-      <Footer content={content.footer} />
+      <Footer content={content.footer} localeSwitcher={<LocaleSwitcher />} />
     </main>
   );
 }

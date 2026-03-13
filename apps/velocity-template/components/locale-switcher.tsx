@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { locales, type Locale } from "@/content/content.config";
+import { locales, type Locale } from "@/lib/i18n";
 
 const localeLabels: Record<Locale, string> = {
   en: "EN",

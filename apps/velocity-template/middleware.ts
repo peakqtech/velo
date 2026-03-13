@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { defaultLocale, locales, isValidLocale } from "@/content/content.config";
+import { defaultLocale, locales, isValidLocale } from "@/lib/i18n";
 
 function getPreferredLocale(request: NextRequest): string {
   const acceptLanguage = request.headers.get("accept-language");
