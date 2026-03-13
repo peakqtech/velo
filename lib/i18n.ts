@@ -1,4 +1,4 @@
-import { type Locale, defaultLocale, isValidLocale } from "@/content/content.config";
+import { type Locale, defaultLocale, isValidLocale, locales } from "@/content/content.config";
 import type { VelocityContent } from "@/lib/types";
 
 export async function getContent(locale: string): Promise<VelocityContent> {
