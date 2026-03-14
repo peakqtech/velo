@@ -1,0 +1,9 @@
+{
+  "name": "@velocity/create-app",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "enquirer": "^2.4.1"
+  }
+}
