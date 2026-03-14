@@ -11,6 +11,7 @@ export default defineConfig({
     include: ["**/*.test.{ts,tsx}"],
     exclude: ["node_modules", ".next"],
     globals: true,
+    passWithNoTests: true,
   },
   resolve: {
     alias: {
