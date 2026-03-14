@@ -13,5 +13,8 @@
   "dependencies": {
     "@velocity/types": "workspace:*",
     "@velocity/scroll-engine": "workspace:*"
+  },
+  "scripts": {
+    "test": "vitest run"
   }
 }

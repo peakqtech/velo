@@ -15,5 +15,8 @@
     "@velocity/types": "workspace:*",
     "@velocity/scroll-engine": "workspace:*",
     "@velocity/animations": "workspace:*"
+  },
+  "scripts": {
+    "test": "vitest run"
   }
 }

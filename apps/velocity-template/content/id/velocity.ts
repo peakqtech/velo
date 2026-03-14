@@ -1,4 +1,4 @@
-import type { VelocityContent } from "@/lib/types";
+import type { VelocityContent } from "@velocity/types";
 
 const content: VelocityContent = {
   hero: {
