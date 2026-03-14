@@ -1,0 +1,221 @@
+import { cpSync, mkdirSync, readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
+import { join } from "node:path";
+import { getMonorepoRoot, discoverInfraPackages } from "./discover";
+
+const SECTION_META: Record<
+  string,
+  { component: string; configExport: string; contentKey: string }
+> = {
+  "@velocity/hero": { component: "Hero", configExport: "heroScrollConfig", contentKey: "hero" },
+  "@velocity/product-showcase": { component: "ProductShowcase", configExport: "productShowcaseScrollConfig", contentKey: "productShowcase" },
+  "@velocity/brand-story": { component: "BrandStory", configExport: "brandStoryScrollConfig", contentKey: "brandStory" },
+  "@velocity/product-grid": { component: "ProductGrid", configExport: "productGridScrollConfig", contentKey: "productGrid" },
+  "@velocity/testimonials": { component: "Testimonials", configExport: "testimonialsScrollConfig", contentKey: "testimonials" },
+  "@velocity/footer": { component: "Footer", configExport: "footerScrollConfig", contentKey: "footer" },
+};
+
+interface GenerateOptions {
+  appName: string;
+  sourceApp: string;
+  sections: string[];
+  locales: string[];
+}
+
+export function generate(opts: GenerateOptions): void {
+  const root = getMonorepoRoot();
+  const sourceDir = join(root, "apps", opts.sourceApp);
+  const targetDir = join(root, "apps", opts.appName);
+
+  if (existsSync(targetDir)) {
+    throw new Error(`App directory already exists: ${targetDir}`);
+  }
+
+  // 1. Copy source app
+  cpSync(sourceDir, targetDir, { recursive: true });
+
+  // 2. Remove build artifacts if copied
+  const dirsToClean = [".next", "node_modules"];
+  for (const dir of dirsToClean) {
+    const p = join(targetDir, dir);
+    if (existsSync(p)) {
+      rmSync(p, { recursive: true });
+    }
+  }
+
+  // 3. Generate package.json
+  const infraPkgs = discoverInfraPackages();
+  const sectionDeps: Record<string, string> = {};
+  for (const pkg of opts.sections) {
+    sectionDeps[pkg] = "workspace:*";
+  }
+  const infraDeps: Record<string, string> = {};
+  for (const pkg of infraPkgs) {
+    infraDeps[pkg.packageName] = "workspace:*";
+  }
+
+  const sourcePkg = JSON.parse(
+    readFileSync(join(sourceDir, "package.json"), "utf-8")
+  );
+
+  const appPkg = {
+    name: opts.appName,
+    version: "0.0.0",
+    private: true,
+    scripts: sourcePkg.scripts,
+    dependencies: {
+      ...Object.fromEntries(
+        Object.entries(sourcePkg.dependencies as Record<string, string>).filter(
+          ([k]) => !k.startsWith("@velocity/")
+        )
+      ),
+      ...infraDeps,
+      ...sectionDeps,
+    },
+    devDependencies: sourcePkg.devDependencies,
+  };
+  writeFileSync(
+    join(targetDir, "package.json"),
+    JSON.stringify(appPkg, null, 2) + "\n"
+  );
+
+  // 4. Generate next.config.ts with transpilePackages
+  const allVelocityPkgs = [
+    ...infraPkgs.map((p) => p.packageName),
+    ...opts.sections,
+  ];
+  const nextConfigContent = `import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  transpilePackages: ${JSON.stringify(allVelocityPkgs, null, 4)},
+};
+
+export default nextConfig;
+`;
+  writeFileSync(join(targetDir, "next.config.ts"), nextConfigContent);
+
+  // 5. Generate page-client.tsx with selected sections
+  generatePageClient(targetDir, opts.sections);
+
+  // 6. Generate content stubs for selected locales
+  for (const locale of opts.locales) {
+    generateContentStub(targetDir, opts.appName, locale, opts.sections);
+  }
+
+  // 7. Generate lib/i18n.ts
+  generateI18n(targetDir, opts.appName, opts.locales);
+
+  console.log(`\n✓ Created apps/${opts.appName} with ${opts.sections.length} sections`);
+  console.log(`✓ Locales: ${opts.locales.join(", ")}`);
+  console.log(`\nNext steps:`);
+  console.log(`  pnpm install (from monorepo root)`);
+  console.log(`  cd apps/${opts.appName} && pnpm dev`);
+}
+
+function generatePageClient(targetDir: string, sections: string[]): void {
+  const imports: string[] = [];
+  const configs: string[] = [];
+  const components: string[] = [];
+
+  for (const pkg of sections) {
+    const meta = SECTION_META[pkg];
+    if (!meta) continue;
+    imports.push(
+      `import { ${meta.component}, ${meta.configExport} } from "${pkg}";`
+    );
+    configs.push(meta.configExport);
+
+    if (pkg === "@velocity/footer") {
+      components.push(
+        `      <${meta.component} content={content.${meta.contentKey}} localeSwitcher={<LocaleSwitcher />} />`
+      );
+    } else {
+      components.push(
+        `      <${meta.component} content={content.${meta.contentKey}} />`
+      );
+    }
+  }
+
+  const hasFooter = sections.includes("@velocity/footer");
+
+  const content = `"use client";
+
+${imports.join("\n")}
+import { useScrollEngine } from "@velocity/scroll-engine";
+import type { VelocityContent } from "@velocity/types";
+${hasFooter ? 'import { LocaleSwitcher } from "@/components/locale-switcher";' : ""}
+
+const scrollConfigs = [
+  ${configs.join(",\n  ")},
+];
+
+interface PageClientProps {
+  content: VelocityContent;
+}
+
+export function PageClient({ content }: PageClientProps) {
+  useScrollEngine(scrollConfigs);
+
+  return (
+    <main>
+${components.join("\n")}
+    </main>
+  );
+}
+`;
+  mkdirSync(join(targetDir, "app/[locale]"), { recursive: true });
+  writeFileSync(join(targetDir, "app/[locale]/page-client.tsx"), content);
+}
+
+function generateContentStub(
+  targetDir: string,
+  appName: string,
+  locale: string,
+  sections: string[]
+): void {
+  const stubs: string[] = [];
+
+  for (const pkg of sections) {
+    const meta = SECTION_META[pkg];
+    if (!meta) continue;
+    stubs.push(`  ${meta.contentKey}: {} as any, // TODO: fill in ${meta.component} content`);
+  }
+
+  const content = `import type { VelocityContent } from "@velocity/types";
+
+const content: VelocityContent = {
+${stubs.join("\n")}
+  metadata: {
+    title: "${appName}",
+    description: "TODO: add description",
+    ogImage: "/images/og-image.jpg",
+  },
+};
+
+export default content;
+`;
+  const dir = join(targetDir, "content", locale);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, `${appName}.ts`), content);
+}
+
+function generateI18n(targetDir: string, appName: string, locales: string[]): void {
+  const content = `import { createContentLoader } from "@velocity/i18n";
+import type { VelocityContent } from "@velocity/types";
+
+export const defaultLocale = "${locales[0]}";
+export const locales = ${JSON.stringify(locales)} as const;
+export type Locale = (typeof locales)[number];
+
+export function isValidLocale(locale: string): locale is Locale {
+  return (locales as readonly string[]).includes(locale);
+}
+
+export const getContent = createContentLoader<VelocityContent>(
+  { defaultLocale, locales },
+  (locale) =>
+    import(\`../content/\${locale}/${appName}\`).then((m) => m.default)
+);
+`;
+  mkdirSync(join(targetDir, "lib"), { recursive: true });
+  writeFileSync(join(targetDir, "lib/i18n.ts"), content);
+}
