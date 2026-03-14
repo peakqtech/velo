@@ -44,7 +44,15 @@ export function rewriteImports(dir: string, baseDir: string): void {
       if (!rel.startsWith(".")) rel = "./" + rel;
       rel = rel.replace(/\\/g, "/");
 
-      const newContent = content.replace(regex, `$1${rel}$2`);
+      let newContent = content.replace(regex, `$1${rel}$2`);
+
+      // Also rewrite inline import("@velocity/...") type expressions
+      const importCallRegex = new RegExp(
+        `(import\\(["'])${pkg.replace("/", "\\/")}(["']\\))`,
+        "g"
+      );
+      newContent = newContent.replace(importCallRegex, `$1${rel}$2`);
+
       if (newContent !== content) {
         content = newContent;
         changed = true;
