@@ -6,7 +6,7 @@ import { SerenityProcess, serenityProcessScrollConfig } from "@velo/serenity-pro
 import { SerenityPractitioners, serenityPractitionersScrollConfig } from "@velo/serenity-practitioners";
 import { SerenityTestimonials, serenityTestimonialsScrollConfig } from "@velo/serenity-testimonials";
 import { SerenityBooking, serenityBookingScrollConfig } from "@velo/serenity-booking";
-import { SerenityFooter, serenityFooterScrollConfig } from "@velo/serenity-footer";
+import { Footer, footerScrollConfig } from "@velo/footer";
 import { useScrollEngine } from "@velo/scroll-engine";
 import type { SerenityContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -18,7 +18,7 @@ const scrollConfigs = [
   serenityPractitionersScrollConfig,
   serenityTestimonialsScrollConfig,
   serenityBookingScrollConfig,
-  serenityFooterScrollConfig,
+  footerScrollConfig,
 ];
 
 interface PageClientProps {
@@ -36,7 +36,7 @@ export function PageClient({ content }: PageClientProps) {
       <SerenityPractitioners content={content.practitioners} />
       <SerenityTestimonials content={content.testimonials} />
       <SerenityBooking content={content.booking} />
-      <SerenityFooter content={content.footer} localeSwitcher={<LocaleSwitcher />} />
+      <Footer content={content.footer} variant="serenity" localeSwitcher={<LocaleSwitcher />} />
     </main>
   );
 }

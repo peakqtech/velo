@@ -26,7 +26,8 @@
     "@velo/nexus-team": "workspace:*",
     "@velo/nexus-stats": "workspace:*",
     "@velo/nexus-contact": "workspace:*",
-    "@velo/nexus-footer": "workspace:*"
+    "@velo/footer": "workspace:*",
+    "@velo/ui": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

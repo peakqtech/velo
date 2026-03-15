@@ -12,6 +12,6 @@
     "@velo/ember-reservation": { "component": "EmberReservation", "configExport": "emberReservationScrollConfig", "contentKey": "reservation" },
     "@velo/ember-gallery": { "component": "EmberGallery", "configExport": "emberGalleryScrollConfig", "contentKey": "gallery" },
     "@velo/ember-testimonials": { "component": "EmberTestimonials", "configExport": "emberTestimonialsScrollConfig", "contentKey": "testimonials" },
-    "@velo/ember-footer": { "component": "EmberFooter", "configExport": "emberFooterScrollConfig", "contentKey": "footer", "extraProps": { "localeSwitcher": "<LocaleSwitcher />" } }
+    "@velo/footer": { "component": "Footer", "configExport": "footerScrollConfig", "contentKey": "footer", "extraProps": { "variant": "ember", "localeSwitcher": "<LocaleSwitcher />" } }
   }
 }

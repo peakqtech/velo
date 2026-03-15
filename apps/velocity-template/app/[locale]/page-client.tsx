@@ -33,7 +33,7 @@ export function PageClient({ content }: PageClientProps) {
       <BrandStory content={content.brandStory} />
       <ProductGrid content={content.productGrid} />
       <Testimonials content={content.testimonials} />
-      <Footer content={content.footer} localeSwitcher={<LocaleSwitcher />} />
+      <Footer content={content.footer} variant="default" localeSwitcher={<LocaleSwitcher />} />
     </main>
   );
 }

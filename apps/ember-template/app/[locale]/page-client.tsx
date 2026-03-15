@@ -6,7 +6,7 @@ import { EmberChef, emberChefScrollConfig } from "@velo/ember-chef";
 import { EmberReservation, emberReservationScrollConfig } from "@velo/ember-reservation";
 import { EmberGallery, emberGalleryScrollConfig } from "@velo/ember-gallery";
 import { EmberTestimonials, emberTestimonialsScrollConfig } from "@velo/ember-testimonials";
-import { EmberFooter, emberFooterScrollConfig } from "@velo/ember-footer";
+import { Footer, footerScrollConfig } from "@velo/footer";
 import { useScrollEngine } from "@velo/scroll-engine";
 import type { EmberContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -18,7 +18,7 @@ const scrollConfigs = [
   emberReservationScrollConfig,
   emberGalleryScrollConfig,
   emberTestimonialsScrollConfig,
-  emberFooterScrollConfig,
+  footerScrollConfig,
 ];
 
 interface PageClientProps {
@@ -35,7 +35,7 @@ export function PageClient({ content }: PageClientProps) {
       <EmberReservation content={content.reservation} />
       <EmberGallery content={content.gallery} />
       <EmberTestimonials content={content.testimonials} />
-      <EmberFooter content={content.footer} localeSwitcher={<LocaleSwitcher />} />
+      <Footer content={content.footer} variant="ember" localeSwitcher={<LocaleSwitcher />} />
     </main>
   );
 }

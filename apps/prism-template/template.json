@@ -36,11 +36,11 @@
       "configExport": "prismFAQScrollConfig",
       "contentKey": "faq"
     },
-    "@velo/prism-footer": {
-      "component": "PrismFooter",
-      "configExport": "prismFooterScrollConfig",
+    "@velo/footer": {
+      "component": "Footer",
+      "configExport": "footerScrollConfig",
       "contentKey": "footer",
-      "extraProps": { "localeSwitcher": "<LocaleSwitcher />" }
+      "extraProps": { "variant": "prism", "localeSwitcher": "<LocaleSwitcher />" }
     }
   }
 }

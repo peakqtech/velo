@@ -26,7 +26,8 @@
     "@velo/ember-reservation": "workspace:*",
     "@velo/ember-gallery": "workspace:*",
     "@velo/ember-testimonials": "workspace:*",
-    "@velo/ember-footer": "workspace:*"
+    "@velo/footer": "workspace:*",
+    "@velo/ui": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

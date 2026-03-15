@@ -6,7 +6,7 @@ import { HavenAmenities, havenAmenitiesScrollConfig } from "@velo/haven-amenitie
 import { HavenVirtualTour, havenVirtualTourScrollConfig } from "@velo/haven-virtual-tour";
 import { HavenNeighborhood, havenNeighborhoodScrollConfig } from "@velo/haven-neighborhood";
 import { HavenAgent, havenAgentScrollConfig } from "@velo/haven-agent";
-import { HavenFooter, havenFooterScrollConfig } from "@velo/haven-footer";
+import { Footer, footerScrollConfig } from "@velo/footer";
 import { useScrollEngine } from "@velo/scroll-engine";
 import type { HavenContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -18,7 +18,7 @@ const scrollConfigs = [
   havenVirtualTourScrollConfig,
   havenNeighborhoodScrollConfig,
   havenAgentScrollConfig,
-  havenFooterScrollConfig,
+  footerScrollConfig,
 ];
 
 interface PageClientProps {
@@ -35,7 +35,7 @@ export function PageClient({ content }: PageClientProps) {
       <HavenVirtualTour content={content.virtualTour} />
       <HavenNeighborhood content={content.neighborhood} />
       <HavenAgent content={content.agent} />
-      <HavenFooter content={content.footer} localeSwitcher={<LocaleSwitcher />} />
+      <Footer content={content.footer} variant="haven" localeSwitcher={<LocaleSwitcher />} />
     </main>
   );
 }

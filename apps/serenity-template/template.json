@@ -36,11 +36,11 @@
       "configExport": "serenityBookingScrollConfig",
       "contentKey": "booking"
     },
-    "@velo/serenity-footer": {
-      "component": "SerenityFooter",
-      "configExport": "serenityFooterScrollConfig",
+    "@velo/footer": {
+      "component": "Footer",
+      "configExport": "footerScrollConfig",
       "contentKey": "footer",
-      "extraProps": { "localeSwitcher": "<LocaleSwitcher />" }
+      "extraProps": { "variant": "serenity", "localeSwitcher": "<LocaleSwitcher />" }
     }
   }
 }

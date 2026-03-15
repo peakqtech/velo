@@ -26,7 +26,8 @@
     "@velo/brand-story": "workspace:*",
     "@velo/product-grid": "workspace:*",
     "@velo/testimonials": "workspace:*",
-    "@velo/footer": "workspace:*"
+    "@velo/footer": "workspace:*",
+    "@velo/ui": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

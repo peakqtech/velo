@@ -26,7 +26,8 @@
     "@velo/haven-virtual-tour": "workspace:*",
     "@velo/haven-neighborhood": "workspace:*",
     "@velo/haven-agent": "workspace:*",
-    "@velo/haven-footer": "workspace:*"
+    "@velo/footer": "workspace:*",
+    "@velo/ui": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

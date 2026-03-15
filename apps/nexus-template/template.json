@@ -12,6 +12,6 @@
     "@velo/nexus-team": { "component": "NexusTeam", "configExport": "nexusTeamScrollConfig", "contentKey": "team" },
     "@velo/nexus-stats": { "component": "NexusStats", "configExport": "nexusStatsScrollConfig", "contentKey": "stats" },
     "@velo/nexus-contact": { "component": "NexusContact", "configExport": "nexusContactScrollConfig", "contentKey": "contact" },
-    "@velo/nexus-footer": { "component": "NexusFooter", "configExport": "nexusFooterScrollConfig", "contentKey": "footer", "extraProps": { "localeSwitcher": "<LocaleSwitcher />" } }
+    "@velo/footer": { "component": "Footer", "configExport": "footerScrollConfig", "contentKey": "footer", "extraProps": { "variant": "nexus", "localeSwitcher": "<LocaleSwitcher />" } }
   }
 }

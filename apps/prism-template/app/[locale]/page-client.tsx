@@ -6,7 +6,7 @@ import { PrismPricing, prismPricingScrollConfig } from "@velo/prism-pricing";
 import { PrismIntegrations, prismIntegrationsScrollConfig } from "@velo/prism-integrations";
 import { PrismTestimonials, prismTestimonialsScrollConfig } from "@velo/prism-testimonials";
 import { PrismFAQ, prismFAQScrollConfig } from "@velo/prism-faq";
-import { PrismFooter, prismFooterScrollConfig } from "@velo/prism-footer";
+import { Footer, footerScrollConfig } from "@velo/footer";
 import { useScrollEngine } from "@velo/scroll-engine";
 import type { PrismContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -18,7 +18,7 @@ const scrollConfigs = [
   prismIntegrationsScrollConfig,
   prismTestimonialsScrollConfig,
   prismFAQScrollConfig,
-  prismFooterScrollConfig,
+  footerScrollConfig,
 ];
 
 interface PageClientProps {
@@ -36,7 +36,7 @@ export function PageClient({ content }: PageClientProps) {
       <PrismIntegrations content={content.integrations} />
       <PrismTestimonials content={content.testimonials} />
       <PrismFAQ content={content.faq} />
-      <PrismFooter content={content.footer} localeSwitcher={<LocaleSwitcher />} />
+      <Footer content={content.footer} variant="prism" localeSwitcher={<LocaleSwitcher />} />
     </main>
   );
 }

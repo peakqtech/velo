@@ -27,7 +27,8 @@
     "@velo/prism-integrations": "workspace:*",
     "@velo/prism-testimonials": "workspace:*",
     "@velo/prism-faq": "workspace:*",
-    "@velo/prism-footer": "workspace:*"
+    "@velo/footer": "workspace:*",
+    "@velo/ui": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

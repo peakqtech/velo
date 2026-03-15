@@ -12,6 +12,6 @@
     "@velo/haven-virtual-tour": { "component": "HavenVirtualTour", "configExport": "havenVirtualTourScrollConfig", "contentKey": "virtualTour" },
     "@velo/haven-neighborhood": { "component": "HavenNeighborhood", "configExport": "havenNeighborhoodScrollConfig", "contentKey": "neighborhood" },
     "@velo/haven-agent": { "component": "HavenAgent", "configExport": "havenAgentScrollConfig", "contentKey": "agent" },
-    "@velo/haven-footer": { "component": "HavenFooter", "configExport": "havenFooterScrollConfig", "contentKey": "footer", "extraProps": { "localeSwitcher": "<LocaleSwitcher />" } }
+    "@velo/footer": { "component": "Footer", "configExport": "footerScrollConfig", "contentKey": "footer", "extraProps": { "variant": "haven", "localeSwitcher": "<LocaleSwitcher />" } }
   }
 }

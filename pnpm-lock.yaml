@@ -41,9 +41,6 @@ importers:
       '@velo/ember-chef':
         specifier: workspace:*
         version: link:../../packages/sections/ember-chef
-      '@velo/ember-footer':
-        specifier: workspace:*
-        version: link:../../packages/sections/ember-footer
       '@velo/ember-gallery':
         specifier: workspace:*
         version: link:../../packages/sections/ember-gallery
@@ -59,6 +56,9 @@ importers:
       '@velo/ember-testimonials':
         specifier: workspace:*
         version: link:../../packages/sections/ember-testimonials
+      '@velo/footer':
+        specifier: workspace:*
+        version: link:../../packages/sections/footer
       '@velo/i18n':
         specifier: workspace:*
         version: link:../../packages/infra/i18n
@@ -71,6 +71,9 @@ importers:
       '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -114,15 +117,15 @@ importers:
       '@velo/animations':
         specifier: workspace:*
         version: link:../../packages/infra/animations
+      '@velo/footer':
+        specifier: workspace:*
+        version: link:../../packages/sections/footer
       '@velo/haven-agent':
         specifier: workspace:*
         version: link:../../packages/sections/haven-agent
       '@velo/haven-amenities':
         specifier: workspace:*
         version: link:../../packages/sections/haven-amenities
-      '@velo/haven-footer':
-        specifier: workspace:*
-        version: link:../../packages/sections/haven-footer
       '@velo/haven-hero':
         specifier: workspace:*
         version: link:../../packages/sections/haven-hero
@@ -147,6 +150,9 @@ importers:
       '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -190,6 +196,9 @@ importers:
       '@velo/animations':
         specifier: workspace:*
         version: link:../../packages/infra/animations
+      '@velo/footer':
+        specifier: workspace:*
+        version: link:../../packages/sections/footer
       '@velo/i18n':
         specifier: workspace:*
         version: link:../../packages/infra/i18n
@@ -202,9 +211,6 @@ importers:
       '@velo/nexus-contact':
         specifier: workspace:*
         version: link:../../packages/sections/nexus-contact
-      '@velo/nexus-footer':
-        specifier: workspace:*
-        version: link:../../packages/sections/nexus-footer
       '@velo/nexus-hero':
         specifier: workspace:*
         version: link:../../packages/sections/nexus-hero
@@ -223,6 +229,9 @@ importers:
       '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -266,6 +275,9 @@ importers:
       '@velo/animations':
         specifier: workspace:*
         version: link:../../packages/infra/animations
+      '@velo/footer':
+        specifier: workspace:*
+        version: link:../../packages/sections/footer
       '@velo/i18n':
         specifier: workspace:*
         version: link:../../packages/infra/i18n
@@ -278,9 +290,6 @@ importers:
       '@velo/prism-features':
         specifier: workspace:*
         version: link:../../packages/sections/prism-features
-      '@velo/prism-footer':
-        specifier: workspace:*
-        version: link:../../packages/sections/prism-footer
       '@velo/prism-hero':
         specifier: workspace:*
         version: link:../../packages/sections/prism-hero
@@ -299,103 +308,9 @@ importers:
       '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
-      framer-motion:
-        specifier: ^12.36.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.14.2
-        version: 3.14.2
-      lenis:
-        specifier: ^1.3.18
-        version: 1.3.18(react@19.2.3)
-      next:
-        specifier: 16.1.6
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: 19.2.3
-        version: 19.2.3
-      react-dom:
-        specifier: 19.2.3
-        version: 19.2.3(react@19.2.3)
-    devDependencies:
-      '@tailwindcss/postcss':
-        specifier: ^4
-        version: 4.2.1
-      '@testing-library/jest-dom':
-        specifier: ^6.9.1
-        version: 6.9.1
-      '@testing-library/react':
-        specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@types/node':
-        specifier: ^20
-        version: 20.19.37
-      '@types/react':
-        specifier: ^19
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.2.3(@types/react@19.2.14)
-      '@vitejs/plugin-react':
-        specifier: ^6.0.0
-        version: 6.0.1(vite@8.0.0(@types/node@20.19.37)(esbuild@0.27.4)(jiti@2.6.1)(tsx@4.21.0))
-      eslint:
-        specifier: ^9
-        version: 9.39.4(jiti@2.6.1)
-      eslint-config-next:
-        specifier: 16.1.6
-        version: 16.1.6(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
-      jsdom:
-        specifier: ^28.1.0
-        version: 28.1.0
-      tailwindcss:
-        specifier: ^4
-        version: 4.2.1
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-      vitest:
-        specifier: ^4.1.0
-        version: 4.1.0(@types/node@20.19.37)(jsdom@28.1.0)(vite@8.0.0(@types/node@20.19.37)(esbuild@0.27.4)(jiti@2.6.1)(tsx@4.21.0))
-
-  apps/serenity-template:
-    dependencies:
-      '@velo/animations':
+      '@velo/ui':
         specifier: workspace:*
-        version: link:../../packages/infra/animations
-      '@velo/i18n':
-        specifier: workspace:*
-        version: link:../../packages/infra/i18n
-      '@velo/motion-components':
-        specifier: workspace:*
-        version: link:../../packages/infra/motion-components
-      '@velo/scroll-engine':
-        specifier: workspace:*
-        version: link:../../packages/infra/scroll-engine
-      '@velo/serenity-booking':
-        specifier: workspace:*
-        version: link:../../packages/sections/serenity-booking
-      '@velo/serenity-footer':
-        specifier: workspace:*
-        version: link:../../packages/sections/serenity-footer
-      '@velo/serenity-hero':
-        specifier: workspace:*
-        version: link:../../packages/sections/serenity-hero
-      '@velo/serenity-practitioners':
-        specifier: workspace:*
-        version: link:../../packages/sections/serenity-practitioners
-      '@velo/serenity-process':
-        specifier: workspace:*
-        version: link:../../packages/sections/serenity-process
-      '@velo/serenity-services':
-        specifier: workspace:*
-        version: link:../../packages/sections/serenity-services
-      '@velo/serenity-testimonials':
-        specifier: workspace:*
-        version: link:../../packages/sections/serenity-testimonials
-      '@velo/types':
-        specifier: workspace:*
-        version: link:../../packages/infra/types
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -455,6 +370,106 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(@types/node@20.19.37)(jsdom@28.1.0)(vite@8.0.0(@types/node@20.19.37)(esbuild@0.27.4)(jiti@2.6.1)(tsx@4.21.0))
 
+  apps/serenity-template:
+    dependencies:
+      '@velo/animations':
+        specifier: workspace:*
+        version: link:../../packages/infra/animations
+      '@velo/footer':
+        specifier: workspace:*
+        version: link:../../packages/sections/footer
+      '@velo/i18n':
+        specifier: workspace:*
+        version: link:../../packages/infra/i18n
+      '@velo/motion-components':
+        specifier: workspace:*
+        version: link:../../packages/infra/motion-components
+      '@velo/scroll-engine':
+        specifier: workspace:*
+        version: link:../../packages/infra/scroll-engine
+      '@velo/serenity-booking':
+        specifier: workspace:*
+        version: link:../../packages/sections/serenity-booking
+      '@velo/serenity-hero':
+        specifier: workspace:*
+        version: link:../../packages/sections/serenity-hero
+      '@velo/serenity-practitioners':
+        specifier: workspace:*
+        version: link:../../packages/sections/serenity-practitioners
+      '@velo/serenity-process':
+        specifier: workspace:*
+        version: link:../../packages/sections/serenity-process
+      '@velo/serenity-services':
+        specifier: workspace:*
+        version: link:../../packages/sections/serenity-services
+      '@velo/serenity-testimonials':
+        specifier: workspace:*
+        version: link:../../packages/sections/serenity-testimonials
+      '@velo/types':
+        specifier: workspace:*
+        version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
+      framer-motion:
+        specifier: ^12.36.0
+        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      gsap:
+        specifier: ^3.14.2
+        version: 3.14.2
+      lenis:
+        specifier: ^1.3.18
+        version: 1.3.18(react@19.2.3)
+      next:
+        specifier: 16.1.6
+        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      react:
+        specifier: 19.2.3
+        version: 19.2.3
+      react-dom:
+        specifier: 19.2.3
+        version: 19.2.3(react@19.2.3)
+    devDependencies:
+      '@tailwindcss/postcss':
+        specifier: ^4
+        version: 4.2.1
+      '@testing-library/jest-dom':
+        specifier: ^6.9.1
+        version: 6.9.1
+      '@testing-library/react':
+        specifier: ^16.3.2
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@types/node':
+        specifier: ^20
+        version: 20.19.37
+      '@types/react':
+        specifier: ^19
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: ^6.0.0
+        version: 6.0.1(vite@8.0.0(@types/node@20.19.37)(esbuild@0.27.4)(jiti@2.6.1)(tsx@4.21.0))
+      eslint:
+        specifier: ^9
+        version: 9.39.4(jiti@2.6.1)
+      eslint-config-next:
+        specifier: 16.1.6
+        version: 16.1.6(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+      jsdom:
+        specifier: ^28.1.0
+        version: 28.1.0
+      tailwindcss:
+        specifier: ^4
+        version: 4.2.1
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+      vitest:
+        specifier: ^4.1.0
+        version: 4.1.0(@types/node@20.19.37)(jsdom@28.1.0)(vite@8.0.0(@types/node@20.19.37)(esbuild@0.27.4)(jiti@2.6.1)(tsx@4.21.0))
+
   apps/velocity-template:
     dependencies:
       '@velo/animations':
@@ -490,6 +505,9 @@ importers:
       '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -834,12 +852,18 @@ importers:
 
   packages/sections/footer:
     dependencies:
+      '@velo/animations':
+        specifier: workspace:*
+        version: link:../../infra/animations
       '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
       '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../infra/ui
       framer-motion:
         specifier: ^12.0.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
