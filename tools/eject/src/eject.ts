@@ -5,8 +5,10 @@ import {
   writeFileSync,
   existsSync,
   rmSync,
+  readdirSync,
+  statSync,
 } from "node:fs";
-import { join, resolve, dirname } from "node:path";
+import { join, resolve, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 import { rewriteImports } from "./resolve-imports";
@@ -15,7 +17,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, "../../..");
 
+const VALID_APP_NAME = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
+
 export function eject(appName: string): void {
+  if (!appName || !VALID_APP_NAME.test(appName)) {
+    throw new Error(`Invalid app name: "${appName}". Use only letters, numbers, hyphens, dots, and underscores.`);
+  }
+
   const appDir = join(ROOT, "apps", appName);
   const outputDir = join(ROOT, "ejected", appName);
 
@@ -24,20 +32,15 @@ export function eject(appName: string): void {
   }
 
   if (existsSync(outputDir)) {
-    rmSync(outputDir, { recursive: true });
+    throw new Error(
+      `Output directory already exists: ejected/${appName}. Remove it first or use --force.`
+    );
   }
 
   console.log(`Ejecting ${appName}...`);
 
-  // 1. Copy app
-  mkdirSync(outputDir, { recursive: true });
-  cpSync(appDir, outputDir, { recursive: true });
-
-  // Clean build artifacts
-  for (const dir of [".next", "node_modules"]) {
-    const p = join(outputDir, dir);
-    if (existsSync(p)) rmSync(p, { recursive: true });
-  }
+  // 1. Copy app (excluding sensitive and build files)
+  ejectCopy(appDir, outputDir);
 
   // 2. Copy @velocity/* package sources into local directories
   copyPackageSource("@velocity/types", "packages/infra/types/src", outputDir, "lib/types");
@@ -118,6 +121,25 @@ export default nextConfig;
     console.error(`\n⚠ Ejected to ejected/${appName}/ but build verification failed.`);
     console.error("Check the ejected app for import or dependency issues.");
   }
+}
+
+/** Excluded file/directory patterns during eject copy */
+const EJECT_EXCLUDE = [".env", ".next", "node_modules"];
+
+function shouldExclude(name: string): boolean {
+  return EJECT_EXCLUDE.some((pattern) => name === pattern || name.startsWith(pattern + "."));
+}
+
+/**
+ * Copy app directory to output, excluding sensitive and build files.
+ * Exported for testing.
+ */
+export function ejectCopy(srcDir: string, outputDir: string): void {
+  mkdirSync(outputDir, { recursive: true });
+  cpSync(srcDir, outputDir, {
+    recursive: true,
+    filter: (src) => !shouldExclude(basename(src)),
+  });
 }
 
 function copyPackageSource(

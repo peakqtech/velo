@@ -12,6 +12,6 @@
     "@velocity/haven-virtual-tour": { "component": "HavenVirtualTour", "configExport": "havenVirtualTourScrollConfig", "contentKey": "virtualTour" },
     "@velocity/haven-neighborhood": { "component": "HavenNeighborhood", "configExport": "havenNeighborhoodScrollConfig", "contentKey": "neighborhood" },
     "@velocity/haven-agent": { "component": "HavenAgent", "configExport": "havenAgentScrollConfig", "contentKey": "agent" },
-    "@velocity/haven-footer": { "component": "HavenFooter", "configExport": "havenFooterScrollConfig", "contentKey": "footer" }
+    "@velocity/haven-footer": { "component": "HavenFooter", "configExport": "havenFooterScrollConfig", "contentKey": "footer", "extraProps": { "localeSwitcher": "<LocaleSwitcher />" } }
   }
 }

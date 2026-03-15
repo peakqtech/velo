@@ -12,6 +12,6 @@
     "@velocity/ember-reservation": { "component": "EmberReservation", "configExport": "emberReservationScrollConfig", "contentKey": "reservation" },
     "@velocity/ember-gallery": { "component": "EmberGallery", "configExport": "emberGalleryScrollConfig", "contentKey": "gallery" },
     "@velocity/ember-testimonials": { "component": "EmberTestimonials", "configExport": "emberTestimonialsScrollConfig", "contentKey": "testimonials" },
-    "@velocity/ember-footer": { "component": "EmberFooter", "configExport": "emberFooterScrollConfig", "contentKey": "footer" }
+    "@velocity/ember-footer": { "component": "EmberFooter", "configExport": "emberFooterScrollConfig", "contentKey": "footer", "extraProps": { "localeSwitcher": "<LocaleSwitcher />" } }
   }
 }

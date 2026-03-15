@@ -9,7 +9,7 @@ const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, "../../..");
 
 // Use a temp directory inside the monorepo apps/ so generate() can find sourceApp
-const TEST_APP_NAME = "__test-generated-app__";
+const TEST_APP_NAME = "test-generated-app";
 
 function cleanup() {
   const targetDir = join(ROOT, "apps", TEST_APP_NAME);
@@ -74,5 +74,77 @@ describe("generate", () => {
     const content = readFileSync(pagePath, "utf-8");
     expect(content).toContain("Hero");
     expect(content).toContain("Footer");
+  });
+
+  it("renders extraProps from template.json instead of hardcoding footer logic", () => {
+    // The velocity-template footer section should get localeSwitcher via extraProps
+    // not via a hardcoded `pkg === "@velocity/footer"` check.
+    // To prove this: we'll add extraProps to template.json and verify the generated
+    // page-client uses them generically.
+
+    // First, generate with footer — should include localeSwitcher prop
+    generate({
+      appName: TEST_APP_NAME,
+      sourceApp: "velocity-template",
+      sections: ["@velocity/hero", "@velocity/footer"],
+      locales: ["en"],
+    });
+
+    const pagePath = join(ROOT, "apps", TEST_APP_NAME, "app/[locale]/page-client.tsx");
+    const content = readFileSync(pagePath, "utf-8");
+
+    // Footer should get localeSwitcher prop (driven by extraProps in template.json)
+    expect(content).toContain("localeSwitcher={<LocaleSwitcher />}");
+    // LocaleSwitcher import should be present
+    expect(content).toContain("LocaleSwitcher");
+  });
+
+  it("throws on path traversal in appName", () => {
+    expect(() =>
+      generate({
+        appName: "../evil",
+        sourceApp: "velocity-template",
+        sections: ["@velocity/hero"],
+        locales: ["en"],
+      })
+    ).toThrow(/invalid.*app.*name/i);
+  });
+
+  it("throws on empty appName", () => {
+    expect(() =>
+      generate({
+        appName: "",
+        sourceApp: "velocity-template",
+        sections: ["@velocity/hero"],
+        locales: ["en"],
+      })
+    ).toThrow(/invalid.*app.*name/i);
+  });
+
+  it("throws on appName with special characters", () => {
+    expect(() =>
+      generate({
+        appName: "my app!@#",
+        sourceApp: "velocity-template",
+        sections: ["@velocity/hero"],
+        locales: ["en"],
+      })
+    ).toThrow(/invalid.*app.*name/i);
+  });
+
+  it("does not add localeSwitcher when footer has no extraProps", () => {
+    // Generate with only hero — no localeSwitcher at all
+    generate({
+      appName: TEST_APP_NAME,
+      sourceApp: "velocity-template",
+      sections: ["@velocity/hero"],
+      locales: ["en"],
+    });
+
+    const pagePath = join(ROOT, "apps", TEST_APP_NAME, "app/[locale]/page-client.tsx");
+    const content = readFileSync(pagePath, "utf-8");
+
+    expect(content).not.toContain("localeSwitcher");
+    expect(content).not.toContain("LocaleSwitcher");
   });
 });

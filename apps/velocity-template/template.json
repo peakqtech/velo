@@ -34,7 +34,8 @@
     "@velocity/footer": {
       "component": "Footer",
       "configExport": "footerScrollConfig",
-      "contentKey": "footer"
+      "contentKey": "footer",
+      "extraProps": { "localeSwitcher": "<LocaleSwitcher />" }
     }
   }
 }

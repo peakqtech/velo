@@ -39,7 +39,8 @@
     "@velocity/prism-footer": {
       "component": "PrismFooter",
       "configExport": "prismFooterScrollConfig",
-      "contentKey": "footer"
+      "contentKey": "footer",
+      "extraProps": { "localeSwitcher": "<LocaleSwitcher />" }
     }
   }
 }

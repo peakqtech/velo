@@ -1,6 +1,9 @@
 import { cpSync, mkdirSync, readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { getMonorepoRoot, discoverInfraPackages, loadTemplateManifest } from "./discover";
+import type { TemplateManifest } from "./template-schema";
+
+type SectionMeta = TemplateManifest["sections"][string];
 
 interface GenerateOptions {
   appName: string;
@@ -9,7 +12,12 @@ interface GenerateOptions {
   locales: string[];
 }
 
+const VALID_APP_NAME = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
+
 export function generate(opts: GenerateOptions): void {
+  if (!opts.appName || !VALID_APP_NAME.test(opts.appName)) {
+    throw new Error(`Invalid app name: "${opts.appName}". Use only letters, numbers, hyphens, dots, and underscores.`);
+  }
   if (opts.sections.length === 0) {
     throw new Error("At least one section is required");
   }
@@ -27,7 +35,7 @@ export function generate(opts: GenerateOptions): void {
 
   // Load section metadata from template.json (fall back to section packages)
   const manifest = loadTemplateManifest(opts.sourceApp);
-  const SECTION_META: Record<string, { component: string; configExport: string; contentKey: string }> = manifest?.sections ?? {};
+  const SECTION_META: Record<string, SectionMeta> = manifest?.sections ?? {};
 
   // 1. Copy source app
   cpSync(sourceDir, targetDir, { recursive: true });
@@ -113,12 +121,13 @@ export default nextConfig;
 function generatePageClient(
   targetDir: string,
   sections: string[],
-  SECTION_META: Record<string, { component: string; configExport: string; contentKey: string }>,
+  SECTION_META: Record<string, SectionMeta>,
   contentType: string
 ): void {
   const imports: string[] = [];
   const configs: string[] = [];
   const components: string[] = [];
+  let needsLocaleSwitcher = false;
 
   for (const pkg of sections) {
     const meta = SECTION_META[pkg];
@@ -128,25 +137,35 @@ function generatePageClient(
     );
     configs.push(meta.configExport);
 
-    if (pkg === "@velocity/footer") {
-      components.push(
-        `      <${meta.component} content={content.${meta.contentKey}} localeSwitcher={<LocaleSwitcher />} />`
-      );
-    } else {
-      components.push(
-        `      <${meta.component} content={content.${meta.contentKey}} />`
-      );
+    // Build extra props from template.json extraProps field
+    const extraPropParts: string[] = [];
+    if (meta.extraProps) {
+      for (const [key, value] of Object.entries(meta.extraProps)) {
+        if (typeof value === "string" && value.startsWith("<") && value.endsWith("/>")) {
+          // JSX expression — render as JSX (unwrapped)
+          extraPropParts.push(`${key}={${value}}`);
+          if (value.includes("LocaleSwitcher")) {
+            needsLocaleSwitcher = true;
+          }
+        } else {
+          // Literal value
+          extraPropParts.push(`${key}={${JSON.stringify(value)}}`);
+        }
+      }
     }
-  }
 
-  const hasFooter = sections.includes("@velocity/footer");
+    const extraPropsStr = extraPropParts.length > 0 ? " " + extraPropParts.join(" ") : "";
+    components.push(
+      `      <${meta.component} content={content.${meta.contentKey}}${extraPropsStr} />`
+    );
+  }
 
   const content = `"use client";
 
 ${imports.join("\n")}
 import { useScrollEngine } from "@velocity/scroll-engine";
 import type { ${contentType} } from "@velocity/types";
-${hasFooter ? 'import { LocaleSwitcher } from "@/components/locale-switcher";' : ""}
+${needsLocaleSwitcher ? 'import { LocaleSwitcher } from "@/components/locale-switcher";' : ""}
 
 const scrollConfigs = [
   ${configs.join(",\n  ")},
@@ -175,7 +194,7 @@ function generateContentStub(
   appName: string,
   locale: string,
   sections: string[],
-  SECTION_META: Record<string, { component: string; configExport: string; contentKey: string }>,
+  SECTION_META: Record<string, SectionMeta>,
   contentType: string
 ): void {
   const stubs: string[] = [];

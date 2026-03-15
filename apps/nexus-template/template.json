@@ -12,6 +12,6 @@
     "@velocity/nexus-team": { "component": "NexusTeam", "configExport": "nexusTeamScrollConfig", "contentKey": "team" },
     "@velocity/nexus-stats": { "component": "NexusStats", "configExport": "nexusStatsScrollConfig", "contentKey": "stats" },
     "@velocity/nexus-contact": { "component": "NexusContact", "configExport": "nexusContactScrollConfig", "contentKey": "contact" },
-    "@velocity/nexus-footer": { "component": "NexusFooter", "configExport": "nexusFooterScrollConfig", "contentKey": "footer" }
+    "@velocity/nexus-footer": { "component": "NexusFooter", "configExport": "nexusFooterScrollConfig", "contentKey": "footer", "extraProps": { "localeSwitcher": "<LocaleSwitcher />" } }
   }
 }

@@ -39,7 +39,8 @@
     "@velocity/serenity-footer": {
       "component": "SerenityFooter",
       "configExport": "serenityFooterScrollConfig",
-      "contentKey": "footer"
+      "contentKey": "footer",
+      "extraProps": { "localeSwitcher": "<LocaleSwitcher />" }
     }
   }
 }
