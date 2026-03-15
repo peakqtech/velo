@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import type { FooterProps } from "./footer.types";
@@ -8,7 +8,7 @@ import { getVariantStyles } from "./footer-variants";
 import { fadeInUp, staggerContainerSlow } from "@velo/animations";
 import { BackToTop } from "@velo/ui";
 
-const socialIcons: Record<string, JSX.Element> = {
+const socialIcons: Record<string, React.JSX.Element> = {
   instagram: (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="5" /><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
