@@ -6,7 +6,7 @@
 @source "../../../packages/sections/haven-virtual-tour/src/**/*.tsx";
 @source "../../../packages/sections/haven-neighborhood/src/**/*.tsx";
 @source "../../../packages/sections/haven-agent/src/**/*.tsx";
-@source "../../../packages/sections/haven-footer/src/**/*.tsx";
+@source "../../../packages/sections/footer/src/**/*.tsx";
 @source "../../../packages/infra/motion-components/src/**/*.tsx";
 
 :root {

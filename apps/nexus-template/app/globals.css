@@ -6,7 +6,7 @@
 @source "../../../packages/sections/nexus-team/src/**/*.tsx";
 @source "../../../packages/sections/nexus-stats/src/**/*.tsx";
 @source "../../../packages/sections/nexus-contact/src/**/*.tsx";
-@source "../../../packages/sections/nexus-footer/src/**/*.tsx";
+@source "../../../packages/sections/footer/src/**/*.tsx";
 @source "../../../packages/infra/motion-components/src/**/*.tsx";
 
 :root {

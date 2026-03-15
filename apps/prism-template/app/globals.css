@@ -6,7 +6,7 @@
 @source "../../../packages/sections/prism-integrations/src/**/*.tsx";
 @source "../../../packages/sections/prism-testimonials/src/**/*.tsx";
 @source "../../../packages/sections/prism-faq/src/**/*.tsx";
-@source "../../../packages/sections/prism-footer/src/**/*.tsx";
+@source "../../../packages/sections/footer/src/**/*.tsx";
 @source "../../../packages/infra/motion-components/src/**/*.tsx";
 
 :root {

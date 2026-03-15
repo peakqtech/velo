@@ -6,7 +6,7 @@
 @source "../../../packages/sections/ember-reservation/src/**/*.tsx";
 @source "../../../packages/sections/ember-gallery/src/**/*.tsx";
 @source "../../../packages/sections/ember-testimonials/src/**/*.tsx";
-@source "../../../packages/sections/ember-footer/src/**/*.tsx";
+@source "../../../packages/sections/footer/src/**/*.tsx";
 @source "../../../packages/infra/motion-components/src/**/*.tsx";
 
 :root {
