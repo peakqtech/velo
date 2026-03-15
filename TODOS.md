@@ -46,7 +46,7 @@
 - **Depends on:** Nothing. Need before consolidation starts.
 - **Status:** DONE — added to root package.json.
 
-### P1 — Section Consolidation (41 → ~10 hybrid sections)
+### P1 — Section Consolidation (41 → ~10 hybrid sections) 🔶 PARTIALLY DONE
 - **What:** Incrementally consolidate template-specific sections into hybrid sections with theme variants. Start with footer, then testimonials, then hero.
 - **Design decisions:**
   - Variant prop + conditional rendering for structural differences (~10% of code)
@@ -57,7 +57,12 @@
 - **Why:** 41 packages is unmaintainable. Bug fixes replicated 6x. New template = 7 new packages.
 - **Effort:** XL (4-6 weeks, phased)
 - **Depends on:** Theme system, Build smoke test script.
-- **Status:** TODO
+- **Status:** PARTIALLY DONE — 41 → 33 sections.
+  - ✅ Footer: 6 → 1 hybrid with variant prop (-5 packages)
+  - ✅ Testimonials: 4 → 1 hybrid with carousel/grid modes (-3 packages)
+  - ✅ BackToTop extracted to @velo/ui
+  - ⏭️ Hero: NOT consolidatable — each hero is architecturally distinct (video, 3D physics, SVG filters, custom scroll). Forcing into one component would create worse code than separate packages.
+  - ⏭️ Remaining sections: Template-specific by definition (ember-menu, ember-chef, haven-properties, etc.) — cannot be consolidated.
 
 ### P1 — CI/CD Pipeline
 - **What:** GitHub Actions: lint, type-check, unit tests, integration tests, build all apps. Configure Turborepo remote caching. Deploy pipeline for managed-tier clients.
@@ -73,12 +78,12 @@
 - **Depends on:** Zod validation, Theme system.
 - **Status:** TODO
 
-### P2 — Extract BackToTop to @velo/ui
+### ~~P2 — Extract BackToTop to @velo/ui~~ ✅ DONE
 - **What:** Extract the back-to-top floating button from Footer into `@velo/ui` as a standalone `<BackToTop />` component. Render at page level (layout.tsx or page-client.tsx).
 - **Why:** Footer shouldn't own page-level scroll behavior. Removing Footer removes back-to-top.
 - **Effort:** S (30 min)
 - **Depends on:** Nothing. Do during Footer consolidation.
-- **Status:** TODO
+- **Status:** DONE — `@velo/ui` now exports `<BackToTop className={...} />`, used by hybrid Footer.
 
 ### ~~P2 — Add `extraProps` to template.json~~ ✅ DONE
 - **What:** Add `extraProps` field to template.json section schema. Update generate.ts to read this instead of hardcoding footer-specific logic (generate.ts:124).
