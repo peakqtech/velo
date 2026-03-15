@@ -4,7 +4,7 @@
 @source "../../../packages/sections/prism-features/src/**/*.tsx";
 @source "../../../packages/sections/prism-pricing/src/**/*.tsx";
 @source "../../../packages/sections/prism-integrations/src/**/*.tsx";
-@source "../../../packages/sections/prism-testimonials/src/**/*.tsx";
+@source "../../../packages/sections/testimonials/src/**/*.tsx";
 @source "../../../packages/sections/prism-faq/src/**/*.tsx";
 @source "../../../packages/sections/footer/src/**/*.tsx";
 @source "../../../packages/infra/motion-components/src/**/*.tsx";

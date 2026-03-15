@@ -26,10 +26,11 @@
       "configExport": "serenityPractitionersScrollConfig",
       "contentKey": "practitioners"
     },
-    "@velo/serenity-testimonials": {
-      "component": "SerenityTestimonials",
-      "configExport": "serenityTestimonialsScrollConfig",
-      "contentKey": "testimonials"
+    "@velo/testimonials": {
+      "component": "Testimonials",
+      "configExport": "testimonialsScrollConfig",
+      "contentKey": "testimonials",
+      "extraProps": { "variant": "serenity" }
     },
     "@velo/serenity-booking": {
       "component": "SerenityBooking",

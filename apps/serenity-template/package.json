@@ -25,7 +25,7 @@
     "@velo/serenity-services": "workspace:*",
     "@velo/serenity-process": "workspace:*",
     "@velo/serenity-practitioners": "workspace:*",
-    "@velo/serenity-testimonials": "workspace:*",
+    "@velo/testimonials": "workspace:*",
     "@velo/serenity-booking": "workspace:*",
     "@velo/footer": "workspace:*",
     "@velo/ui": "workspace:*"

@@ -11,7 +11,7 @@
     "@velo/ember-chef": { "component": "EmberChef", "configExport": "emberChefScrollConfig", "contentKey": "chef" },
     "@velo/ember-reservation": { "component": "EmberReservation", "configExport": "emberReservationScrollConfig", "contentKey": "reservation" },
     "@velo/ember-gallery": { "component": "EmberGallery", "configExport": "emberGalleryScrollConfig", "contentKey": "gallery" },
-    "@velo/ember-testimonials": { "component": "EmberTestimonials", "configExport": "emberTestimonialsScrollConfig", "contentKey": "testimonials" },
+    "@velo/testimonials": { "component": "Testimonials", "configExport": "testimonialsScrollConfig", "contentKey": "testimonials", "extraProps": { "variant": "ember" } },
     "@velo/footer": { "component": "Footer", "configExport": "footerScrollConfig", "contentKey": "footer", "extraProps": { "variant": "ember", "localeSwitcher": "<LocaleSwitcher />" } }
   }
 }

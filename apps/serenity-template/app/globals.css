@@ -4,7 +4,7 @@
 @source "../../../packages/sections/serenity-services/src/**/*.tsx";
 @source "../../../packages/sections/serenity-process/src/**/*.tsx";
 @source "../../../packages/sections/serenity-practitioners/src/**/*.tsx";
-@source "../../../packages/sections/serenity-testimonials/src/**/*.tsx";
+@source "../../../packages/sections/testimonials/src/**/*.tsx";
 @source "../../../packages/sections/serenity-booking/src/**/*.tsx";
 @source "../../../packages/sections/footer/src/**/*.tsx";
 @source "../../../packages/infra/motion-components/src/**/*.tsx";

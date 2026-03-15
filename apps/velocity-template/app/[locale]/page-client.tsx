@@ -32,7 +32,7 @@ export function PageClient({ content }: PageClientProps) {
       <ProductShowcase content={content.productShowcase} />
       <BrandStory content={content.brandStory} />
       <ProductGrid content={content.productGrid} />
-      <Testimonials content={content.testimonials} />
+      <Testimonials content={content.testimonials} variant="default" />
       <Footer content={content.footer} variant="default" localeSwitcher={<LocaleSwitcher />} />
     </main>
   );

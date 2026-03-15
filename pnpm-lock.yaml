@@ -53,9 +53,6 @@ importers:
       '@velo/ember-reservation':
         specifier: workspace:*
         version: link:../../packages/sections/ember-reservation
-      '@velo/ember-testimonials':
-        specifier: workspace:*
-        version: link:../../packages/sections/ember-testimonials
       '@velo/footer':
         specifier: workspace:*
         version: link:../../packages/sections/footer
@@ -68,6 +65,9 @@ importers:
       '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../packages/infra/scroll-engine
+      '@velo/testimonials':
+        specifier: workspace:*
+        version: link:../../packages/sections/testimonials
       '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
@@ -299,12 +299,12 @@ importers:
       '@velo/prism-pricing':
         specifier: workspace:*
         version: link:../../packages/sections/prism-pricing
-      '@velo/prism-testimonials':
-        specifier: workspace:*
-        version: link:../../packages/sections/prism-testimonials
       '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../packages/infra/scroll-engine
+      '@velo/testimonials':
+        specifier: workspace:*
+        version: link:../../packages/sections/testimonials
       '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
@@ -402,9 +402,9 @@ importers:
       '@velo/serenity-services':
         specifier: workspace:*
         version: link:../../packages/sections/serenity-services
-      '@velo/serenity-testimonials':
+      '@velo/testimonials':
         specifier: workspace:*
-        version: link:../../packages/sections/serenity-testimonials
+        version: link:../../packages/sections/testimonials
       '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
@@ -761,36 +761,6 @@ importers:
         version: 19.2.3(react@19.2.3)
 
   packages/sections/ember-reservation:
-    dependencies:
-      '@velo/animations':
-        specifier: workspace:*
-        version: link:../../infra/animations
-      '@velo/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velo/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velo/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
-  packages/sections/ember-testimonials:
     dependencies:
       '@velo/animations':
         specifier: workspace:*
@@ -1387,36 +1357,6 @@ importers:
         specifier: ^19.0.0
         version: 19.2.3(react@19.2.3)
 
-  packages/sections/prism-testimonials:
-    dependencies:
-      '@velo/animations':
-        specifier: workspace:*
-        version: link:../../infra/animations
-      '@velo/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velo/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velo/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
   packages/sections/product-grid:
     dependencies:
       '@velo/scroll-engine':
@@ -1618,38 +1558,11 @@ importers:
         specifier: ^19.0.0
         version: 19.2.3(react@19.2.3)
 
-  packages/sections/serenity-testimonials:
+  packages/sections/testimonials:
     dependencies:
       '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velo/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velo/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velo/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
-  packages/sections/testimonials:
-    dependencies:
       '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine

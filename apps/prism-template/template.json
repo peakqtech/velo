@@ -26,10 +26,11 @@
       "configExport": "prismIntegrationsScrollConfig",
       "contentKey": "integrations"
     },
-    "@velo/prism-testimonials": {
-      "component": "PrismTestimonials",
-      "configExport": "prismTestimonialsScrollConfig",
-      "contentKey": "testimonials"
+    "@velo/testimonials": {
+      "component": "Testimonials",
+      "configExport": "testimonialsScrollConfig",
+      "contentKey": "testimonials",
+      "extraProps": { "variant": "prism" }
     },
     "@velo/prism-faq": {
       "component": "PrismFAQ",

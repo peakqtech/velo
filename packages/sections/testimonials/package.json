@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@velo/types": "workspace:*",
-    "@velo/scroll-engine": "workspace:*"
+    "@velo/scroll-engine": "workspace:*",
+    "@velo/animations": "workspace:*"
   },
   "scripts": {
     "test": "vitest run"

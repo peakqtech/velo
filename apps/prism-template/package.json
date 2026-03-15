@@ -25,7 +25,7 @@
     "@velo/prism-features": "workspace:*",
     "@velo/prism-pricing": "workspace:*",
     "@velo/prism-integrations": "workspace:*",
-    "@velo/prism-testimonials": "workspace:*",
+    "@velo/testimonials": "workspace:*",
     "@velo/prism-faq": "workspace:*",
     "@velo/footer": "workspace:*",
     "@velo/ui": "workspace:*"

@@ -29,7 +29,8 @@
     "@velo/testimonials": {
       "component": "Testimonials",
       "configExport": "testimonialsScrollConfig",
-      "contentKey": "testimonials"
+      "contentKey": "testimonials",
+      "extraProps": { "variant": "default" }
     },
     "@velo/footer": {
       "component": "Footer",
