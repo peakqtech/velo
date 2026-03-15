@@ -94,13 +94,49 @@ export function generate(opts: GenerateOptions): void {
 
 const nextConfig: NextConfig = {
   transpilePackages: ${JSON.stringify(allVelocityPkgs, null, 4)},
+  headers: async () => [
+    {
+      source: "/(.*)",
+      headers: [
+        {
+          key: "Content-Security-Policy",
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: https:",
+            "font-src 'self' data:",
+            "connect-src 'self' https:",
+            "frame-ancestors 'none'",
+          ].join("; "),
+        },
+        { key: "X-Frame-Options", value: "DENY" },
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      ],
+    },
+  ],
 };
 
 export default nextConfig;
 `;
   writeFileSync(join(targetDir, "next.config.ts"), nextConfigContent);
 
-  // 5. Generate page-client.tsx with selected sections
+  // 5. Generate .gitignore
+  const gitignoreContent = `node_modules/
+.next/
+out/
+build/
+.DS_Store
+*.pem
+.env*
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+`;
+  writeFileSync(join(targetDir, ".gitignore"), gitignoreContent);
+
+  // 6. Generate page-client.tsx with selected sections
   generatePageClient(targetDir, opts.sections, SECTION_META, manifest?.contentType ?? "VelocityContent");
 
   // 6. Generate content stubs for selected locales

@@ -132,6 +132,36 @@ describe("generate", () => {
     ).toThrow(/invalid.*app.*name/i);
   });
 
+  it("generates next.config.ts with CSP headers", () => {
+    generate({
+      appName: TEST_APP_NAME,
+      sourceApp: "velocity-template",
+      sections: ["@velocity/hero"],
+      locales: ["en"],
+    });
+
+    const configPath = join(ROOT, "apps", TEST_APP_NAME, "next.config.ts");
+    const content = readFileSync(configPath, "utf-8");
+    expect(content).toContain("Content-Security-Policy");
+    expect(content).toContain("script-src");
+  });
+
+  it("generates .gitignore with .next and node_modules", () => {
+    generate({
+      appName: TEST_APP_NAME,
+      sourceApp: "velocity-template",
+      sections: ["@velocity/hero"],
+      locales: ["en"],
+    });
+
+    const gitignorePath = join(ROOT, "apps", TEST_APP_NAME, ".gitignore");
+    expect(existsSync(gitignorePath)).toBe(true);
+
+    const content = readFileSync(gitignorePath, "utf-8");
+    expect(content).toContain(".next");
+    expect(content).toContain("node_modules");
+  });
+
   it("does not add localeSwitcher when footer has no extraProps", () => {
     // Generate with only hero — no localeSwitcher at all
     generate({
