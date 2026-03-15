@@ -48,10 +48,10 @@ const blurInVariants = {
     hidden: { opacity: 0, filter: "blur(12px)", y: 12 },
     visible: {
       opacity: 1, filter: "blur(0px)", y: 0,
-      transition: { type: "spring", bounce: 0.3, duration: 1.5 },
+      transition: { type: "spring" as const, bounce: 0.3, duration: 1.5 },
     },
   },
-};
+} satisfies { container?: import("framer-motion").Variants; item?: import("framer-motion").Variants };
 
 // ---------------------------------------------------------------------------
 // PrismHero
@@ -78,7 +78,7 @@ export function PrismHero({ content }: PrismHeroProps) {
         <AnimatedGroup
           variants={{
             container: { visible: { transition: { delayChildren: 1 } } },
-            item: { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.3, duration: 2 } } },
+            item: { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { type: "spring" as const, bounce: 0.3, duration: 2 } } },
           }}
           className="absolute inset-0 -z-20"
         >
@@ -123,7 +123,7 @@ export function PrismHero({ content }: PrismHeroProps) {
             <AnimatedGroup
               variants={{
                 container: { visible: { transition: { staggerChildren: 0.05, delayChildren: 0.75 } } },
-                ...variants,
+                item: variants.item,
               }}
               className="mt-12 flex flex-col items-center justify-center gap-3 md:flex-row"
             >
@@ -148,7 +148,7 @@ export function PrismHero({ content }: PrismHeroProps) {
           <AnimatedGroup
             variants={{
               container: { visible: { transition: { staggerChildren: 0.05, delayChildren: 0.75 } } },
-              ...variants,
+              item: variants.item,
             }}
           >
             <div className="relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20">
