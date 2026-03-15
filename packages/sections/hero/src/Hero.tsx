@@ -18,7 +18,6 @@ export function Hero({ content }: HeroProps) {
     setIsMobile(window.innerWidth < 768);
   }, []);
 
-  // Mobile: no autoplay video — fall back to poster/image with play button
   const showVideo = media.type === "video" && !videoFailed && !isMobile;
   const showPoster = !showVideo && media.poster;
 
@@ -55,13 +54,15 @@ export function Hero({ content }: HeroProps) {
           />
         )}
 
-        {/* Overlay */}
+        {/* Animated gradient overlay */}
         <div
           className="absolute inset-0"
           style={{
             background: overlay.gradient ?? `rgba(0,0,0,${overlay.opacity})`,
           }}
         />
+        {/* Extra bottom fade for section transition */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       {/* Content */}
@@ -70,15 +71,17 @@ export function Hero({ content }: HeroProps) {
           <AnimatedText
             text={headline}
             as="h1"
-            className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-foreground"
+            className="text-6xl md:text-8xl lg:text-9xl font-display font-bold tracking-tight text-foreground"
+            mode="char"
+            staggerDelay={0.02}
           />
         </div>
 
         <motion.p
           className="hero-tagline mt-6 text-lg md:text-2xl text-foreground/80 max-w-2xl mx-auto"
-          initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
+          initial={shouldReduceMotion ? {} : { opacity: 0, y: 20, filter: "blur(8px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ delay: 0.8, duration: 0.8 }}
         >
           {tagline}
         </motion.p>
@@ -87,16 +90,31 @@ export function Hero({ content }: HeroProps) {
           className="hero-cta mt-10"
           initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.9, ...springConfig }}
+          transition={{ delay: 1.1, ...springConfig }}
         >
           <a
             href={cta.href}
-            className="inline-block px-8 py-4 bg-primary text-white font-display font-bold text-lg rounded-full hover:bg-primary-light transition-colors"
+            className="inline-block px-8 py-4 bg-primary text-white font-display font-bold text-lg rounded-full hover:bg-primary-light transition-all duration-300 glow-primary hover:scale-105"
           >
             {cta.label}
           </a>
         </motion.div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="hero-scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+      >
+        <span className="text-xs text-foreground/50 uppercase tracking-widest">Scroll</span>
+        <motion.div
+          className="w-[1px] h-8 bg-foreground/30 origin-top"
+          animate={{ scaleY: [0, 1, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </motion.div>
     </section>
   );
 }

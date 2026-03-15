@@ -1,0 +1,45 @@
+{
+  "name": "serenity",
+  "displayName": "Serenity",
+  "description": "Healthcare/Wellness — Soft UI theme with sage green primary, lavender accent, rounded elements, and calming colors",
+  "businessType": "Healthcare/Wellness",
+  "style": "Soft UI",
+  "contentType": "SerenityContent",
+  "sections": {
+    "@velocity/serenity-hero": {
+      "component": "SerenityHero",
+      "configExport": "serenityHeroScrollConfig",
+      "contentKey": "hero"
+    },
+    "@velocity/serenity-services": {
+      "component": "SerenityServices",
+      "configExport": "serenityServicesScrollConfig",
+      "contentKey": "services"
+    },
+    "@velocity/serenity-process": {
+      "component": "SerenityProcess",
+      "configExport": "serenityProcessScrollConfig",
+      "contentKey": "process"
+    },
+    "@velocity/serenity-practitioners": {
+      "component": "SerenityPractitioners",
+      "configExport": "serenityPractitionersScrollConfig",
+      "contentKey": "practitioners"
+    },
+    "@velocity/serenity-testimonials": {
+      "component": "SerenityTestimonials",
+      "configExport": "serenityTestimonialsScrollConfig",
+      "contentKey": "testimonials"
+    },
+    "@velocity/serenity-booking": {
+      "component": "SerenityBooking",
+      "configExport": "serenityBookingScrollConfig",
+      "contentKey": "booking"
+    },
+    "@velocity/serenity-footer": {
+      "component": "SerenityFooter",
+      "configExport": "serenityFooterScrollConfig",
+      "contentKey": "footer"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "prism",
+  "displayName": "Prism",
+  "description": "SaaS/Marketplace — Flat Clean theme with purple primary, rounded corners, and soft shadows",
+  "businessType": "SaaS/Marketplace",
+  "style": "Flat Clean",
+  "contentType": "PrismContent",
+  "sections": {
+    "@velocity/prism-hero": {
+      "component": "PrismHero",
+      "configExport": "prismHeroScrollConfig",
+      "contentKey": "hero"
+    },
+    "@velocity/prism-features": {
+      "component": "PrismFeatures",
+      "configExport": "prismFeaturesScrollConfig",
+      "contentKey": "features"
+    },
+    "@velocity/prism-pricing": {
+      "component": "PrismPricing",
+      "configExport": "prismPricingScrollConfig",
+      "contentKey": "pricing"
+    },
+    "@velocity/prism-integrations": {
+      "component": "PrismIntegrations",
+      "configExport": "prismIntegrationsScrollConfig",
+      "contentKey": "integrations"
+    },
+    "@velocity/prism-testimonials": {
+      "component": "PrismTestimonials",
+      "configExport": "prismTestimonialsScrollConfig",
+      "contentKey": "testimonials"
+    },
+    "@velocity/prism-faq": {
+      "component": "PrismFAQ",
+      "configExport": "prismFAQScrollConfig",
+      "contentKey": "faq"
+    },
+    "@velocity/prism-footer": {
+      "component": "PrismFooter",
+      "configExport": "prismFooterScrollConfig",
+      "contentKey": "footer"
+    }
+  }
+}

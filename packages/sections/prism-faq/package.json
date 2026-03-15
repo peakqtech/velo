@@ -1,0 +1,20 @@
+{
+  "name": "@velocity/prism-faq",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "next": "^16.0.0",
+    "gsap": "^3.12.0",
+    "framer-motion": "^12.0.0"
+  },
+  "dependencies": {
+    "@velocity/types": "workspace:*",
+    "@velocity/scroll-engine": "workspace:*",
+    "@velocity/animations": "workspace:*",
+    "@velocity/motion-components": "workspace:*"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "nexus",
+  "displayName": "Nexus",
+  "description": "Tech Consulting/Agency — Kinetic Brutalism with oversized type and bold graphic elements",
+  "businessType": "Tech Consulting/Agency",
+  "style": "Kinetic Brutalism",
+  "contentType": "NexusContent",
+  "sections": {
+    "@velocity/nexus-hero": { "component": "NexusHero", "configExport": "nexusHeroScrollConfig", "contentKey": "hero" },
+    "@velocity/nexus-services": { "component": "NexusServices", "configExport": "nexusServicesScrollConfig", "contentKey": "services" },
+    "@velocity/nexus-case-studies": { "component": "NexusCaseStudies", "configExport": "nexusCaseStudiesScrollConfig", "contentKey": "caseStudies" },
+    "@velocity/nexus-team": { "component": "NexusTeam", "configExport": "nexusTeamScrollConfig", "contentKey": "team" },
+    "@velocity/nexus-stats": { "component": "NexusStats", "configExport": "nexusStatsScrollConfig", "contentKey": "stats" },
+    "@velocity/nexus-contact": { "component": "NexusContact", "configExport": "nexusContactScrollConfig", "contentKey": "contact" },
+    "@velocity/nexus-footer": { "component": "NexusFooter", "configExport": "nexusFooterScrollConfig", "contentKey": "footer" }
+  }
+}

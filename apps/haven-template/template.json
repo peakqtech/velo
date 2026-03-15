@@ -1,0 +1,17 @@
+{
+  "name": "haven",
+  "displayName": "Haven",
+  "description": "Luxury Real Estate — Glassmorphism with frosted glass cards, gradient backgrounds, and premium luxury feel",
+  "businessType": "Luxury Real Estate",
+  "style": "Glassmorphism",
+  "contentType": "HavenContent",
+  "sections": {
+    "@velocity/haven-hero": { "component": "HavenHero", "configExport": "havenHeroScrollConfig", "contentKey": "hero" },
+    "@velocity/haven-properties": { "component": "HavenProperties", "configExport": "havenPropertiesScrollConfig", "contentKey": "properties" },
+    "@velocity/haven-amenities": { "component": "HavenAmenities", "configExport": "havenAmenitiesScrollConfig", "contentKey": "amenities" },
+    "@velocity/haven-virtual-tour": { "component": "HavenVirtualTour", "configExport": "havenVirtualTourScrollConfig", "contentKey": "virtualTour" },
+    "@velocity/haven-neighborhood": { "component": "HavenNeighborhood", "configExport": "havenNeighborhoodScrollConfig", "contentKey": "neighborhood" },
+    "@velocity/haven-agent": { "component": "HavenAgent", "configExport": "havenAgentScrollConfig", "contentKey": "agent" },
+    "@velocity/haven-footer": { "component": "HavenFooter", "configExport": "havenFooterScrollConfig", "contentKey": "footer" }
+  }
+}

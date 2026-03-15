@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@source "../../../packages/sections/serenity-hero/src/**/*.tsx";
+@source "../../../packages/sections/serenity-services/src/**/*.tsx";
+@source "../../../packages/sections/serenity-process/src/**/*.tsx";
+@source "../../../packages/sections/serenity-practitioners/src/**/*.tsx";
+@source "../../../packages/sections/serenity-testimonials/src/**/*.tsx";
+@source "../../../packages/sections/serenity-booking/src/**/*.tsx";
+@source "../../../packages/sections/serenity-footer/src/**/*.tsx";
+@source "../../../packages/infra/motion-components/src/**/*.tsx";
+
+:root {
+  --color-primary: #5b8c5a;
+  --color-primary-light: #6fa06e;
+  --color-secondary: #f0f4f0;
+  --color-accent: #9b8ec4;
+  --color-background: #f8faf8;
+  --color-foreground: #1a2e1a;
+  --color-muted: #6b7b6b;
+  --font-serenity-display: "Figtree", sans-serif;
+  --font-serenity-body: "Noto Sans", sans-serif;
+  --max-w-content: 1280px;
+  --padding-section: clamp(4rem, 10vw, 7rem);
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-primary-light: var(--color-primary-light);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-muted: var(--color-muted);
+  --font-display: var(--font-serenity-display);
+  --font-body: var(--font-serenity-body);
+  --max-width-content: var(--max-w-content);
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-serenity-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+section {
+  padding-top: var(--padding-section);
+  padding-bottom: var(--padding-section);
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.glow-primary {
+  box-shadow: 0 0 20px rgba(91, 140, 90, 0.15),
+    0 0 60px rgba(91, 140, 90, 0.05);
+}
+
+.section-divider {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-primary),
+    transparent
+  );
+  height: 1px;
+  opacity: 0.15;
+}

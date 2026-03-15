@@ -1,4 +1,5 @@
 import Enquirer from "enquirer";
+import type { TemplateManifest } from "./discover";
 
 const enquirer = new Enquirer();
 
@@ -14,12 +15,21 @@ export async function promptAppName(defaultName?: string): Promise<string> {
   return name;
 }
 
-export async function promptSourceApp(apps: string[]): Promise<string> {
+export async function promptSourceApp(
+  apps: string[],
+  templates?: Array<{ name: string; manifest: TemplateManifest }>
+): Promise<string> {
+  const choices = apps.map((app) => {
+    const tmpl = templates?.find((t) => t.name === app);
+    const hint = tmpl ? ` — ${tmpl.manifest.description}` : "";
+    return { name: app, message: `${app}${hint}`, value: app };
+  });
+
   const { source } = await enquirer.prompt<{ source: string }>({
     type: "select",
     name: "source",
     message: "Source app (template):",
-    choices: apps,
+    choices,
   });
   return source;
 }

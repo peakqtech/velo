@@ -10,12 +10,40 @@ export function getMonorepoRoot(): string {
   return ROOT;
 }
 
+export interface TemplateManifest {
+  name: string;
+  displayName: string;
+  description: string;
+  businessType: string;
+  style: string;
+  contentType: string;
+  sections: Record<string, { component: string; configExport: string; contentKey: string }>;
+}
+
 export function discoverApps(): string[] {
   const appsDir = join(ROOT, "apps");
   if (!existsSync(appsDir)) return [];
   return readdirSync(appsDir, { withFileTypes: true })
     .filter((d) => d.isDirectory())
     .map((d) => d.name);
+}
+
+export function loadTemplateManifest(appName: string): TemplateManifest | null {
+  const manifestPath = join(ROOT, "apps", appName, "template.json");
+  if (!existsSync(manifestPath)) return null;
+  return JSON.parse(readFileSync(manifestPath, "utf-8"));
+}
+
+export function discoverTemplates(): Array<{ name: string; manifest: TemplateManifest }> {
+  const apps = discoverApps();
+  const templates: Array<{ name: string; manifest: TemplateManifest }> = [];
+  for (const app of apps) {
+    const manifest = loadTemplateManifest(app);
+    if (manifest) {
+      templates.push({ name: app, manifest });
+    }
+  }
+  return templates;
 }
 
 export function discoverSections(): Array<{ name: string; packageName: string }> {

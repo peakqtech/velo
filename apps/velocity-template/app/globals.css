@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Tell Tailwind v4 to scan workspace packages for utility classes */
+@source "../../../packages/sections/hero/src/**/*.tsx";
+@source "../../../packages/sections/product-showcase/src/**/*.tsx";
+@source "../../../packages/sections/brand-story/src/**/*.tsx";
+@source "../../../packages/sections/product-grid/src/**/*.tsx";
+@source "../../../packages/sections/testimonials/src/**/*.tsx";
+@source "../../../packages/sections/footer/src/**/*.tsx";
+@source "../../../packages/infra/motion-components/src/**/*.tsx";
+
 /* ─────────────────────────────────────────
    Brand CSS custom properties
 ───────────────────────────────────────── */
@@ -119,4 +128,94 @@ html.lenis body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* ─────────────────────────────────────────
+   Cinematic film grain overlay
+───────────────────────────────────────── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ─────────────────────────────────────────
+   Gradient text utility
+───────────────────────────────────────── */
+.text-gradient-primary {
+  background: linear-gradient(135deg, var(--color-foreground) 0%, var(--color-primary) 50%, var(--color-primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─────────────────────────────────────────
+   Glow effects
+───────────────────────────────────────── */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(255, 60, 0, 0.3), 0 0 60px rgba(255, 60, 0, 0.1);
+}
+
+.glow-primary-sm {
+  box-shadow: 0 0 10px rgba(255, 60, 0, 0.2);
+}
+
+/* ─────────────────────────────────────────
+   Badge pulse animation
+───────────────────────────────────────── */
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 60, 0, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(255, 60, 0, 0); }
+}
+
+.badge-pulse {
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────
+   Reveal mask utilities
+───────────────────────────────────────── */
+.mask-reveal-up {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.mask-reveal-up.revealed {
+  clip-path: inset(0% 0 0 0);
+}
+
+/* ─────────────────────────────────────────
+   Smooth card hover lift
+───────────────────────────────────────── */
+.card-hover-lift {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 60, 0, 0.05);
+}
+
+/* ─────────────────────────────────────────
+   Section divider gradient
+───────────────────────────────────────── */
+.section-divider {
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  height: 1px;
+  opacity: 0.3;
+}
+
+/* ─────────────────────────────────────────
+   Testimonial quote marks
+───────────────────────────────────────── */
+.quote-mark {
+  font-family: Georgia, serif;
+  font-size: 6rem;
+  line-height: 1;
+  color: var(--color-primary);
+  opacity: 0.2;
 }

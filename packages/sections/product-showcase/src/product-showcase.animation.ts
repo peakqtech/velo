@@ -14,7 +14,7 @@ export const productShowcaseScrollConfig: ScrollConfig = {
     // Product entrance + float
     if (product) {
       tl.fromTo(product, { y: 100, opacity: 0 }, { y: -20, opacity: 1, duration: 1 }, 0);
-      tl.to(product, { y: -40, rotation: 3, duration: 1 }, 1);
+      tl.to(product, { y: -40, rotation: 3, scale: 1.3, duration: 1 }, 1);
     }
 
     // Title fade in

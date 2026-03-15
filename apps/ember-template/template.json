@@ -1,0 +1,17 @@
+{
+  "name": "ember",
+  "displayName": "Ember",
+  "description": "Restaurant/Culinary — Elegant Warm with serif headers, warm tones, and classic elegance",
+  "businessType": "Restaurant/Culinary",
+  "style": "Elegant Warm",
+  "contentType": "EmberContent",
+  "sections": {
+    "@velocity/ember-hero": { "component": "EmberHero", "configExport": "emberHeroScrollConfig", "contentKey": "hero" },
+    "@velocity/ember-menu": { "component": "EmberMenu", "configExport": "emberMenuScrollConfig", "contentKey": "menu" },
+    "@velocity/ember-chef": { "component": "EmberChef", "configExport": "emberChefScrollConfig", "contentKey": "chef" },
+    "@velocity/ember-reservation": { "component": "EmberReservation", "configExport": "emberReservationScrollConfig", "contentKey": "reservation" },
+    "@velocity/ember-gallery": { "component": "EmberGallery", "configExport": "emberGalleryScrollConfig", "contentKey": "gallery" },
+    "@velocity/ember-testimonials": { "component": "EmberTestimonials", "configExport": "emberTestimonialsScrollConfig", "contentKey": "testimonials" },
+    "@velocity/ember-footer": { "component": "EmberFooter", "configExport": "emberFooterScrollConfig", "contentKey": "footer" }
+  }
+}

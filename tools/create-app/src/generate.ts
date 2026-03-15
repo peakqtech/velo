@@ -1,18 +1,6 @@
 import { cpSync, mkdirSync, readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { getMonorepoRoot, discoverInfraPackages } from "./discover";
-
-const SECTION_META: Record<
-  string,
-  { component: string; configExport: string; contentKey: string }
-> = {
-  "@velocity/hero": { component: "Hero", configExport: "heroScrollConfig", contentKey: "hero" },
-  "@velocity/product-showcase": { component: "ProductShowcase", configExport: "productShowcaseScrollConfig", contentKey: "productShowcase" },
-  "@velocity/brand-story": { component: "BrandStory", configExport: "brandStoryScrollConfig", contentKey: "brandStory" },
-  "@velocity/product-grid": { component: "ProductGrid", configExport: "productGridScrollConfig", contentKey: "productGrid" },
-  "@velocity/testimonials": { component: "Testimonials", configExport: "testimonialsScrollConfig", contentKey: "testimonials" },
-  "@velocity/footer": { component: "Footer", configExport: "footerScrollConfig", contentKey: "footer" },
-};
+import { getMonorepoRoot, discoverInfraPackages, loadTemplateManifest } from "./discover";
 
 interface GenerateOptions {
   appName: string;
@@ -29,6 +17,10 @@ export function generate(opts: GenerateOptions): void {
   if (existsSync(targetDir)) {
     throw new Error(`App directory already exists: ${targetDir}`);
   }
+
+  // Load section metadata from template.json (fall back to section packages)
+  const manifest = loadTemplateManifest(opts.sourceApp);
+  const SECTION_META: Record<string, { component: string; configExport: string; contentKey: string }> = manifest?.sections ?? {};
 
   // 1. Copy source app
   cpSync(sourceDir, targetDir, { recursive: true });
@@ -94,15 +86,15 @@ export default nextConfig;
   writeFileSync(join(targetDir, "next.config.ts"), nextConfigContent);
 
   // 5. Generate page-client.tsx with selected sections
-  generatePageClient(targetDir, opts.sections);
+  generatePageClient(targetDir, opts.sections, SECTION_META, manifest?.contentType ?? "VelocityContent");
 
   // 6. Generate content stubs for selected locales
   for (const locale of opts.locales) {
-    generateContentStub(targetDir, opts.appName, locale, opts.sections);
+    generateContentStub(targetDir, opts.appName, locale, opts.sections, SECTION_META, manifest?.contentType ?? "VelocityContent");
   }
 
   // 7. Generate lib/i18n.ts
-  generateI18n(targetDir, opts.appName, opts.locales);
+  generateI18n(targetDir, opts.appName, opts.locales, manifest?.contentType ?? "VelocityContent");
 
   console.log(`\n✓ Created apps/${opts.appName} with ${opts.sections.length} sections`);
   console.log(`✓ Locales: ${opts.locales.join(", ")}`);
@@ -111,7 +103,12 @@ export default nextConfig;
   console.log(`  cd apps/${opts.appName} && pnpm dev`);
 }
 
-function generatePageClient(targetDir: string, sections: string[]): void {
+function generatePageClient(
+  targetDir: string,
+  sections: string[],
+  SECTION_META: Record<string, { component: string; configExport: string; contentKey: string }>,
+  contentType: string
+): void {
   const imports: string[] = [];
   const configs: string[] = [];
   const components: string[] = [];
@@ -141,7 +138,7 @@ function generatePageClient(targetDir: string, sections: string[]): void {
 
 ${imports.join("\n")}
 import { useScrollEngine } from "@velocity/scroll-engine";
-import type { VelocityContent } from "@velocity/types";
+import type { ${contentType} } from "@velocity/types";
 ${hasFooter ? 'import { LocaleSwitcher } from "@/components/locale-switcher";' : ""}
 
 const scrollConfigs = [
@@ -149,7 +146,7 @@ const scrollConfigs = [
 ];
 
 interface PageClientProps {
-  content: VelocityContent;
+  content: ${contentType};
 }
 
 export function PageClient({ content }: PageClientProps) {
@@ -170,7 +167,9 @@ function generateContentStub(
   targetDir: string,
   appName: string,
   locale: string,
-  sections: string[]
+  sections: string[],
+  SECTION_META: Record<string, { component: string; configExport: string; contentKey: string }>,
+  contentType: string
 ): void {
   const stubs: string[] = [];
 
@@ -180,9 +179,9 @@ function generateContentStub(
     stubs.push(`  ${meta.contentKey}: {} as any, // TODO: fill in ${meta.component} content`);
   }
 
-  const content = `import type { VelocityContent } from "@velocity/types";
+  const content = `import type { ${contentType} } from "@velocity/types";
 
-const content: VelocityContent = {
+const content: ${contentType} = {
 ${stubs.join("\n")}
   metadata: {
     title: "${appName}",
@@ -198,9 +197,9 @@ export default content;
   writeFileSync(join(dir, `${appName}.ts`), content);
 }
 
-function generateI18n(targetDir: string, appName: string, locales: string[]): void {
+function generateI18n(targetDir: string, appName: string, locales: string[], contentType: string): void {
   const content = `import { createContentLoader } from "@velocity/i18n";
-import type { VelocityContent } from "@velocity/types";
+import type { ${contentType} } from "@velocity/types";
 
 export const defaultLocale = "${locales[0]}";
 export const locales = ${JSON.stringify(locales)} as const;
@@ -210,7 +209,7 @@ export function isValidLocale(locale: string): locale is Locale {
   return (locales as readonly string[]).includes(locale);
 }
 
-export const getContent = createContentLoader<VelocityContent>(
+export const getContent = createContentLoader<${contentType}>(
   { defaultLocale, locales },
   (locale) =>
     import(\`../content/\${locale}/${appName}\`).then((m) => m.default)

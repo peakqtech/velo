@@ -1,5 +1,5 @@
 import { parseArgs } from "node:util";
-import { discoverApps, discoverSections } from "./discover";
+import { discoverApps, discoverSections, discoverTemplates } from "./discover";
 import { promptAppName, promptSourceApp, promptSections, promptLocales } from "./prompts";
 import { generate } from "./generate";
 
@@ -23,8 +23,10 @@ async function main() {
     process.exit(1);
   }
 
+  const templates = discoverTemplates();
+
   const appName = positionals[0] || (await promptAppName());
-  const sourceApp = values.from || (await promptSourceApp(apps));
+  const sourceApp = values.from || (await promptSourceApp(apps, templates));
 
   if (!apps.includes(sourceApp)) {
     console.error(`Source app "${sourceApp}" not found. Available: ${apps.join(", ")}`);

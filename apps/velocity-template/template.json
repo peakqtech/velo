@@ -1,0 +1,40 @@
+{
+  "name": "velocity",
+  "displayName": "Velocity",
+  "description": "Athletic/Sportswear — Cinematic Dark theme with scroll-driven animations",
+  "businessType": "Athletic/Sportswear",
+  "style": "Cinematic Dark",
+  "contentType": "VelocityContent",
+  "sections": {
+    "@velocity/hero": {
+      "component": "Hero",
+      "configExport": "heroScrollConfig",
+      "contentKey": "hero"
+    },
+    "@velocity/product-showcase": {
+      "component": "ProductShowcase",
+      "configExport": "productShowcaseScrollConfig",
+      "contentKey": "productShowcase"
+    },
+    "@velocity/brand-story": {
+      "component": "BrandStory",
+      "configExport": "brandStoryScrollConfig",
+      "contentKey": "brandStory"
+    },
+    "@velocity/product-grid": {
+      "component": "ProductGrid",
+      "configExport": "productGridScrollConfig",
+      "contentKey": "productGrid"
+    },
+    "@velocity/testimonials": {
+      "component": "Testimonials",
+      "configExport": "testimonialsScrollConfig",
+      "contentKey": "testimonials"
+    },
+    "@velocity/footer": {
+      "component": "Footer",
+      "configExport": "footerScrollConfig",
+      "contentKey": "footer"
+    }
+  }
+}

@@ -6,7 +6,6 @@ import { motion, AnimatePresence, LayoutGroup, useReducedMotion } from "framer-m
 import type { ProductGridProps } from "./product-grid.types";
 
 function formatPrice(amount: number, currency: string): string {
-  // Auto-detect locale from currency for proper formatting
   const localeMap: Record<string, string> = { USD: "en-US", IDR: "id-ID" };
   const locale = localeMap[currency] ?? "en-US";
   return new Intl.NumberFormat(locale, {
@@ -21,7 +20,6 @@ export function ProductGrid({ content }: ProductGridProps) {
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
   const shouldReduceMotion = useReducedMotion();
 
-  // First category is always "show all" regardless of locale
   const filteredProducts =
     activeCategoryIndex === 0
       ? products
@@ -29,16 +27,20 @@ export function ProductGrid({ content }: ProductGridProps) {
 
   return (
     <section
-      className="product-grid-section relative py-section bg-secondary"
+      className="product-grid-section relative py-section bg-secondary overflow-hidden"
+      id="products"
       aria-label="Product Collection"
     >
       <div className="max-w-content mx-auto px-6">
+        {/* Section divider */}
+        <div className="section-divider mb-16" />
+
         {/* Heading */}
         <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground text-center mb-12">
           {heading}
         </h2>
 
-        {/* Filter tabs */}
+        {/* Filter tabs with animated indicator */}
         <div
           className="flex justify-center gap-2 mb-12 flex-wrap"
           role="tablist"
@@ -50,13 +52,20 @@ export function ProductGrid({ content }: ProductGridProps) {
               role="tab"
               aria-selected={activeCategoryIndex === i}
               onClick={() => setActiveCategoryIndex(i)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`relative px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategoryIndex === i
-                  ? "bg-primary text-white"
-                  : "bg-foreground/10 text-muted hover:text-foreground"
+                  ? "text-white"
+                  : "bg-foreground/5 text-muted hover:text-foreground hover:bg-foreground/10"
               }`}
             >
-              {cat}
+              {activeCategoryIndex === i && (
+                <motion.span
+                  layoutId="activeTab"
+                  className="absolute inset-0 bg-primary rounded-full"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">{cat}</span>
             </button>
           ))}
         </div>
@@ -68,41 +77,46 @@ export function ProductGrid({ content }: ProductGridProps) {
             layout={!shouldReduceMotion}
           >
             <AnimatePresence mode="popLayout">
-              {filteredProducts.map((product) => (
+              {filteredProducts.map((product, index) => (
                 <motion.article
                   key={product.name}
-                  className="product-card group relative bg-background rounded-2xl overflow-hidden"
+                  className="product-card group relative bg-background rounded-2xl overflow-hidden card-hover-lift"
                   layout={!shouldReduceMotion}
-                  initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={shouldReduceMotion ? {} : { opacity: 0, y: 40, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={shouldReduceMotion ? {} : { opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                  whileHover={shouldReduceMotion ? {} : { y: -4 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: shouldReduceMotion ? 0 : index * 0.08,
+                    ease: [0.25, 0.46, 0.45, 0.94],
+                  }}
                 >
-                  {/* Badge */}
+                  {/* Badge with pulse */}
                   {product.badge && (
-                    <span className="absolute top-4 right-4 z-10 px-3 py-1 bg-primary text-white text-xs font-bold rounded-full">
+                    <span className="absolute top-4 right-4 z-10 px-3 py-1 bg-primary text-white text-xs font-bold rounded-full badge-pulse">
                       {product.badge}
                     </span>
                   )}
 
                   {/* Image */}
-                  <div className="relative aspect-square bg-secondary/50">
+                  <div className="relative aspect-square bg-secondary/50 overflow-hidden">
                     <Image
                       src={product.image}
                       alt={product.alt}
                       fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
+                    {/* Hover gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
 
                   {/* Info */}
-                  <div className="p-4">
-                    <h3 className="font-display font-bold text-foreground">
+                  <div className="p-5">
+                    <h3 className="font-display font-bold text-foreground text-lg">
                       {product.name}
                     </h3>
-                    <p className="mt-1 text-muted">
+                    <p className="mt-1 text-lg font-display text-primary font-bold">
                       {formatPrice(product.price.amount, product.price.currency)}
                     </p>
                   </div>

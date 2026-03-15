@@ -22,7 +22,7 @@ const content: VelocityContent = {
   },
   brandStory: {
     chapters: [
-      { heading: "Born on the Track", body: "Velocity started with a simple belief: every athlete deserves equipment that keeps up with their ambition.", media: { type: "image", src: "/images/story-1.jpg", alt: "Track and field at sunrise" }, layout: "right" },
+      { heading: "Born on the Track", body: "Velocity started with a simple belief: every athlete deserves equipment that keeps up with their ambition.", media: { type: "image", src: "/images/story-1.jpg", alt: "Track and field at sunrise" }, layout: "left" },
       { heading: "Tested by Champions", body: "From Olympic trials to neighborhood 5Ks, our gear is battle-tested at every level of competition.", media: { type: "image", src: "/images/story-2.jpg", alt: "Athletes competing in Velocity gear" }, layout: "left" },
       { heading: "Built for Tomorrow", body: "Sustainable materials. Zero-waste manufacturing. Performance that does not cost the planet.", media: { type: "image", src: "/images/story-3.jpg", alt: "Sustainable manufacturing facility" }, layout: "full" },
     ],

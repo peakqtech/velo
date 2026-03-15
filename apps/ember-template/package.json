@@ -1,0 +1,39 @@
+{
+  "name": "ember-template",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "framer-motion": "^12.36.0",
+    "gsap": "^3.14.2",
+    "lenis": "^1.3.18",
+    "@velocity/types": "workspace:*",
+    "@velocity/scroll-engine": "workspace:*",
+    "@velocity/animations": "workspace:*",
+    "@velocity/motion-components": "workspace:*",
+    "@velocity/i18n": "workspace:*",
+    "@velocity/ember-hero": "workspace:*",
+    "@velocity/ember-menu": "workspace:*",
+    "@velocity/ember-chef": "workspace:*",
+    "@velocity/ember-reservation": "workspace:*",
+    "@velocity/ember-gallery": "workspace:*",
+    "@velocity/ember-testimonials": "workspace:*",
+    "@velocity/ember-footer": "workspace:*"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
