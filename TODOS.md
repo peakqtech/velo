@@ -24,12 +24,12 @@
 - **Depends on:** Nothing.
 - **Status:** DONE — `tools/create-app/src/template-schema.ts`, 13 tests. `extraProps` in schema; generate.ts:124 hardcode removal is separate (see P2 — Add `extraProps` to template.json).
 
-### P1 — Namespace Rename @velocity/ → @velo/
+### ~~P1 — Namespace Rename @velocity/ → @velo/~~ ✅ DONE
 - **What:** Rename all packages from `@velocity/` to `@velo/`. Update all imports, package.json names, template.json references. Also add `"velo": { "type": "infra" | "section" }` field to every package.json (replaces regex exclusion in eject.ts:53).
 - **Why:** Clean namespace + declarative package classification. Eject tool's regex breaks silently when new infra packages are added.
 - **Effort:** M (1 day, scriptable)
 - **Depends on:** Nothing. Do BEFORE adding more packages.
-- **Status:** TODO
+- **Status:** DONE — 226 files changed, all 47 packages renamed, "velo" metadata field added.
 
 ### P1 — Full Test Suite for Tools 🔶 IN PROGRESS
 - **What:** Unit + integration + E2E tests for create-app and eject. Cover discover, generate, eject, resolve-imports. Priority order: tool tests + Zod validation first (highest-risk codepaths), then component tests for hybrid sections.
@@ -37,7 +37,7 @@
 - **Test diagram:** See eng review for 30-codepath test coverage map (groups A-F).
 - **Effort:** L (1-2 weeks)
 - **Depends on:** Nothing. Parallelize with theme system.
-- **Status:** IN PROGRESS — 24 tests for create-app + 6 tests for eject = 30 total. resolve-imports tests remaining.
+- **Status:** IN PROGRESS — 26 tests for create-app + 14 tests for eject = 40 total. Core codepaths covered (schema, generate, discover, eject, resolve-imports). Remaining: E2E integration tests.
 
 ### ~~P1 — Build Smoke Test Script~~ ✅ DONE
 - **What:** Add `"test:build": "turbo build"` to root package.json. Local safety net for section consolidation — verifies all 6 apps still build.
@@ -135,7 +135,7 @@
 
 - [x] Re-validate appName in generate() and eject() (not just prompts) ✅
 - [x] Add .env* to eject exclusion list ✅
-- [ ] Add CSP headers to generated next.config.ts
+- [x] Add CSP headers to generated next.config.ts ✅
 - [ ] Register @velo/ npm org to prevent namespace squatting
 
 ## Bug Fixes (do alongside Phase 1)
@@ -145,4 +145,4 @@
 - [x] discoverSections() crashes on malformed package.json — catch + skip with warning ✅
 - [x] eject silently copies .env files — exclude sensitive files ✅
 - [x] eject rmSync on existing output dir — add confirmation prompt ✅ (now throws error instead of silently deleting)
-- [ ] .next/ and node_modules/ in generated apps should be in .gitignore
+- [x] .next/ and node_modules/ in generated apps should be in .gitignore ✅
