@@ -101,19 +101,19 @@
 - **Depends on:** CI/CD, at least one deployed site.
 - **Status:** DONE — `pnpm qa <url>` with modular audit pipeline: Lighthouse, accessibility (pa11y), link checker, meta tag audit. JSON + text reports. 21 tests.
 
-### P2 — AI Content Writer
+### ~~P2 — AI Content Writer~~ ✅ DONE
 - **What:** After create-app generates stubs, offer AI pass to fill realistic content based on business type and locale.
 - **Why:** Transforms "scaffolding tool" into "site builder." Core to AI+templating thesis.
 - **Effort:** L (1 week)
 - **Depends on:** Zod validation (content schemas).
-- **Status:** TODO
+- **Status:** DONE — `pnpm ai-content <app> --business <name>` calls Claude API to generate section content matching TypeScript types. Supports `--dry-run` to preview prompt. 10 tests.
 
-### P2 — Template Gallery / Showroom Site
+### ~~P2 — Template Gallery / Showroom Site~~ ✅ DONE
 - **What:** `apps/gallery/` that displays all templates side-by-side with live previews. Client-facing demo tool.
 - **Why:** The gallery IS your sales tool.
 - **Effort:** M (2-4 hours)
 - **Depends on:** At least 3 templates working.
-- **Status:** TODO
+- **Status:** DONE — `apps/gallery/` with server-rendered Next.js page. Auto-discovers 6 templates from sibling dirs. Shows name, description, color palette, fonts, section count. Dark theme card grid on port 3100.
 
 ### ~~P3 — Live Preview During Create-App~~ ✅ DONE
 - **What:** After section selection, auto-launch `pnpm dev` and open browser.

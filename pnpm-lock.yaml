@@ -112,6 +112,31 @@ importers:
         specifier: ^5
         version: 5.9.3
 
+  apps/gallery:
+    dependencies:
+      next:
+        specifier: 16.1.6
+        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      react:
+        specifier: 19.2.3
+        version: 19.2.3
+      react-dom:
+        specifier: 19.2.3
+        version: 19.2.3(react@19.2.3)
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.37
+      '@types/react':
+        specifier: ^19
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.14)
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
   apps/haven-template:
     dependencies:
       '@velo/animations':
@@ -1581,6 +1606,12 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.3(react@19.2.3)
+
+  tools/ai-content:
+    dependencies:
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
 
   tools/codegen:
     dependencies:
