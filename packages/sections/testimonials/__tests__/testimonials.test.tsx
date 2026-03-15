@@ -94,13 +94,13 @@ describe("Testimonials — grid variants", () => {
   it("renders star ratings for serenity variant", () => {
     const { container } = render(<Testimonials content={mockContent} variant="serenity" />);
     // 5 stars per testimonial, 3 testimonials = 15 star SVGs
-    const stars = container.querySelectorAll("svg.w-4.h-4.text-accent");
+    const stars = container.querySelectorAll("svg.text-amber-400");
     expect(stars.length).toBe(15);
   });
 
   it("does not render star ratings for ember variant", () => {
     const { container } = render(<Testimonials content={mockContent} variant="ember" />);
-    const stars = container.querySelectorAll("svg.w-4.h-4.text-accent");
+    const stars = container.querySelectorAll("svg.text-amber-400");
     expect(stars.length).toBe(0);
   });
 

@@ -242,7 +242,9 @@ function GridTestimonials({ content, variant = "ember" }: TestimonialsProps) {
                   {[...Array(5)].map((_, j) => (
                     <svg
                       key={j}
-                      className="w-4 h-4 text-accent"
+                      width="16"
+                      height="16"
+                      className="text-amber-400"
                       viewBox="0 0 24 24"
                       fill="currentColor"
                     >
