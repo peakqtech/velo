@@ -1,6 +1,7 @@
 import { readdirSync, existsSync, readFileSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { templateManifestSchema, type TemplateManifest } from "./template-schema";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -10,15 +11,7 @@ export function getMonorepoRoot(): string {
   return ROOT;
 }
 
-export interface TemplateManifest {
-  name: string;
-  displayName: string;
-  description: string;
-  businessType: string;
-  style: string;
-  contentType: string;
-  sections: Record<string, { component: string; configExport: string; contentKey: string }>;
-}
+export type { TemplateManifest };
 
 export function discoverApps(): string[] {
   const appsDir = join(ROOT, "apps");
@@ -31,7 +24,20 @@ export function discoverApps(): string[] {
 export function loadTemplateManifest(appName: string): TemplateManifest | null {
   const manifestPath = join(ROOT, "apps", appName, "template.json");
   if (!existsSync(manifestPath)) return null;
-  return JSON.parse(readFileSync(manifestPath, "utf-8"));
+
+  const raw = JSON.parse(readFileSync(manifestPath, "utf-8"));
+  const result = templateManifestSchema.safeParse(raw);
+
+  if (!result.success) {
+    const issues = result.error.issues
+      .map((i) => `  - ${i.path.join(".")}: ${i.message}`)
+      .join("\n");
+    throw new Error(
+      `Invalid template.json for "${appName}":\n${issues}`
+    );
+  }
+
+  return result.data;
 }
 
 export function discoverTemplates(): Array<{ name: string; manifest: TemplateManifest }> {
@@ -49,13 +55,25 @@ export function discoverTemplates(): Array<{ name: string; manifest: TemplateMan
 export function discoverSections(): Array<{ name: string; packageName: string }> {
   const sectionsDir = join(ROOT, "packages/sections");
   if (!existsSync(sectionsDir)) return [];
-  return readdirSync(sectionsDir, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => {
-      const pkgPath = join(sectionsDir, d.name, "package.json");
+
+  const results: Array<{ name: string; packageName: string }> = [];
+
+  for (const d of readdirSync(sectionsDir, { withFileTypes: true })) {
+    if (!d.isDirectory()) continue;
+    const pkgPath = join(sectionsDir, d.name, "package.json");
+    try {
+      if (!existsSync(pkgPath)) {
+        console.warn(`Warning: skipping section "${d.name}" — no package.json`);
+        continue;
+      }
       const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
-      return { name: d.name, packageName: pkg.name };
-    });
+      results.push({ name: d.name, packageName: pkg.name });
+    } catch {
+      console.warn(`Warning: skipping section "${d.name}" — malformed package.json`);
+    }
+  }
+
+  return results;
 }
 
 export function discoverInfraPackages(): Array<{ name: string; packageName: string }> {

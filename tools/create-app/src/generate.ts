@@ -10,6 +10,13 @@ interface GenerateOptions {
 }
 
 export function generate(opts: GenerateOptions): void {
+  if (opts.sections.length === 0) {
+    throw new Error("At least one section is required");
+  }
+  if (opts.locales.length === 0) {
+    throw new Error("At least one locale is required");
+  }
+
   const root = getMonorepoRoot();
   const sourceDir = join(root, "apps", opts.sourceApp);
   const targetDir = join(root, "apps", opts.appName);
