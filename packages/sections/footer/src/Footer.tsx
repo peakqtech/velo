@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import type { FooterProps } from "./footer.types";
+import { getVariantStyles } from "./footer-variants";
 import { fadeInUp, staggerContainerSlow } from "@velo/animations";
+import { BackToTop } from "@velo/ui";
 
 const socialIcons: Record<string, JSX.Element> = {
   instagram: (
@@ -24,20 +26,12 @@ const socialIcons: Record<string, JSX.Element> = {
   ),
 };
 
-export function Footer({ content, localeSwitcher }: FooterProps) {
+export function Footer({ content, variant = "default", localeSwitcher }: FooterProps) {
   const { brand, newsletter, socials, links, legal } = content;
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [showBackToTop, setShowBackToTop] = useState(false);
   const shouldReduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowBackToTop(window.scrollY > window.innerHeight);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const styles = getVariantStyles(variant);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,19 +41,20 @@ export function Footer({ content, localeSwitcher }: FooterProps) {
     }
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const successInitial = shouldReduceMotion
+    ? {}
+    : styles.successAnimation === "scale"
+      ? { opacity: 0, scale: 0.9 }
+      : { opacity: 0 };
 
   return (
     <footer
-      className="footer-section relative bg-secondary"
+      className={`${styles.sectionClass} relative ${styles.section}`}
       aria-label="Site footer"
     >
-      {/* Section divider */}
-      <div className="section-divider" />
+      {styles.showDivider && <div className={styles.dividerClass} />}
 
-      <div className="footer-inner py-section px-6">
+      <div className={`footer-inner py-section ${styles.padding}`}>
         <div className="max-w-content mx-auto pt-12">
           {/* Newsletter */}
           <motion.div
@@ -69,25 +64,24 @@ export function Footer({ content, localeSwitcher }: FooterProps) {
             viewport={{ once: true }}
             variants={fadeInUp}
           >
-            <h2 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-6">
+            <h2 className={styles.heading}>
               {newsletter.heading}
             </h2>
             {submitted ? (
               <motion.div
                 className="flex items-center justify-center gap-2 text-primary font-medium"
-                initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.9 }}
+                initial={successInitial}
                 animate={{ opacity: 1, scale: 1 }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                {styles.successIcon && (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                )}
                 Thanks for subscribing!
               </motion.div>
             ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="flex max-w-md mx-auto gap-2"
-              >
+              <form onSubmit={handleSubmit} className="flex max-w-md mx-auto gap-2">
                 <input
                   type="email"
                   value={email}
@@ -95,19 +89,16 @@ export function Footer({ content, localeSwitcher }: FooterProps) {
                   placeholder={newsletter.placeholder}
                   required
                   aria-label="Email address"
-                  className="flex-1 px-5 py-3 bg-background border border-foreground/20 rounded-full text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:glow-primary-sm transition-all duration-300"
+                  className={styles.input}
                 />
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-primary text-white font-bold rounded-full hover:bg-primary-light transition-all duration-300 hover:scale-105 glow-primary"
-                >
+                <button type="submit" className={styles.button}>
                   {newsletter.cta}
                 </button>
               </form>
             )}
           </motion.div>
 
-          {/* Links grid with stagger */}
+          {/* Links grid */}
           <motion.div
             className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16"
             initial={shouldReduceMotion ? "visible" : "hidden"}
@@ -115,28 +106,17 @@ export function Footer({ content, localeSwitcher }: FooterProps) {
             viewport={{ once: true }}
             variants={staggerContainerSlow}
           >
-            {/* Brand */}
             <motion.div variants={fadeInUp}>
-              <Image
-                src={brand.logo}
-                alt={brand.name}
-                width={120}
-                height={30}
-              />
+              <Image src={brand.logo} alt={brand.name} width={120} height={30} />
             </motion.div>
 
             {links.map((group) => (
               <motion.div key={group.group} variants={fadeInUp}>
-                <h3 className="font-display font-bold text-foreground mb-4">
-                  {group.group}
-                </h3>
+                <h3 className={styles.groupTitle}>{group.group}</h3>
                 <ul className="space-y-3">
                   {group.items.map((item) => (
                     <li key={item.label}>
-                      <a
-                        href={item.href}
-                        className="text-muted hover:text-foreground transition-colors duration-300 hover:translate-x-1 inline-block"
-                      >
+                      <a href={item.href} className={styles.linkItem}>
                         {item.label}
                       </a>
                     </li>
@@ -160,7 +140,7 @@ export function Footer({ content, localeSwitcher }: FooterProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.platform}
-                  className="p-2.5 rounded-full bg-foreground/5 border border-foreground/10 text-muted hover:text-foreground hover:border-primary/30 hover:bg-foreground/10 transition-all duration-300"
+                  className={styles.socialButton}
                 >
                   {socialIcons[social.icon] ?? social.platform}
                 </a>
@@ -170,20 +150,7 @@ export function Footer({ content, localeSwitcher }: FooterProps) {
         </div>
       </div>
 
-      {/* Back to top */}
-      <motion.button
-        onClick={scrollToTop}
-        aria-label="Back to top"
-        className="fixed bottom-8 right-8 z-40 p-3 rounded-full bg-primary text-white shadow-lg hover:bg-primary-light transition-all duration-300"
-        initial={false}
-        animate={{ opacity: showBackToTop ? 1 : 0, scale: showBackToTop ? 1 : 0.8 }}
-        transition={{ duration: 0.3 }}
-        style={{ pointerEvents: showBackToTop ? "auto" : "none" }}
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <polyline points="18 15 12 9 6 15" />
-        </svg>
-      </motion.button>
+      <BackToTop className={styles.backToTop} />
     </footer>
   );
 }

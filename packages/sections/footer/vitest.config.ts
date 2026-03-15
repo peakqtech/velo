@@ -15,6 +15,7 @@ export default defineConfig({
       "@velo/scroll-engine": path.resolve(__dirname, "../../infra/scroll-engine/src/index.ts"),
       "@velo/animations": path.resolve(__dirname, "../../infra/animations/src/index.ts"),
       "@velo/motion-components": path.resolve(__dirname, "../../infra/motion-components/src/index.ts"),
+      "@velo/ui": path.resolve(__dirname, "../../infra/ui/src/index.ts"),
     },
   },
 });

@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@velo/types": "workspace:*",
-    "@velo/scroll-engine": "workspace:*"
+    "@velo/scroll-engine": "workspace:*",
+    "@velo/animations": "workspace:*",
+    "@velo/ui": "workspace:*"
   },
   "scripts": {
     "test": "vitest run"
