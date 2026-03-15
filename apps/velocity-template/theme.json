@@ -1,0 +1,21 @@
+{
+  "name": "velocity",
+  "displayName": "Velocity",
+  "colors": {
+    "primary": "#ff3c00",
+    "primary-light": "#ff6b3d",
+    "secondary": "#0a0a0a",
+    "accent": "#f5f5f5",
+    "background": "#000000",
+    "foreground": "#ffffff",
+    "muted": "#888888"
+  },
+  "fonts": {
+    "display": "Inter",
+    "body": "Inter"
+  },
+  "layout": {
+    "maxWidth": "1440px",
+    "sectionPadding": "clamp(4rem, 10vw, 8rem)"
+  }
+}

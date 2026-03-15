@@ -5,7 +5,7 @@
 
 ## Phase 1: Foundation (Weeks 1-6)
 
-### P1 — Theme System (`@velo/theme`)
+### ~~P1 — Theme System (`@velo/theme`)~~ ✅ DONE
 - **What:** Create theme package. CSS variables only (NOT React Context). Each template has a theme.json config. Package generates a theme.css per template that includes:
   - CSS custom properties (colors, fonts, spacing, border-radius)
   - Tailwind v4 `@theme inline` mappings
@@ -15,7 +15,7 @@
 - **Design decisions:** CSS variables chosen over React Context because all 6 templates already use CSS vars in globals.css. React Context would require rewriting every section for zero benefit.
 - **Effort:** L (1-2 weeks)
 - **Depends on:** Nothing. Everything else depends on this.
-- **Status:** TODO
+- **Status:** DONE — `@velo/theme` package with Zod schema, CSS generator, completeness validator. 50 tests. theme.json files for all 6 templates. Remaining: wire generated theme.css into apps' globals.css (optional, apps work as-is).
 
 ### ~~P1 — Zod Validation for template.json~~ ✅ DONE
 - **What:** Add Zod schema for template.json. Validate in `loadTemplateManifest()`. Clear error messages for missing/invalid fields. Include `extraProps` field in section schema (replaces hardcoded footer check in generate.ts:124).

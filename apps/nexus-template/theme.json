@@ -1,0 +1,21 @@
+{
+  "name": "nexus",
+  "displayName": "Nexus",
+  "colors": {
+    "primary": "#ff5722",
+    "primary-light": "#ff7a50",
+    "secondary": "#111111",
+    "accent": "#f5f5f5",
+    "background": "#0a0a0a",
+    "foreground": "#ffffff",
+    "muted": "#777777"
+  },
+  "fonts": {
+    "display": "Inter",
+    "body": "Inter"
+  },
+  "layout": {
+    "maxWidth": "1440px",
+    "sectionPadding": "clamp(4rem, 10vw, 8rem)"
+  }
+}

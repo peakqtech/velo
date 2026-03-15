@@ -1,0 +1,21 @@
+{
+  "name": "haven",
+  "displayName": "Haven",
+  "colors": {
+    "primary": "#2dd4bf",
+    "primary-light": "#5eead4",
+    "secondary": "#16162a",
+    "accent": "#d4a574",
+    "background": "#1a1a2e",
+    "foreground": "#f0f0f5",
+    "muted": "#6b7280"
+  },
+  "fonts": {
+    "display": "Cinzel",
+    "body": "Josefin Sans"
+  },
+  "layout": {
+    "maxWidth": "1440px",
+    "sectionPadding": "clamp(4rem, 10vw, 8rem)"
+  }
+}
