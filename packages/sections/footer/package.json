@@ -17,7 +17,8 @@
     "@velo/ui": "workspace:*"
   },
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:ci": "vitest run"
   },
   "velo": {
     "type": "section"

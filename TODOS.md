@@ -64,12 +64,12 @@
   - ⏭️ Hero: NOT consolidatable — each hero is architecturally distinct (video, 3D physics, SVG filters, custom scroll). Forcing into one component would create worse code than separate packages.
   - ⏭️ Remaining sections: Template-specific by definition (ember-menu, ember-chef, haven-properties, etc.) — cannot be consolidated.
 
-### P1 — CI/CD Pipeline
+### ~~P1 — CI/CD Pipeline~~ ✅ DONE
 - **What:** GitHub Actions: lint, type-check, unit tests, integration tests, build all apps. Configure Turborepo remote caching. Deploy pipeline for managed-tier clients.
 - **Why:** No CI = no safety net. Required for managed client deploys.
 - **Effort:** M (3-5 days)
 - **Depends on:** Tests for meaningful CI.
-- **Status:** TODO
+- **Status:** DONE — `.github/workflows/ci.yml` with 5 jobs: lint, typecheck (soft-fail, pre-existing errors), test:ci (123 tests), build, codegen drift check. Turborepo remote caching ready (TURBO_TOKEN/TURBO_TEAM secrets).
 
 ### ~~P2 — Type Generation from template.json~~ ✅ DONE
 - **What:** Create `tools/codegen` that reads template.json and generates composite content types from section-level type declarations.

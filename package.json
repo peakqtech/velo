@@ -8,6 +8,8 @@
     "dev": "turbo dev",
     "test": "turbo test",
     "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test:ci": "turbo test:ci",
     "test:build": "turbo build",
     "create-app": "tsx tools/create-app/src/index.ts",
     "eject": "tsx tools/eject/src/index.ts",
