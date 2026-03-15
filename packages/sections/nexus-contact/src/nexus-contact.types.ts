@@ -1,3 +1,3 @@
 export interface NexusContactProps {
-  content: import("@velocity/types").NexusContactContent;
+  content: import("@velo/types").NexusContactContent;
 }

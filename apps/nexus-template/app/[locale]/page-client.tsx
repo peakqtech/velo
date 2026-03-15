@@ -1,14 +1,14 @@
 "use client";
 
-import { NexusHero, nexusHeroScrollConfig } from "@velocity/nexus-hero";
-import { NexusServices, nexusServicesScrollConfig } from "@velocity/nexus-services";
-import { NexusCaseStudies, nexusCaseStudiesScrollConfig } from "@velocity/nexus-case-studies";
-import { NexusTeam, nexusTeamScrollConfig } from "@velocity/nexus-team";
-import { NexusStats, nexusStatsScrollConfig } from "@velocity/nexus-stats";
-import { NexusContact, nexusContactScrollConfig } from "@velocity/nexus-contact";
-import { NexusFooter, nexusFooterScrollConfig } from "@velocity/nexus-footer";
-import { useScrollEngine } from "@velocity/scroll-engine";
-import type { NexusContent } from "@velocity/types";
+import { NexusHero, nexusHeroScrollConfig } from "@velo/nexus-hero";
+import { NexusServices, nexusServicesScrollConfig } from "@velo/nexus-services";
+import { NexusCaseStudies, nexusCaseStudiesScrollConfig } from "@velo/nexus-case-studies";
+import { NexusTeam, nexusTeamScrollConfig } from "@velo/nexus-team";
+import { NexusStats, nexusStatsScrollConfig } from "@velo/nexus-stats";
+import { NexusContact, nexusContactScrollConfig } from "@velo/nexus-contact";
+import { NexusFooter, nexusFooterScrollConfig } from "@velo/nexus-footer";
+import { useScrollEngine } from "@velo/scroll-engine";
+import type { NexusContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 
 const scrollConfigs = [

@@ -1,7 +1,7 @@
 "use client";
 import { motion, useReducedMotion } from "framer-motion";
 import type { PrismFeaturesProps } from "./prism-features.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function PrismFeatures({ content }: PrismFeaturesProps) {
   const { heading, subtitle, features } = content;

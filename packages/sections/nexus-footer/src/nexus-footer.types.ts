@@ -1,4 +1,4 @@
 export interface NexusFooterProps {
-  content: import("@velocity/types").NexusFooterContent;
+  content: import("@velo/types").NexusFooterContent;
   localeSwitcher?: React.ReactNode;
 }

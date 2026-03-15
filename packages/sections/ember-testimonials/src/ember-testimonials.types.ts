@@ -1,3 +1,3 @@
 export interface EmberTestimonialsProps {
-  content: import("@velocity/types").EmberTestimonialsContent;
+  content: import("@velo/types").EmberTestimonialsContent;
 }

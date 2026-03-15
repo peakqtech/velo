@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { BrandStory } from "../src/BrandStory";
-import type { BrandStoryContent } from "@velocity/types";
+import type { BrandStoryContent } from "@velo/types";
 
 // jsdom lacks IntersectionObserver — mock it so framer-motion whileInView doesn't throw
 beforeAll(() => {

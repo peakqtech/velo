@@ -1,5 +1,5 @@
-import { createContentLoader } from "@velocity/i18n";
-import type { SerenityContent } from "@velocity/types";
+import { createContentLoader } from "@velo/i18n";
+import type { SerenityContent } from "@velo/types";
 
 export const defaultLocale = "en";
 export const locales = ["en"] as const;

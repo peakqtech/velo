@@ -6,32 +6,32 @@
   "style": "Cinematic Dark",
   "contentType": "VelocityContent",
   "sections": {
-    "@velocity/hero": {
+    "@velo/hero": {
       "component": "Hero",
       "configExport": "heroScrollConfig",
       "contentKey": "hero"
     },
-    "@velocity/product-showcase": {
+    "@velo/product-showcase": {
       "component": "ProductShowcase",
       "configExport": "productShowcaseScrollConfig",
       "contentKey": "productShowcase"
     },
-    "@velocity/brand-story": {
+    "@velo/brand-story": {
       "component": "BrandStory",
       "configExport": "brandStoryScrollConfig",
       "contentKey": "brandStory"
     },
-    "@velocity/product-grid": {
+    "@velo/product-grid": {
       "component": "ProductGrid",
       "configExport": "productGridScrollConfig",
       "contentKey": "productGrid"
     },
-    "@velocity/testimonials": {
+    "@velo/testimonials": {
       "component": "Testimonials",
       "configExport": "testimonialsScrollConfig",
       "contentKey": "testimonials"
     },
-    "@velocity/footer": {
+    "@velo/footer": {
       "component": "Footer",
       "configExport": "footerScrollConfig",
       "contentKey": "footer",

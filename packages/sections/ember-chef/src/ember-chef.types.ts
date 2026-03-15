@@ -1,3 +1,3 @@
 export interface EmberChefProps {
-  content: import("@velocity/types").EmberChefContent;
+  content: import("@velo/types").EmberChefContent;
 }

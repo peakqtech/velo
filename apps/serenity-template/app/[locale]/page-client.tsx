@@ -1,14 +1,14 @@
 "use client";
 
-import { SerenityHero, serenityHeroScrollConfig } from "@velocity/serenity-hero";
-import { SerenityServices, serenityServicesScrollConfig } from "@velocity/serenity-services";
-import { SerenityProcess, serenityProcessScrollConfig } from "@velocity/serenity-process";
-import { SerenityPractitioners, serenityPractitionersScrollConfig } from "@velocity/serenity-practitioners";
-import { SerenityTestimonials, serenityTestimonialsScrollConfig } from "@velocity/serenity-testimonials";
-import { SerenityBooking, serenityBookingScrollConfig } from "@velocity/serenity-booking";
-import { SerenityFooter, serenityFooterScrollConfig } from "@velocity/serenity-footer";
-import { useScrollEngine } from "@velocity/scroll-engine";
-import type { SerenityContent } from "@velocity/types";
+import { SerenityHero, serenityHeroScrollConfig } from "@velo/serenity-hero";
+import { SerenityServices, serenityServicesScrollConfig } from "@velo/serenity-services";
+import { SerenityProcess, serenityProcessScrollConfig } from "@velo/serenity-process";
+import { SerenityPractitioners, serenityPractitionersScrollConfig } from "@velo/serenity-practitioners";
+import { SerenityTestimonials, serenityTestimonialsScrollConfig } from "@velo/serenity-testimonials";
+import { SerenityBooking, serenityBookingScrollConfig } from "@velo/serenity-booking";
+import { SerenityFooter, serenityFooterScrollConfig } from "@velo/serenity-footer";
+import { useScrollEngine } from "@velo/scroll-engine";
+import type { SerenityContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 
 const scrollConfigs = [

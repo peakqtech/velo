@@ -1,5 +1,5 @@
-export type { BrandStoryContent } from "@velocity/types";
+export type { BrandStoryContent } from "@velo/types";
 
 export interface BrandStoryProps {
-  content: import("@velocity/types").BrandStoryContent;
+  content: import("@velo/types").BrandStoryContent;
 }

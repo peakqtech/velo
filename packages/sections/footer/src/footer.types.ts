@@ -1,8 +1,8 @@
 import React from "react";
 
-export type { FooterContent } from "@velocity/types";
+export type { FooterContent } from "@velo/types";
 
 export interface FooterProps {
-  content: import("@velocity/types").FooterContent;
+  content: import("@velo/types").FooterContent;
   localeSwitcher?: React.ReactNode;
 }

@@ -1,14 +1,14 @@
 "use client";
 
-import { EmberHero, emberHeroScrollConfig } from "@velocity/ember-hero";
-import { EmberMenu, emberMenuScrollConfig } from "@velocity/ember-menu";
-import { EmberChef, emberChefScrollConfig } from "@velocity/ember-chef";
-import { EmberReservation, emberReservationScrollConfig } from "@velocity/ember-reservation";
-import { EmberGallery, emberGalleryScrollConfig } from "@velocity/ember-gallery";
-import { EmberTestimonials, emberTestimonialsScrollConfig } from "@velocity/ember-testimonials";
-import { EmberFooter, emberFooterScrollConfig } from "@velocity/ember-footer";
-import { useScrollEngine } from "@velocity/scroll-engine";
-import type { EmberContent } from "@velocity/types";
+import { EmberHero, emberHeroScrollConfig } from "@velo/ember-hero";
+import { EmberMenu, emberMenuScrollConfig } from "@velo/ember-menu";
+import { EmberChef, emberChefScrollConfig } from "@velo/ember-chef";
+import { EmberReservation, emberReservationScrollConfig } from "@velo/ember-reservation";
+import { EmberGallery, emberGalleryScrollConfig } from "@velo/ember-gallery";
+import { EmberTestimonials, emberTestimonialsScrollConfig } from "@velo/ember-testimonials";
+import { EmberFooter, emberFooterScrollConfig } from "@velo/ember-footer";
+import { useScrollEngine } from "@velo/scroll-engine";
+import type { EmberContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 
 const scrollConfigs = [

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Hero } from "../src/Hero";
-import type { HeroContent } from "@velocity/types";
+import type { HeroContent } from "@velo/types";
 
 // Mock framer-motion to avoid animation issues in tests
 vi.mock("framer-motion", async () => {

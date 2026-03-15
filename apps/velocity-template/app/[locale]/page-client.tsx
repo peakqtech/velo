@@ -1,13 +1,13 @@
 "use client";
 
-import { Hero, heroScrollConfig } from "@velocity/hero";
-import { ProductShowcase, productShowcaseScrollConfig } from "@velocity/product-showcase";
-import { BrandStory, brandStoryScrollConfig } from "@velocity/brand-story";
-import { ProductGrid, productGridScrollConfig } from "@velocity/product-grid";
-import { Testimonials, testimonialsScrollConfig } from "@velocity/testimonials";
-import { Footer, footerScrollConfig } from "@velocity/footer";
-import { useScrollEngine } from "@velocity/scroll-engine";
-import type { VelocityContent } from "@velocity/types";
+import { Hero, heroScrollConfig } from "@velo/hero";
+import { ProductShowcase, productShowcaseScrollConfig } from "@velo/product-showcase";
+import { BrandStory, brandStoryScrollConfig } from "@velo/brand-story";
+import { ProductGrid, productGridScrollConfig } from "@velo/product-grid";
+import { Testimonials, testimonialsScrollConfig } from "@velo/testimonials";
+import { Footer, footerScrollConfig } from "@velo/footer";
+import { useScrollEngine } from "@velo/scroll-engine";
+import type { VelocityContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 
 const scrollConfigs = [

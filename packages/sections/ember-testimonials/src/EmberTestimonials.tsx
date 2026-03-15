@@ -2,7 +2,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { EmberTestimonialsProps } from "./ember-testimonials.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function EmberTestimonials({ content }: EmberTestimonialsProps) {
   const { heading, testimonials } = content;

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import type { BrandStoryProps } from "./brand-story.types";
-import { fadeInUp, clipRevealUp } from "@velocity/animations";
+import { fadeInUp, clipRevealUp } from "@velo/animations";
 
 export function BrandStory({ content }: BrandStoryProps) {
   const { chapters } = content;

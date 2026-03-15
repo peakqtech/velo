@@ -1,14 +1,14 @@
 "use client";
 
-import { PrismHero, prismHeroScrollConfig } from "@velocity/prism-hero";
-import { PrismFeatures, prismFeaturesScrollConfig } from "@velocity/prism-features";
-import { PrismPricing, prismPricingScrollConfig } from "@velocity/prism-pricing";
-import { PrismIntegrations, prismIntegrationsScrollConfig } from "@velocity/prism-integrations";
-import { PrismTestimonials, prismTestimonialsScrollConfig } from "@velocity/prism-testimonials";
-import { PrismFAQ, prismFAQScrollConfig } from "@velocity/prism-faq";
-import { PrismFooter, prismFooterScrollConfig } from "@velocity/prism-footer";
-import { useScrollEngine } from "@velocity/scroll-engine";
-import type { PrismContent } from "@velocity/types";
+import { PrismHero, prismHeroScrollConfig } from "@velo/prism-hero";
+import { PrismFeatures, prismFeaturesScrollConfig } from "@velo/prism-features";
+import { PrismPricing, prismPricingScrollConfig } from "@velo/prism-pricing";
+import { PrismIntegrations, prismIntegrationsScrollConfig } from "@velo/prism-integrations";
+import { PrismTestimonials, prismTestimonialsScrollConfig } from "@velo/prism-testimonials";
+import { PrismFAQ, prismFAQScrollConfig } from "@velo/prism-faq";
+import { PrismFooter, prismFooterScrollConfig } from "@velo/prism-footer";
+import { useScrollEngine } from "@velo/scroll-engine";
+import type { PrismContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 
 const scrollConfigs = [

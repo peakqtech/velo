@@ -1,5 +1,5 @@
-export type { ProductGridContent } from "@velocity/types";
+export type { ProductGridContent } from "@velo/types";
 
 export interface ProductGridProps {
-  content: import("@velocity/types").ProductGridContent;
+  content: import("@velo/types").ProductGridContent;
 }

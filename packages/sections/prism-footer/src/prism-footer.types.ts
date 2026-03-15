@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
 export interface PrismFooterProps {
-  content: import("@velocity/types").PrismFooterContent;
+  content: import("@velo/types").PrismFooterContent;
   localeSwitcher?: ReactNode;
 }

@@ -2,7 +2,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { EmberGalleryProps } from "./ember-gallery.types";
-import { fadeInUp, staggerContainer, clipRevealUp } from "@velocity/animations";
+import { fadeInUp, staggerContainer, clipRevealUp } from "@velo/animations";
 
 export function EmberGallery({ content }: EmberGalleryProps) {
   const { heading, images } = content;

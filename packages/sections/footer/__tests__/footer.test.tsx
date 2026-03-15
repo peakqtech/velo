@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Footer } from "../src/Footer";
-import type { FooterContent } from "@velocity/types";
+import type { FooterContent } from "@velo/types";
 
 vi.mock("framer-motion", async () => {
   const actual = await vi.importActual("framer-motion");

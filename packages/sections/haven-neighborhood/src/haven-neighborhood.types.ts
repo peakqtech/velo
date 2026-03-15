@@ -1,3 +1,3 @@
 export interface HavenNeighborhoodProps {
-  content: import("@velocity/types").HavenNeighborhoodContent;
+  content: import("@velo/types").HavenNeighborhoodContent;
 }

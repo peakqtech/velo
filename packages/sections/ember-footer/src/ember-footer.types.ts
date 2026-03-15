@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
 export interface EmberFooterProps {
-  content: import("@velocity/types").EmberFooterContent;
+  content: import("@velo/types").EmberFooterContent;
   localeSwitcher?: ReactNode;
 }

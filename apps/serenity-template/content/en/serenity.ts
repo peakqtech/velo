@@ -1,4 +1,4 @@
-import type { SerenityContent } from "@velocity/types";
+import type { SerenityContent } from "@velo/types";
 
 const content: SerenityContent = {
   hero: {

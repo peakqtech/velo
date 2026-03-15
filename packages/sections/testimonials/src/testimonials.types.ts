@@ -1,5 +1,5 @@
-export type { TestimonialsContent } from "@velocity/types";
+export type { TestimonialsContent } from "@velo/types";
 
 export interface TestimonialsProps {
-  content: import("@velocity/types").TestimonialsContent;
+  content: import("@velo/types").TestimonialsContent;
 }

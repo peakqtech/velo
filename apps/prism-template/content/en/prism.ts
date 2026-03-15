@@ -1,4 +1,4 @@
-import type { PrismContent } from "@velocity/types";
+import type { PrismContent } from "@velo/types";
 
 const content: PrismContent = {
   hero: {

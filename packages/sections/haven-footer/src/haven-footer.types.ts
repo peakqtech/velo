@@ -1,4 +1,4 @@
 export interface HavenFooterProps {
-  content: import("@velocity/types").HavenFooterContent;
+  content: import("@velo/types").HavenFooterContent;
   localeSwitcher?: React.ReactNode;
 }

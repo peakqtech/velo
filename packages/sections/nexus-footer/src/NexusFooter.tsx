@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { NexusFooterProps } from "./nexus-footer.types";
-import { fadeInUp, staggerContainerSlow } from "@velocity/animations";
+import { fadeInUp, staggerContainerSlow } from "@velo/animations";
 
 export function NexusFooter({ content, localeSwitcher }: NexusFooterProps) {
   const { brand, newsletter, socials, links, legal } = content;

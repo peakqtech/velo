@@ -3,8 +3,8 @@
 import { useRef, useId, useEffect } from "react";
 import { motion, useReducedMotion, animate, useMotionValue } from "framer-motion";
 import type { NexusHeroProps } from "./nexus-hero.types";
-import { AnimatedText, Marquee } from "@velocity/motion-components";
-import { springConfig } from "@velocity/animations";
+import { AnimatedText, Marquee } from "@velo/motion-components";
+import { springConfig } from "@velo/animations";
 
 // ---------------------------------------------------------------------------
 // Ethereal Shadow Background (inlined from 21st.dev)

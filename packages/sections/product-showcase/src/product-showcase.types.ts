@@ -1,5 +1,5 @@
-export type { ProductShowcaseContent } from "@velocity/types";
+export type { ProductShowcaseContent } from "@velo/types";
 
 export interface ProductShowcaseProps {
-  content: import("@velocity/types").ProductShowcaseContent;
+  content: import("@velo/types").ProductShowcaseContent;
 }

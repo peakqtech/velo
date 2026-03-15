@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { HavenFooterProps } from "./haven-footer.types";
-import { fadeInUp, staggerContainerSlow } from "@velocity/animations";
+import { fadeInUp, staggerContainerSlow } from "@velo/animations";
 
 export function HavenFooter({ content, localeSwitcher }: HavenFooterProps) {
   const { brand, newsletter, socials, links, legal } = content;

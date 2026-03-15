@@ -1,3 +1,3 @@
 export interface SerenityProcessProps {
-  content: import("@velocity/types").SerenityProcessContent;
+  content: import("@velo/types").SerenityProcessContent;
 }

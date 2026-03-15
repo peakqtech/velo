@@ -1,3 +1,3 @@
 export interface EmberGalleryProps {
-  content: import("@velocity/types").EmberGalleryContent;
+  content: import("@velo/types").EmberGalleryContent;
 }

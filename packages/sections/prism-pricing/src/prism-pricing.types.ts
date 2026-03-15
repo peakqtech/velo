@@ -1,3 +1,3 @@
 export interface PrismPricingProps {
-  content: import("@velocity/types").PrismPricingContent;
+  content: import("@velo/types").PrismPricingContent;
 }

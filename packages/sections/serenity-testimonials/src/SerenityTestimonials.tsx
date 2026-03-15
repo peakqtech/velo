@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { SerenityTestimonialsProps } from "./serenity-testimonials.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function SerenityTestimonials({ content }: SerenityTestimonialsProps) {
   const { heading, testimonials } = content;

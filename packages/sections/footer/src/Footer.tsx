@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import type { FooterProps } from "./footer.types";
-import { fadeInUp, staggerContainerSlow } from "@velocity/animations";
+import { fadeInUp, staggerContainerSlow } from "@velo/animations";
 
 const socialIcons: Record<string, JSX.Element> = {
   instagram: (

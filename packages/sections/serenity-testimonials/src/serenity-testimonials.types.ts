@@ -1,3 +1,3 @@
 export interface SerenityTestimonialsProps {
-  content: import("@velocity/types").SerenityTestimonialsContent;
+  content: import("@velo/types").SerenityTestimonialsContent;
 }

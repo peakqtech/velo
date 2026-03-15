@@ -27,7 +27,7 @@ describe("generate", () => {
       generate({
         appName: TEST_APP_NAME,
         sourceApp: "velocity-template",
-        sections: ["@velocity/hero"],
+        sections: ["@velo/hero"],
         locales: [],
       })
     ).toThrow(/locale/i);
@@ -48,7 +48,7 @@ describe("generate", () => {
     generate({
       appName: TEST_APP_NAME,
       sourceApp: "velocity-template",
-      sections: ["@velocity/hero"],
+      sections: ["@velo/hero"],
       locales: ["en", "id"],
     });
 
@@ -64,7 +64,7 @@ describe("generate", () => {
     generate({
       appName: TEST_APP_NAME,
       sourceApp: "velocity-template",
-      sections: ["@velocity/hero", "@velocity/footer"],
+      sections: ["@velo/hero", "@velo/footer"],
       locales: ["en"],
     });
 
@@ -78,7 +78,7 @@ describe("generate", () => {
 
   it("renders extraProps from template.json instead of hardcoding footer logic", () => {
     // The velocity-template footer section should get localeSwitcher via extraProps
-    // not via a hardcoded `pkg === "@velocity/footer"` check.
+    // not via a hardcoded `pkg === "@velo/footer"` check.
     // To prove this: we'll add extraProps to template.json and verify the generated
     // page-client uses them generically.
 
@@ -86,7 +86,7 @@ describe("generate", () => {
     generate({
       appName: TEST_APP_NAME,
       sourceApp: "velocity-template",
-      sections: ["@velocity/hero", "@velocity/footer"],
+      sections: ["@velo/hero", "@velo/footer"],
       locales: ["en"],
     });
 
@@ -104,7 +104,7 @@ describe("generate", () => {
       generate({
         appName: "../evil",
         sourceApp: "velocity-template",
-        sections: ["@velocity/hero"],
+        sections: ["@velo/hero"],
         locales: ["en"],
       })
     ).toThrow(/invalid.*app.*name/i);
@@ -115,7 +115,7 @@ describe("generate", () => {
       generate({
         appName: "",
         sourceApp: "velocity-template",
-        sections: ["@velocity/hero"],
+        sections: ["@velo/hero"],
         locales: ["en"],
       })
     ).toThrow(/invalid.*app.*name/i);
@@ -126,7 +126,7 @@ describe("generate", () => {
       generate({
         appName: "my app!@#",
         sourceApp: "velocity-template",
-        sections: ["@velocity/hero"],
+        sections: ["@velo/hero"],
         locales: ["en"],
       })
     ).toThrow(/invalid.*app.*name/i);
@@ -136,7 +136,7 @@ describe("generate", () => {
     generate({
       appName: TEST_APP_NAME,
       sourceApp: "velocity-template",
-      sections: ["@velocity/hero"],
+      sections: ["@velo/hero"],
       locales: ["en"],
     });
 
@@ -150,7 +150,7 @@ describe("generate", () => {
     generate({
       appName: TEST_APP_NAME,
       sourceApp: "velocity-template",
-      sections: ["@velocity/hero"],
+      sections: ["@velo/hero"],
       locales: ["en"],
     });
 
@@ -167,7 +167,7 @@ describe("generate", () => {
     generate({
       appName: TEST_APP_NAME,
       sourceApp: "velocity-template",
-      sections: ["@velocity/hero"],
+      sections: ["@velo/hero"],
       locales: ["en"],
     });
 

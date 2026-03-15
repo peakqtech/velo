@@ -1,5 +1,5 @@
-export type { HeroContent } from "@velocity/types";
+export type { HeroContent } from "@velo/types";
 
 export interface HeroProps {
-  content: import("@velocity/types").HeroContent;
+  content: import("@velo/types").HeroContent;
 }

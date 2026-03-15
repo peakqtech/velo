@@ -1,4 +1,4 @@
 export interface SerenityFooterProps {
-  content: import("@velocity/types").SerenityFooterContent;
+  content: import("@velo/types").SerenityFooterContent;
   localeSwitcher?: React.ReactNode;
 }

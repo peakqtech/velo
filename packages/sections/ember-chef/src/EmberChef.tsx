@@ -2,7 +2,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { EmberChefProps } from "./ember-chef.types";
-import { fadeInUp, slideInFromLeft, slideInFromRight, staggerContainer } from "@velocity/animations";
+import { fadeInUp, slideInFromLeft, slideInFromRight, staggerContainer } from "@velo/animations";
 
 export function EmberChef({ content }: EmberChefProps) {
   const { heading, name, bio, philosophy, image, alt, achievements } = content;

@@ -10,12 +10,12 @@ describe("templateManifestSchema", () => {
     style: "Cinematic Dark",
     contentType: "VelocityContent",
     sections: {
-      "@velocity/hero": {
+      "@velo/hero": {
         component: "Hero",
         configExport: "heroScrollConfig",
         contentKey: "hero",
       },
-      "@velocity/footer": {
+      "@velo/footer": {
         component: "Footer",
         configExport: "footerScrollConfig",
         contentKey: "footer",
@@ -32,7 +32,7 @@ describe("templateManifestSchema", () => {
     const manifest = {
       ...validManifest,
       sections: {
-        "@velocity/footer": {
+        "@velo/footer": {
           component: "Footer",
           configExport: "footerScrollConfig",
           contentKey: "footer",
@@ -43,7 +43,7 @@ describe("templateManifestSchema", () => {
     const result = templateManifestSchema.safeParse(manifest);
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.sections["@velocity/footer"].extraProps).toEqual({
+      expect(result.data.sections["@velo/footer"].extraProps).toEqual({
         localeSwitcher: true,
       });
     }
@@ -79,7 +79,7 @@ describe("templateManifestSchema", () => {
     const result = templateManifestSchema.safeParse({
       ...validManifest,
       sections: {
-        "@velocity/hero": {
+        "@velo/hero": {
           configExport: "heroScrollConfig",
           contentKey: "hero",
         },
@@ -92,7 +92,7 @@ describe("templateManifestSchema", () => {
     const result = templateManifestSchema.safeParse({
       ...validManifest,
       sections: {
-        "@velocity/hero": {
+        "@velo/hero": {
           component: "Hero",
           contentKey: "hero",
         },
@@ -105,7 +105,7 @@ describe("templateManifestSchema", () => {
     const result = templateManifestSchema.safeParse({
       ...validManifest,
       sections: {
-        "@velocity/hero": {
+        "@velo/hero": {
           component: "Hero",
           configExport: "heroScrollConfig",
         },
@@ -118,7 +118,7 @@ describe("templateManifestSchema", () => {
     const result = templateManifestSchema.safeParse({
       ...validManifest,
       sections: {
-        "@velocity/hero": {
+        "@velo/hero": {
           component: 123,
           configExport: "heroScrollConfig",
           contentKey: "hero",

@@ -2,7 +2,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { NexusCaseStudiesProps } from "./nexus-case-studies.types";
-import { fadeInUp, staggerContainerSlow, clipRevealUp } from "@velocity/animations";
+import { fadeInUp, staggerContainerSlow, clipRevealUp } from "@velo/animations";
 
 export function NexusCaseStudies({ content }: NexusCaseStudiesProps) {
   const { heading, studies } = content;

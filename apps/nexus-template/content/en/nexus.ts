@@ -1,4 +1,4 @@
-import type { NexusContent } from "@velocity/types";
+import type { NexusContent } from "@velo/types";
 
 const content: NexusContent = {
   hero: {

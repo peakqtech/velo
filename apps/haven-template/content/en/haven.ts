@@ -1,4 +1,4 @@
-import type { HavenContent } from "@velocity/types";
+import type { HavenContent } from "@velo/types";
 
 const content: HavenContent = {
   hero: {

@@ -2,8 +2,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { PrismIntegrationsProps } from "./prism-integrations.types";
-import { Marquee } from "@velocity/motion-components";
-import { fadeInUp } from "@velocity/animations";
+import { Marquee } from "@velo/motion-components";
+import { fadeInUp } from "@velo/animations";
 
 export function PrismIntegrations({ content }: PrismIntegrationsProps) {
   const { heading, integrations } = content;

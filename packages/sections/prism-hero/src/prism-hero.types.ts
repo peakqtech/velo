@@ -1,3 +1,3 @@
 export interface PrismHeroProps {
-  content: import("@velocity/types").PrismHeroContent;
+  content: import("@velo/types").PrismHeroContent;
 }

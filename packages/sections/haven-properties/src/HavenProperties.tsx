@@ -2,8 +2,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { HavenPropertiesProps } from "./haven-properties.types";
-import { GlassCard, Carousel } from "@velocity/motion-components";
-import { fadeInUp } from "@velocity/animations";
+import { GlassCard, Carousel } from "@velo/motion-components";
+import { fadeInUp } from "@velo/animations";
 
 export function HavenProperties({ content }: HavenPropertiesProps) {
   const { heading, subtitle, properties } = content;

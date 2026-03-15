@@ -1,3 +1,3 @@
 export interface HavenPropertiesProps {
-  content: import("@velocity/types").HavenPropertyContent;
+  content: import("@velo/types").HavenPropertyContent;
 }

@@ -42,26 +42,26 @@ export function eject(appName: string): void {
   // 1. Copy app (excluding sensitive and build files)
   ejectCopy(appDir, outputDir);
 
-  // 2. Copy @velocity/* package sources into local directories
-  copyPackageSource("@velocity/types", "packages/infra/types/src", outputDir, "lib/types");
-  copyPackageSource("@velocity/scroll-engine", "packages/infra/scroll-engine/src", outputDir, "lib/scroll-engine");
-  copyPackageSource("@velocity/animations", "packages/infra/animations/src", outputDir, "lib/animations");
-  copyPackageSource("@velocity/motion-components", "packages/infra/motion-components/src", outputDir, "components/motion");
-  copyPackageSource("@velocity/i18n", "packages/infra/i18n/src", outputDir, "lib/i18n-utils");
-  copyPackageSource("@velocity/ui", "packages/infra/ui/src", outputDir, "components/ui");
+  // 2. Copy @velo/* package sources into local directories
+  copyPackageSource("@velo/types", "packages/infra/types/src", outputDir, "lib/types");
+  copyPackageSource("@velo/scroll-engine", "packages/infra/scroll-engine/src", outputDir, "lib/scroll-engine");
+  copyPackageSource("@velo/animations", "packages/infra/animations/src", outputDir, "lib/animations");
+  copyPackageSource("@velo/motion-components", "packages/infra/motion-components/src", outputDir, "components/motion");
+  copyPackageSource("@velo/i18n", "packages/infra/i18n/src", outputDir, "lib/i18n-utils");
+  copyPackageSource("@velo/ui", "packages/infra/ui/src", outputDir, "components/ui");
 
   // Copy section packages used by this app
   const appPkg = JSON.parse(readFileSync(join(appDir, "package.json"), "utf-8"));
   const sectionPkgs = Object.keys(appPkg.dependencies || {}).filter(
-    (k) => k.startsWith("@velocity/") && !k.match(/types|scroll-engine|animations|motion-components|i18n|ui/)
+    (k) => k.startsWith("@velo/") && !k.match(/types|scroll-engine|animations|motion-components|i18n|ui/)
   );
 
   for (const pkg of sectionPkgs) {
-    const dirName = pkg.replace("@velocity/", "");
+    const dirName = pkg.replace("@velo/", "");
     copyPackageSource(pkg, `packages/sections/${dirName}/src`, outputDir, `sections/${dirName}`);
   }
 
-  // 3. Rewrite all @velocity/* imports to relative paths
+  // 3. Rewrite all @velo/* imports to relative paths
   rewriteImports(outputDir, outputDir);
 
   // 4. Generate standalone package.json
@@ -168,17 +168,17 @@ function generateStandalonePackageJson(
 
   // App's own non-velocity deps
   for (const [k, v] of Object.entries(appPkg.dependencies as Record<string, string>)) {
-    if (!k.startsWith("@velocity/")) {
+    if (!k.startsWith("@velo/")) {
       runtimeDeps[k] = v;
     }
   }
 
-  // Collect peer deps from ALL consumed @velocity/* packages
+  // Collect peer deps from ALL consumed @velo/* packages
   const velocityDeps = Object.keys(appPkg.dependencies || {}).filter(
-    (k) => k.startsWith("@velocity/")
+    (k) => k.startsWith("@velo/")
   );
   for (const dep of velocityDeps) {
-    const dirName = dep.replace("@velocity/", "");
+    const dirName = dep.replace("@velo/", "");
     const candidates = [
       join(ROOT, "packages/sections", dirName, "package.json"),
       join(ROOT, "packages/infra", dirName, "package.json"),

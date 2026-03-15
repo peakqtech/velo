@@ -72,7 +72,7 @@ export function generate(opts: GenerateOptions): void {
     dependencies: {
       ...Object.fromEntries(
         Object.entries(sourcePkg.dependencies as Record<string, string>).filter(
-          ([k]) => !k.startsWith("@velocity/")
+          ([k]) => !k.startsWith("@velo/")
         )
       ),
       ...infraDeps,
@@ -199,8 +199,8 @@ function generatePageClient(
   const content = `"use client";
 
 ${imports.join("\n")}
-import { useScrollEngine } from "@velocity/scroll-engine";
-import type { ${contentType} } from "@velocity/types";
+import { useScrollEngine } from "@velo/scroll-engine";
+import type { ${contentType} } from "@velo/types";
 ${needsLocaleSwitcher ? 'import { LocaleSwitcher } from "@/components/locale-switcher";' : ""}
 
 const scrollConfigs = [
@@ -241,7 +241,7 @@ function generateContentStub(
     stubs.push(`  ${meta.contentKey}: {} as any, // TODO: fill in ${meta.component} content`);
   }
 
-  const content = `import type { ${contentType} } from "@velocity/types";
+  const content = `import type { ${contentType} } from "@velo/types";
 
 const content: ${contentType} = {
 ${stubs.join("\n")}
@@ -260,8 +260,8 @@ export default content;
 }
 
 function generateI18n(targetDir: string, appName: string, locales: string[], contentType: string): void {
-  const content = `import { createContentLoader } from "@velocity/i18n";
-import type { ${contentType} } from "@velocity/types";
+  const content = `import { createContentLoader } from "@velo/i18n";
+import type { ${contentType} } from "@velo/types";
 
 export const defaultLocale = "${locales[0]}";
 export const locales = ${JSON.stringify(locales)} as const;

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { HavenHeroProps } from "./haven-hero.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function HavenHero({ content }: HavenHeroProps) {
   const { headline, tagline, cta, media, stats } = content;

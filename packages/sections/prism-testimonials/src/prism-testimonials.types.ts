@@ -1,3 +1,3 @@
 export interface PrismTestimonialsProps {
-  content: import("@velocity/types").PrismTestimonialsContent;
+  content: import("@velo/types").PrismTestimonialsContent;
 }

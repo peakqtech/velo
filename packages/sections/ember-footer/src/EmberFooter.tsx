@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { EmberFooterProps } from "./ember-footer.types";
-import { fadeInUp, staggerContainerSlow } from "@velocity/animations";
+import { fadeInUp, staggerContainerSlow } from "@velo/animations";
 
 export function EmberFooter({ content, localeSwitcher }: EmberFooterProps) {
   const { brand, newsletter, socials, links, legal } = content;

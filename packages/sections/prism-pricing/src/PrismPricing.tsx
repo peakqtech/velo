@@ -1,7 +1,7 @@
 "use client";
 import { motion, useReducedMotion } from "framer-motion";
 import type { PrismPricingProps } from "./prism-pricing.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function PrismPricing({ content }: PrismPricingProps) {
   const { heading, subtitle, plans } = content;

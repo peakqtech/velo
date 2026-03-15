@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ProductShowcaseProps } from "./product-showcase.types";
-import { fadeInUp, staggerContainer, fadeInBlur } from "@velocity/animations";
+import { fadeInUp, staggerContainer, fadeInBlur } from "@velo/animations";
 
 export function ProductShowcase({ content }: ProductShowcaseProps) {
   const { title, subtitle, products } = content;

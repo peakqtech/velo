@@ -6,37 +6,37 @@
   "style": "Flat Clean",
   "contentType": "PrismContent",
   "sections": {
-    "@velocity/prism-hero": {
+    "@velo/prism-hero": {
       "component": "PrismHero",
       "configExport": "prismHeroScrollConfig",
       "contentKey": "hero"
     },
-    "@velocity/prism-features": {
+    "@velo/prism-features": {
       "component": "PrismFeatures",
       "configExport": "prismFeaturesScrollConfig",
       "contentKey": "features"
     },
-    "@velocity/prism-pricing": {
+    "@velo/prism-pricing": {
       "component": "PrismPricing",
       "configExport": "prismPricingScrollConfig",
       "contentKey": "pricing"
     },
-    "@velocity/prism-integrations": {
+    "@velo/prism-integrations": {
       "component": "PrismIntegrations",
       "configExport": "prismIntegrationsScrollConfig",
       "contentKey": "integrations"
     },
-    "@velocity/prism-testimonials": {
+    "@velo/prism-testimonials": {
       "component": "PrismTestimonials",
       "configExport": "prismTestimonialsScrollConfig",
       "contentKey": "testimonials"
     },
-    "@velocity/prism-faq": {
+    "@velo/prism-faq": {
       "component": "PrismFAQ",
       "configExport": "prismFAQScrollConfig",
       "contentKey": "faq"
     },
-    "@velocity/prism-footer": {
+    "@velo/prism-footer": {
       "component": "PrismFooter",
       "configExport": "prismFooterScrollConfig",
       "contentKey": "footer",

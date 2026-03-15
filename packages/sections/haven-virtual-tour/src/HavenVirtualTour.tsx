@@ -2,7 +2,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { HavenVirtualTourProps } from "./haven-virtual-tour.types";
-import { fadeInUp, fadeInBlur } from "@velocity/animations";
+import { fadeInUp, fadeInBlur } from "@velo/animations";
 
 export function HavenVirtualTour({ content }: HavenVirtualTourProps) {
   const { heading, subtitle, cta, media } = content;
