@@ -13,7 +13,8 @@
     "test:build": "turbo build",
     "create-app": "tsx tools/create-app/src/index.ts",
     "eject": "tsx tools/eject/src/index.ts",
-    "codegen": "tsx tools/codegen/src/index.ts"
+    "codegen": "tsx tools/codegen/src/index.ts",
+    "qa": "tsx tools/qa/src/index.ts"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

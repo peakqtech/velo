@@ -1,5 +1,7 @@
 import { parseArgs } from "node:util";
-import { discoverApps, discoverSections, discoverTemplates } from "./discover";
+import { spawn } from "node:child_process";
+import { join } from "node:path";
+import { discoverApps, discoverSections, discoverTemplates, getMonorepoRoot } from "./discover";
 import { promptAppName, promptSourceApp, promptSections, promptLocales } from "./prompts";
 import { generate } from "./generate";
 
@@ -8,6 +10,7 @@ async function main() {
     allowPositionals: true,
     options: {
       from: { type: "string" },
+      preview: { type: "boolean", default: false },
     },
   });
 
@@ -42,6 +45,31 @@ async function main() {
     sections: selectedSections,
     locales: selectedLocales,
   });
+
+  if (values.preview) {
+    const root = getMonorepoRoot();
+    const appDir = join(root, "apps", appName);
+    console.log(`\n🚀 Launching preview...`);
+    console.log(`   Running pnpm install && pnpm dev in apps/${appName}\n`);
+
+    const child = spawn("pnpm", ["dev"], {
+      cwd: appDir,
+      stdio: "inherit",
+      shell: true,
+    });
+
+    child.on("error", (err) => {
+      console.error(`Preview failed: ${err.message}`);
+    });
+
+    // Keep process alive while dev server runs
+    process.on("SIGINT", () => {
+      child.kill("SIGINT");
+      process.exit(0);
+    });
+
+    await new Promise(() => {}); // Block until killed
+  }
 }
 
 main().catch((err) => {

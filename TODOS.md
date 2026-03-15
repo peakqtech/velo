@@ -94,12 +94,12 @@
 
 ## Phase 2: Product (Weeks 7-16)
 
-### P1 — QA Pipeline Tool
+### ~~P1 — QA Pipeline Tool~~ ✅ DONE
 - **What:** Create `tools/qa` — Lighthouse CI, visual regression (Playwright), a11y audit, broken link checker. JSON + PDF reports.
 - **Why:** This IS the consulting company's product. Without it, you're a web dev shop.
 - **Effort:** XL (2-3 weeks)
 - **Depends on:** CI/CD, at least one deployed site.
-- **Status:** TODO
+- **Status:** DONE — `pnpm qa <url>` with modular audit pipeline: Lighthouse, accessibility (pa11y), link checker, meta tag audit. JSON + text reports. 21 tests.
 
 ### P2 — AI Content Writer
 - **What:** After create-app generates stubs, offer AI pass to fill realistic content based on business type and locale.
@@ -115,19 +115,19 @@
 - **Depends on:** At least 3 templates working.
 - **Status:** TODO
 
-### P3 — Live Preview During Create-App
+### ~~P3 — Live Preview During Create-App~~ ✅ DONE
 - **What:** After section selection, auto-launch `pnpm dev` and open browser.
 - **Why:** Transforms CLI from "generate files" to "wow, working site."
 - **Effort:** S (30 min)
 - **Depends on:** Nothing.
-- **Status:** TODO
+- **Status:** DONE — `pnpm create-app --preview` flag spawns dev server after generation.
 
-### P3 — Auto-Generated OG Images
+### ~~P3 — Auto-Generated OG Images~~ ✅ DONE
 - **What:** Generate branded OG images per template using @vercel/og or satori.
 - **Why:** Professional social previews. Small effort, polish touch.
 - **Effort:** S (1 hour)
 - **Depends on:** Nothing.
-- **Status:** TODO
+- **Status:** DONE — `generate()` now creates `app/api/og/route.tsx` using Next.js `ImageResponse`. Dynamic OG images with template name.
 
 ## Phase 3: Platform (Weeks 17+)
 

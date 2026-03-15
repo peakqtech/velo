@@ -147,6 +147,9 @@ next-env.d.ts
   // 7. Generate lib/i18n.ts
   generateI18n(targetDir, opts.appName, opts.locales, manifest?.contentType ?? "VelocityContent");
 
+  // 8. Generate OG image API route
+  generateOgRoute(targetDir, opts.appName, manifest?.displayName ?? opts.appName);
+
   console.log(`\n✓ Created apps/${opts.appName} with ${opts.sections.length} sections`);
   console.log(`✓ Locales: ${opts.locales.join(", ")}`);
   console.log(`\nNext steps:`);
@@ -280,3 +283,66 @@ export const getContent = createContentLoader<${contentType}>(
   mkdirSync(join(targetDir, "lib"), { recursive: true });
   writeFileSync(join(targetDir, "lib/i18n.ts"), content);
 }
+
+function generateOgRoute(targetDir: string, appName: string, displayName: string): void {
+  const content = `import { ImageResponse } from "next/og";
+
+export const runtime = "edge";
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const title = searchParams.get("title") ?? "${displayName}";
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, var(--color-background, #000) 0%, var(--color-secondary, #111) 100%)",
+          fontFamily: "system-ui, sans-serif",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "16px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 64,
+              fontWeight: 800,
+              color: "white",
+              textAlign: "center",
+              maxWidth: "80%",
+            }}
+          >
+            {title}
+          </div>
+          <div
+            style={{
+              fontSize: 24,
+              color: "rgba(255,255,255,0.6)",
+            }}
+          >
+            Built with Velo
+          </div>
+        </div>
+      </div>
+    ),
+    { width: 1200, height: 630 }
+  );
+}
+`;
+  const dir = join(targetDir, "app/api/og");
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "route.tsx"), content);
+}
+

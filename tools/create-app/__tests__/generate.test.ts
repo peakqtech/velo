@@ -162,6 +162,22 @@ describe("generate", () => {
     expect(content).toContain("node_modules");
   });
 
+  it("generates OG image API route", () => {
+    generate({
+      appName: TEST_APP_NAME,
+      sourceApp: "velocity-template",
+      sections: ["@velo/hero"],
+      locales: ["en"],
+    });
+
+    const ogPath = join(ROOT, "apps", TEST_APP_NAME, "app/api/og/route.tsx");
+    expect(existsSync(ogPath)).toBe(true);
+
+    const content = readFileSync(ogPath, "utf-8");
+    expect(content).toContain("ImageResponse");
+    expect(content).toContain("Built with Velo");
+  });
+
   it("does not add localeSwitcher when footer has no extraProps", () => {
     // Generate with only hero — no localeSwitcher at all
     generate({

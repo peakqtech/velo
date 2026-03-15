@@ -1599,6 +1599,12 @@ importers:
 
   tools/eject: {}
 
+  tools/qa:
+    dependencies:
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
+
 packages:
 
   '@acemir/cssom@0.9.31':
