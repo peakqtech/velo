@@ -1582,6 +1582,12 @@ importers:
         specifier: ^19.0.0
         version: 19.2.3(react@19.2.3)
 
+  tools/codegen:
+    dependencies:
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
+
   tools/create-app:
     dependencies:
       enquirer:

@@ -71,12 +71,12 @@
 - **Depends on:** Tests for meaningful CI.
 - **Status:** TODO
 
-### P2 — Type Generation from template.json
+### ~~P2 — Type Generation from template.json~~ ✅ DONE
 - **What:** Create `tools/codegen` that reads template.json and generates composite content types from section-level type declarations.
 - **Why:** Keeps types in sync with template.json. Eliminates manual type maintenance.
 - **Effort:** M (3-5 days)
 - **Depends on:** Zod validation, Theme system.
-- **Status:** TODO
+- **Status:** DONE — `pnpm codegen` generates content types for all 6 templates to `packages/infra/types/src/generated/`. 8 tests. Auto-maps consolidated sections (Footer, Testimonials) to base types.
 
 ### ~~P2 — Extract BackToTop to @velo/ui~~ ✅ DONE
 - **What:** Extract the back-to-top floating button from Footer into `@velo/ui` as a standalone `<BackToTop />` component. Render at page level (layout.tsx or page-client.tsx).

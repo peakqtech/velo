@@ -1,0 +1,12 @@
+{
+  "name": "@velo/codegen",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "^3.25.67"
+  }
+}
