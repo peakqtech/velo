@@ -204,45 +204,97 @@ export default function ClientDetailPage() {
             </button>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-6">
             {client.sites.map((site) => {
               const deploy = deployColors[site.deployStatus] ?? deployColors.PENDING;
               const healthScore = site.qaReports?.[0]?.healthScore;
+              const isLive = site.deployStatus === "DEPLOYED";
+              const templatePorts: Record<string, number> = {
+                velocity: 3000, ember: 3001, haven: 3002,
+                nexus: 3003, prism: 3004, serenity: 3005,
+              };
+              const siteUrl = site.domain
+                ? `https://${site.domain}`
+                : `http://localhost:${templatePorts[site.template] ?? 3000}`;
+
               return (
-                <div key={site.id} className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-4 min-w-0 flex-1">
-                    <div className="h-10 w-10 shrink-0 rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
-                      <span className="text-xs font-bold text-white">{site.template[0]?.toUpperCase()}</span>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-zinc-200 truncate">{site.name}</p>
-                      <div className="flex items-center gap-3 text-xs text-zinc-500 mt-0.5">
-                        <span>{site.template}</span>
-                        <span>{site.domain ?? site.slug}</span>
-                        <span className={`flex items-center gap-1 ${deploy.text}`}>
-                          <span className={`h-1.5 w-1.5 rounded-full ${deploy.dot}`} />
-                          {deploy.label}
-                        </span>
-                        {healthScore !== undefined && (
-                          <span className="text-zinc-400">Health: {healthScore}</span>
-                        )}
+                <div key={site.id} className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+                  {/* Site header */}
+                  <div className="p-4 flex items-center justify-between border-b border-zinc-800/50">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`h-9 w-9 shrink-0 rounded-lg bg-gradient-to-br ${
+                        ({ velocity: "from-red-600 to-orange-600", ember: "from-amber-600 to-red-700", haven: "from-emerald-600 to-teal-700", nexus: "from-orange-500 to-amber-600", prism: "from-violet-600 to-indigo-600", serenity: "from-green-600 to-emerald-700" } as Record<string, string>)[site.template] ?? "from-zinc-600 to-zinc-700"
+                      } flex items-center justify-center`}>
+                        <span className="text-xs font-bold text-white">{site.template[0]?.toUpperCase()}</span>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-zinc-200 truncate">{site.name}</p>
+                        <div className="flex items-center gap-3 text-xs text-zinc-500 mt-0.5">
+                          <span className="capitalize">{site.template}</span>
+                          <span>{site.domain ?? site.slug}</span>
+                          <span className={`flex items-center gap-1 ${deploy.text}`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${deploy.dot}`} />
+                            {deploy.label}
+                          </span>
+                          {healthScore !== undefined && (
+                            <span className="text-zinc-400">Health: {healthScore}</span>
+                          )}
+                        </div>
                       </div>
                     </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {isLive && (
+                        <a
+                          href={siteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-1.5 text-xs font-medium text-blue-400 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors flex items-center gap-1.5"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+                          Open Site
+                        </a>
+                      )}
+                      <Link
+                        href={`/clients/${clientId}/sites/${site.id}/reservations`}
+                        className="px-3 py-1.5 text-xs font-medium text-zinc-300 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors"
+                      >
+                        Reservations
+                      </Link>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0 ml-4">
-                    <Link
-                      href={`/clients/${clientId}/sites/${site.id}/content`}
-                      className="px-3 py-1.5 text-xs font-medium text-blue-400 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors"
-                    >
-                      Edit Content
-                    </Link>
-                    <Link
-                      href={`/clients/${clientId}/sites/${site.id}/reservations`}
-                      className="px-3 py-1.5 text-xs font-medium text-zinc-300 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors"
-                    >
-                      Reservations
-                    </Link>
-                  </div>
+
+                  {/* Live preview iframe — only when deployed */}
+                  {isLive && (
+                    <div className="relative bg-black" style={{ height: "400px" }}>
+                      <iframe
+                        src={`${siteUrl}/en`}
+                        className="absolute inset-0 border-0"
+                        style={{
+                          width: "200%",
+                          height: "200%",
+                          transform: "scale(0.5)",
+                          transformOrigin: "top left",
+                        }}
+                        title={`Preview of ${site.name}`}
+                        loading="lazy"
+                      />
+                      <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/70 backdrop-blur-sm rounded-full px-2.5 py-1">
+                        <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                        <span className="text-[10px] font-medium text-zinc-300">Live</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Not deployed state */}
+                  {!isLive && (
+                    <div className="p-8 text-center">
+                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800 mb-3">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-500"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                      </div>
+                      <p className="text-sm text-zinc-400">Site not deployed yet</p>
+                      <p className="text-xs text-zinc-600 mt-1">Deploy to see the live preview</p>
+                    </div>
+                  )}
                 </div>
               );
             })}
