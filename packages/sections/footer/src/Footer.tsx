@@ -117,7 +117,7 @@ export function Footer({ content, variant = "default", localeSwitcher }: FooterP
             variants={staggerContainerSlow}
           >
             <motion.div variants={fadeInUp}>
-              <Image src={brand.logo} alt={brand.name} width={120} height={30} />
+              <Image src={brand.logo} alt={brand.name} width={120} height={30} style={{ height: "auto" }} />
             </motion.div>
 
             {links.map((group) => (

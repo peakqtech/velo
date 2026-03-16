@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
-@source "../../../packages/sections/nexus-hero/src/**/*.tsx";
-@source "../../../packages/sections/nexus-services/src/**/*.tsx";
-@source "../../../packages/sections/nexus-case-studies/src/**/*.tsx";
-@source "../../../packages/sections/nexus-team/src/**/*.tsx";
-@source "../../../packages/sections/nexus-stats/src/**/*.tsx";
-@source "../../../packages/sections/nexus-contact/src/**/*.tsx";
-@source "../../../packages/sections/footer/src/**/*.tsx";
-@source "../../../packages/infra/motion-components/src/**/*.tsx";
+@source "../../../packages/sections/nexus-hero/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/nexus-services/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/nexus-case-studies/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/nexus-team/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/nexus-stats/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/nexus-contact/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/footer/src/**/*.{ts,tsx}";
+@source "../../../packages/infra/motion-components/src/**/*.{ts,tsx}";
 
 :root {
   --color-primary: #ff5722;
