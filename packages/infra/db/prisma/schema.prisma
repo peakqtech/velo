@@ -14,6 +14,14 @@ enum Role {
   EDITOR
 }
 
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  PENDING_DEPOSIT
+  CANCELLED
+  NO_SHOW
+}
+
 enum DeployStatus {
   PENDING
   BUILDING
@@ -50,6 +58,7 @@ model Site {
   integrations    SiteIntegration[]
   qaReports       QAReport[]
   deployments     Deployment[]
+  bookings        Booking[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
@@ -84,6 +93,31 @@ model QAReport {
   @@index([siteId])
   @@index([createdAt])
   @@map("qa_reports")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  site          Site          @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId        String
+  sectionType   String        @default("reservation") // "reservation", "booking", "appointment"
+  date          String        // "2026-03-20" (ISO date string)
+  time          String        // "19:00"
+  guestName     String
+  guestPhone    String
+  guestEmail    String?
+  partySize     Int           @default(1)
+  status        BookingStatus @default(PENDING)
+  depositAmount Int?          // In smallest currency unit (cents/rupiah)
+  depositPaid   Boolean       @default(false)
+  paymentId     String?       // External payment reference
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([siteId, date])
+  @@index([siteId, status])
+  @@index([createdAt])
+  @@map("bookings")
 }
 
 model Deployment {
