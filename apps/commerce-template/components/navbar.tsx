@@ -12,6 +12,7 @@ export function Navbar() {
   const { itemCount } = useCart();
   const { theme, variant } = useTheme();
   const pathname = usePathname();
+  const isHomepage = pathname === "/" || pathname === "";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -98,7 +99,6 @@ export function Navbar() {
   const cartIconColor = variant === "luxury" && !scrolled ? "#FFFFFF" : theme.colors.text;
   const badgeBg = variant === "streetwear" ? theme.colors.primary : theme.colors.text;
 
-  const isHomepage = pathname === "/" || pathname === "";
   const isTransparent = variant === "luxury" && !scrolled && isHomepage;
 
   return (
