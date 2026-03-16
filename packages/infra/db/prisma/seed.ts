@@ -91,22 +91,58 @@ async function main() {
   });
   console.log(`✓ User: ${user.email}`);
 
-  // Create demo site with FULL Velocity content (matches velocity-template/content/en/velocity.ts)
+  // ─── Client 1: Sushi Masa ─────────────────────────────────────────
+  const sushiMasa = await prisma.client.upsert({
+    where: { id: "client-sushi-masa" },
+    update: {
+      name: "Sushi Masa",
+      contactPerson: "Takeshi Yamamoto",
+      email: "takeshi@sushimasa.id",
+      phone: "+62 812 3456 7890",
+      whatsapp: "+62 812 3456 7890",
+      plan: "PREMIUM",
+      monthlyPrice: 2000000,
+      currency: "IDR",
+      paymentStatus: "PAID",
+      lastPaymentDate: new Date("2026-03-01"),
+      paymentDueDate: new Date("2026-04-01"),
+    },
+    create: {
+      id: "client-sushi-masa",
+      name: "Sushi Masa",
+      contactPerson: "Takeshi Yamamoto",
+      email: "takeshi@sushimasa.id",
+      phone: "+62 812 3456 7890",
+      whatsapp: "+62 812 3456 7890",
+      plan: "PREMIUM",
+      monthlyPrice: 2000000,
+      currency: "IDR",
+      paymentStatus: "PAID",
+      lastPaymentDate: new Date("2026-03-01"),
+      paymentDueDate: new Date("2026-04-01"),
+      notes: "Japanese restaurant in Seminyak. Premium client since Jan 2026.",
+    },
+  });
+  console.log(`✓ Client: ${sushiMasa.name}`);
+
+  // Create demo site linked to Sushi Masa
   const site = await prisma.site.upsert({
     where: { slug: "velocity-demo" },
     update: {
       content: fullVelocityContent(),
+      clientId: sushiMasa.id,
     },
     create: {
       name: "Velocity Demo",
       slug: "velocity-demo",
       template: "velocity",
       ownerId: user.id,
+      clientId: sushiMasa.id,
       deployStatus: "DEPLOYED",
       content: fullVelocityContent(),
     },
   });
-  console.log(`✓ Site: ${site.name} (${site.slug})`);
+  console.log(`✓ Site: ${site.name} (${site.slug}) → ${sushiMasa.name}`);
 
   // Enable some integrations
   const integrations = [
@@ -125,25 +161,224 @@ async function main() {
   }
 
   // Add a demo QA report
-  await prisma.qAReport.create({
-    data: {
-      siteId: site.id,
-      healthScore: 87,
-      report: {
-        url: "https://velocity-demo.velo.dev",
-        timestamp: new Date().toISOString(),
+  const existingQA = await prisma.qAReport.findFirst({ where: { siteId: site.id } });
+  if (!existingQA) {
+    await prisma.qAReport.create({
+      data: {
+        siteId: site.id,
         healthScore: 87,
-        totalIssues: 4,
-        audits: [
-          { name: "lighthouse", score: 92, issues: [] },
-          { name: "accessibility", score: 85, issues: [{ severity: "warning", message: "Low contrast ratio on footer links" }] },
-          { name: "links", score: 95, issues: [] },
-          { name: "meta", score: 75, issues: [{ severity: "warning", message: "Missing og:description" }, { severity: "info", message: "Consider adding structured data" }] },
-        ],
+        report: {
+          url: "https://velocity-demo.velo.dev",
+          timestamp: new Date().toISOString(),
+          healthScore: 87,
+          totalIssues: 4,
+          audits: [
+            { name: "lighthouse", score: 92, issues: [] },
+            { name: "accessibility", score: 85, issues: [{ severity: "warning", message: "Low contrast ratio on footer links" }] },
+            { name: "links", score: 95, issues: [] },
+            { name: "meta", score: 75, issues: [{ severity: "warning", message: "Missing og:description" }, { severity: "info", message: "Consider adding structured data" }] },
+          ],
+        },
       },
+    });
+    console.log("✓ QA Report seeded");
+  }
+
+  // Sushi Masa change requests
+  const sushiChanges = [
+    {
+      id: "cr-sushi-1",
+      title: "Update hero banner with new seasonal menu",
+      description: "Replace the current hero image with the spring omakase menu promotion. Client provided new photos via WhatsApp.",
+      priority: "normal",
+      status: "DONE" as const,
+      requestedAt: new Date("2026-02-20"),
+      completedAt: new Date("2026-02-22"),
+    },
+    {
+      id: "cr-sushi-2",
+      title: "Add reservation deposit feature",
+      description: "Client wants to require Rp 100,000 deposit per person for weekend dinner reservations to reduce no-shows.",
+      priority: "high",
+      status: "IN_PROGRESS" as const,
+      requestedAt: new Date("2026-03-10"),
+    },
+    {
+      id: "cr-sushi-3",
+      title: "Update footer with new Instagram handle",
+      description: "Changed Instagram from @sushimasa to @sushimasa.bali. Update footer social links.",
+      priority: "low",
+      status: "PENDING" as const,
+      requestedAt: new Date("2026-03-14"),
+    },
+  ];
+
+  for (const cr of sushiChanges) {
+    await prisma.changeRequest.upsert({
+      where: { id: cr.id },
+      update: { status: cr.status, completedAt: cr.completedAt },
+      create: {
+        id: cr.id,
+        clientId: sushiMasa.id,
+        siteId: site.id,
+        title: cr.title,
+        description: cr.description,
+        priority: cr.priority,
+        status: cr.status,
+        requestedAt: cr.requestedAt,
+        completedAt: cr.completedAt ?? null,
+      },
+    });
+  }
+  console.log(`✓ ${sushiChanges.length} change requests for ${sushiMasa.name}`);
+
+  // Sushi Masa invoices
+  const sushiInvoices = [
+    {
+      id: "inv-sushi-1",
+      amount: 2000000,
+      currency: "IDR",
+      period: "2026-02",
+      status: "PAID" as const,
+      dueDate: new Date("2026-03-01"),
+      paidDate: new Date("2026-03-01"),
+    },
+    {
+      id: "inv-sushi-2",
+      amount: 2000000,
+      currency: "IDR",
+      period: "2026-03",
+      status: "SENT" as const,
+      dueDate: new Date("2026-04-01"),
+      paidDate: null,
+    },
+  ];
+
+  for (const inv of sushiInvoices) {
+    await prisma.invoice.upsert({
+      where: { id: inv.id },
+      update: { status: inv.status, paidDate: inv.paidDate },
+      create: {
+        id: inv.id,
+        clientId: sushiMasa.id,
+        amount: inv.amount,
+        currency: inv.currency,
+        period: inv.period,
+        status: inv.status,
+        dueDate: inv.dueDate,
+        paidDate: inv.paidDate,
+      },
+    });
+  }
+  console.log(`✓ ${sushiInvoices.length} invoices for ${sushiMasa.name}`);
+
+  // ─── Client 2: Bali Zen Spa ───────────────────────────────────────
+  const baliZenSpa = await prisma.client.upsert({
+    where: { id: "client-bali-zen-spa" },
+    update: {
+      name: "Bali Zen Spa",
+      contactPerson: "Made Suryani",
+      email: "suryani@balizenspa.com",
+      plan: "BASIC",
+      monthlyPrice: 1500000,
+      paymentStatus: "PAID",
+    },
+    create: {
+      id: "client-bali-zen-spa",
+      name: "Bali Zen Spa",
+      contactPerson: "Made Suryani",
+      email: "suryani@balizenspa.com",
+      phone: "+62 817 5551234",
+      whatsapp: "+62 817 5551234",
+      plan: "BASIC",
+      monthlyPrice: 1500000,
+      currency: "IDR",
+      paymentStatus: "PAID",
+      lastPaymentDate: new Date("2026-03-05"),
+      paymentDueDate: new Date("2026-04-05"),
+      notes: "Wellness spa in Ubud. New client, building first site.",
     },
   });
-  console.log("✓ QA Report seeded");
+  console.log(`✓ Client: ${baliZenSpa.name}`);
+
+  // Bali Zen Spa change request
+  await prisma.changeRequest.upsert({
+    where: { id: "cr-bali-1" },
+    update: {},
+    create: {
+      id: "cr-bali-1",
+      clientId: baliZenSpa.id,
+      title: "Design spa treatment menu page",
+      description: "Client wants a dedicated page showing all spa treatments with prices, durations, and booking links. Provided a PDF with all treatments.",
+      priority: "normal",
+      status: "PENDING",
+      requestedAt: new Date("2026-03-12"),
+    },
+  });
+  console.log(`✓ 1 change request for ${baliZenSpa.name}`);
+
+  // Bali Zen Spa invoice
+  await prisma.invoice.upsert({
+    where: { id: "inv-bali-1" },
+    update: {},
+    create: {
+      id: "inv-bali-1",
+      clientId: baliZenSpa.id,
+      amount: 1500000,
+      currency: "IDR",
+      period: "2026-03",
+      status: "PAID",
+      dueDate: new Date("2026-04-05"),
+      paidDate: new Date("2026-03-05"),
+    },
+  });
+  console.log(`✓ 1 invoice for ${baliZenSpa.name}`);
+
+  // ─── Client 3: Rumah Impian Properties ────────────────────────────
+  const rumahImpian = await prisma.client.upsert({
+    where: { id: "client-rumah-impian" },
+    update: {
+      name: "Rumah Impian Properties",
+      contactPerson: "Budi Santoso",
+      email: "budi@rumahimpian.co.id",
+      plan: "ENTERPRISE",
+      monthlyPrice: 5000000,
+      paymentStatus: "OVERDUE",
+    },
+    create: {
+      id: "client-rumah-impian",
+      name: "Rumah Impian Properties",
+      contactPerson: "Budi Santoso",
+      email: "budi@rumahimpian.co.id",
+      phone: "+62 811 2223344",
+      whatsapp: "+62 811 2223344",
+      plan: "ENTERPRISE",
+      monthlyPrice: 5000000,
+      currency: "IDR",
+      paymentStatus: "OVERDUE",
+      paymentDueDate: new Date("2026-03-01"),
+      notes: "Real estate company in Jakarta. Enterprise plan with custom property listing features. Payment overdue — follow up with Budi.",
+    },
+  });
+  console.log(`✓ Client: ${rumahImpian.name}`);
+
+  // Rumah Impian overdue invoice
+  await prisma.invoice.upsert({
+    where: { id: "inv-rumah-1" },
+    update: { status: "OVERDUE" },
+    create: {
+      id: "inv-rumah-1",
+      clientId: rumahImpian.id,
+      amount: 5000000,
+      currency: "IDR",
+      period: "2026-03",
+      status: "OVERDUE",
+      dueDate: new Date("2026-03-01"),
+      paidDate: null,
+      notes: "Sent reminder on March 10. Client asked for extension until March 20.",
+    },
+  });
+  console.log(`✓ 1 invoice for ${rumahImpian.name}`);
 
   console.log("\nDone! Login with: demo@velo.dev / demo1234");
 }
