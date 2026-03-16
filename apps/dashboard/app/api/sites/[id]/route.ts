@@ -50,6 +50,8 @@ export async function PUT(
     data: {
       name: body.name ?? site.name,
       domain: body.domain ?? site.domain,
+      siteUrl: body.siteUrl !== undefined ? body.siteUrl : site.siteUrl,
+      deployStatus: body.deployStatus ?? site.deployStatus,
       themeOverrides: body.themeOverrides ?? site.themeOverrides,
     },
   });

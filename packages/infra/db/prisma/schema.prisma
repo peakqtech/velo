@@ -104,6 +104,7 @@ model Site {
   slug            String            @unique
   template        String
   domain          String?           @unique
+  siteUrl         String?           // Live URL (e.g., "https://sushimasa.vercel.app" or "https://sushimasa.com")
   vercelProjectId String?
   deployStatus    DeployStatus      @default(PENDING)
   owner           User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
