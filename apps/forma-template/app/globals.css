@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-bg: #FFFFFF;
+  --color-text: #111111;
+  --color-surface: #F5F3EF;
+  --color-accent: #E63946;
+  --color-text-secondary: #888888;
+  --color-border: #E5E5E5;
+  --font-heading: 'Archivo Black', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --radius: 0px;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Hide scrollbar for clean look */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #DDD; }
+::-webkit-scrollbar-thumb:hover { background: #BBB; }
+
+/* Selection color */
+::selection {
+  background-color: #E63946;
+  color: #FFFFFF;
+}
