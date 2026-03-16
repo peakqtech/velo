@@ -334,26 +334,39 @@ function SiteCard({ site, clientId, onUpdate }: { site: Site; clientId: string; 
   const [editingUrl, setEditingUrl] = useState(false);
   const [urlInput, setUrlInput] = useState(site.siteUrl ?? "");
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [localSiteUrl, setLocalSiteUrl] = useState(site.siteUrl);
+  const [localDeployStatus, setLocalDeployStatus] = useState(site.deployStatus);
 
-  const deploy = deployColors[site.deployStatus] ?? deployColors.PENDING;
+  const deploy = deployColors[localDeployStatus] ?? deployColors.PENDING;
   const healthScore = site.qaReports?.[0]?.healthScore;
-  const isLive = site.deployStatus === "DEPLOYED" && !!site.siteUrl;
+  const isLive = localDeployStatus === "DEPLOYED" && !!localSiteUrl;
 
   const handleSaveUrl = async () => {
     setSaving(true);
+    setSaveError(null);
+    const newUrl = urlInput.trim() || null;
+    const newStatus = newUrl ? "DEPLOYED" : "PENDING";
+
     try {
-      await fetch(`/api/sites/${site.id}`, {
+      const res = await fetch(`/api/sites/${site.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          siteUrl: urlInput.trim() || null,
-          deployStatus: urlInput.trim() ? "DEPLOYED" : "PENDING",
-        }),
+        body: JSON.stringify({ siteUrl: newUrl, deployStatus: newStatus }),
       });
-      onUpdate();
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Failed (${res.status})`);
+      }
+
+      // Update local state immediately
+      setLocalSiteUrl(newUrl);
+      setLocalDeployStatus(newStatus);
       setEditingUrl(false);
-    } catch {
-      // ignore
+      onUpdate();
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Failed to save");
     } finally {
       setSaving(false);
     }
@@ -371,7 +384,7 @@ function SiteCard({ site, clientId, onUpdate }: { site: Site; clientId: string; 
             <p className="text-sm font-medium text-zinc-200 truncate">{site.name}</p>
             <div className="flex items-center gap-3 text-xs text-zinc-500 mt-0.5">
               <span className="capitalize">{site.template}</span>
-              {site.siteUrl && <span className="truncate max-w-[200px]">{site.siteUrl.replace(/^https?:\/\//, "")}</span>}
+              {localSiteUrl && <span className="truncate max-w-[200px]">{localSiteUrl.replace(/^https?:\/\//, "")}</span>}
               <span className={`flex items-center gap-1 ${deploy.text}`}>
                 <span className={`h-1.5 w-1.5 rounded-full ${deploy.dot}`} />
                 {deploy.label}
@@ -383,7 +396,7 @@ function SiteCard({ site, clientId, onUpdate }: { site: Site; clientId: string; 
         <div className="flex items-center gap-2 shrink-0">
           {isLive && (
             <a
-              href={site.siteUrl!}
+              href={localSiteUrl!}
               target="_blank"
               rel="noopener noreferrer"
               className="px-3 py-1.5 text-xs font-medium text-blue-400 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors flex items-center gap-1.5"
@@ -396,7 +409,7 @@ function SiteCard({ site, clientId, onUpdate }: { site: Site; clientId: string; 
             onClick={() => setEditingUrl(true)}
             className="px-3 py-1.5 text-xs font-medium text-zinc-400 border border-zinc-700 rounded-lg hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
           >
-            {site.siteUrl ? "Change URL" : "Set URL"}
+            {localSiteUrl ? "Change URL" : "Set URL"}
           </button>
           <Link
             href={`/clients/${clientId}/sites/${site.id}/reservations`}
@@ -410,28 +423,30 @@ function SiteCard({ site, clientId, onUpdate }: { site: Site; clientId: string; 
       {/* URL editor */}
       {editingUrl && (
         <div className="p-4 border-b border-zinc-800/50 bg-zinc-900/80">
-          <label className="block text-xs text-zinc-500 mb-1.5">Site URL (after deploying to Vercel or any host)</label>
+          <label className="block text-xs text-zinc-500 mb-1.5">Site URL (paste the deployed URL after hosting on Vercel or any platform)</label>
           <div className="flex gap-2">
             <input
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
               placeholder="https://sushimasa.vercel.app"
               className="flex-1 h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onKeyDown={(e) => e.key === "Enter" && handleSaveUrl()}
             />
             <button
               onClick={handleSaveUrl}
               disabled={saving}
               className="px-4 h-9 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
             >
-              {saving ? "..." : "Save"}
+              {saving ? "Saving..." : "Save"}
             </button>
             <button
-              onClick={() => { setEditingUrl(false); setUrlInput(site.siteUrl ?? ""); }}
+              onClick={() => { setEditingUrl(false); setUrlInput(localSiteUrl ?? ""); setSaveError(null); }}
               className="px-3 h-9 text-xs text-zinc-400 hover:text-zinc-200 transition-colors"
             >
               Cancel
             </button>
           </div>
+          {saveError && <p className="text-xs text-red-400 mt-2">{saveError}</p>}
         </div>
       )}
 
@@ -439,7 +454,7 @@ function SiteCard({ site, clientId, onUpdate }: { site: Site; clientId: string; 
       {isLive && (
         <div className="relative bg-black" style={{ height: "400px" }}>
           <iframe
-            src={site.siteUrl!}
+            src={localSiteUrl!}
             className="absolute inset-0 border-0"
             style={{ width: "200%", height: "200%", transform: "scale(0.5)", transformOrigin: "top left" }}
             title={`Preview of ${site.name}`}
@@ -456,9 +471,9 @@ function SiteCard({ site, clientId, onUpdate }: { site: Site; clientId: string; 
       {!isLive && (
         <div className="p-8 text-center">
           <p className="text-sm text-zinc-400">
-            {site.siteUrl ? "Connecting..." : "No URL set — deploy the site first, then set the URL"}
+            {localSiteUrl ? "Connecting..." : "No URL set \u2014 deploy the site first, then set the URL"}
           </p>
-          {!site.siteUrl && (
+          {!localSiteUrl && (
             <button
               onClick={() => setEditingUrl(true)}
               className="mt-3 px-4 py-2 text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg transition-colors"
