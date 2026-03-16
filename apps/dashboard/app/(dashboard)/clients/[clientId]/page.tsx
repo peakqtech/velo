@@ -205,7 +205,7 @@ export default function ClientDetailPage() {
             </button>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {client.sites.map((site) => (
               <SiteCard
                 key={site.id}
@@ -450,17 +450,17 @@ function SiteCard({ site, clientId, onUpdate }: { site: Site; clientId: string; 
         </div>
       )}
 
-      {/* Live preview */}
+      {/* Live preview — 16:10 aspect ratio */}
       {isLive && (
-        <div className="relative bg-black" style={{ height: "400px" }}>
+        <div className="relative bg-black" style={{ aspectRatio: "16/10" }}>
           <iframe
             src={localSiteUrl!}
             className="absolute inset-0 border-0"
-            style={{ width: "200%", height: "200%", transform: "scale(0.5)", transformOrigin: "top left" }}
+            style={{ width: "250%", height: "250%", transform: "scale(0.4)", transformOrigin: "top left" }}
             title={`Preview of ${site.name}`}
             loading="lazy"
           />
-          <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/70 backdrop-blur-sm rounded-full px-2.5 py-1">
+          <div className="absolute top-2 right-2 flex items-center gap-1.5 bg-black/70 backdrop-blur-sm rounded-full px-2 py-0.5">
             <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
             <span className="text-[10px] font-medium text-zinc-300">Live</span>
           </div>
