@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  EDITOR
+}
+
+enum DeployStatus {
+  PENDING
+  BUILDING
+  DEPLOYED
+  FAILED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  passwordHash  String?
+  avatarUrl     String?
+  role          Role      @default(OWNER)
+  sites         Site[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Site {
+  id              String            @id @default(cuid())
+  name            String
+  slug            String            @unique
+  template        String
+  domain          String?           @unique
+  vercelProjectId String?
+  deployStatus    DeployStatus      @default(PENDING)
+  owner           User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId         String
+  content         Json              @default("{}")
+  themeOverrides  Json?
+  integrations    SiteIntegration[]
+  qaReports       QAReport[]
+  deployments     Deployment[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([ownerId])
+  @@index([template])
+  @@map("sites")
+}
+
+model SiteIntegration {
+  id          String   @id @default(cuid())
+  site        Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId      String
+  integration String
+  enabled     Boolean  @default(true)
+  config      Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([siteId, integration])
+  @@index([siteId])
+  @@map("site_integrations")
+}
+
+model QAReport {
+  id          String   @id @default(cuid())
+  site        Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId      String
+  healthScore Int
+  report      Json
+  createdAt   DateTime @default(now())
+
+  @@index([siteId])
+  @@index([createdAt])
+  @@map("qa_reports")
+}
+
+model Deployment {
+  id              String       @id @default(cuid())
+  site            Site         @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId          String
+  status          DeployStatus @default(PENDING)
+  vercelDeployId  String?
+  url             String?
+  commitMessage   String?
+  createdAt       DateTime     @default(now())
+  completedAt     DateTime?
+
+  @@index([siteId])
+  @@index([createdAt])
+  @@map("deployments")
+}

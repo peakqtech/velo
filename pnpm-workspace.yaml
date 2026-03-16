@@ -2,4 +2,5 @@ packages:
   - "apps/*"
   - "packages/sections/*"
   - "packages/infra/*"
+  - "packages/integrations/*"
   - "tools/*"
