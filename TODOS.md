@@ -129,12 +129,243 @@
 - **Depends on:** Nothing.
 - **Status:** DONE — `generate()` now creates `app/api/og/route.tsx` using Next.js `ImageResponse`. Dynamic OG images with template name.
 
-## Phase 3: Platform (Weeks 17+)
+## Phase 3: Vertical SaaS Platform (Weeks 17+)
 
-### Client Dashboard / Admin UI
-### Template Marketplace
-### A/B Testing Infrastructure
-### White-label / Multi-tenant SaaS
+> Vision: Transform Velo from "generates websites" into "generates businesses online."
+> Each template becomes a vertical business solution. Integrations ARE the product.
+> Business owners get a running business online in 30 minutes for $50-200/mo.
+>
+> Architecture decisions (from CEO review 2026-03-16):
+> - Vertical SaaS platform (not just website builder)
+> - All 6 verticals simultaneously via generic integration layer
+> - Monorepo integration packages (packages/integrations/*)
+> - Full-featured dashboard (apps/dashboard/)
+> - Supabase (Postgres) + Prisma ORM
+> - Vercel deployment
+> - Universal 5 integrations first: Stripe, Forms, Analytics, CMS, WhatsApp
+
+### Phase 3.0 — Platform Foundation
+
+#### P0 — Database + Auth Setup
+- **What:** Add Supabase + Prisma to the monorepo. Create base schema (User, Site, SiteIntegration, QAReport). Set up NextAuth with Supabase adapter in apps/dashboard. Environment variable management.
+- **Why:** Every other Phase 3 feature depends on persistent data and authentication.
+- **Schema:** See architecture doc for Prisma models (User, Site, SiteIntegration, QAReport, Role enum).
+- **Effort:** M (3-5 days)
+- **Depends on:** Nothing. Do first.
+- **Status:** TODO
+
+#### P0 — Integration Registry System
+- **What:** Create `packages/infra/integrations/` — a registry that discovers integration packages, validates their configs (Zod), and provides a `getIntegration(name)` API. Add `"integrations"` field to template.json schema. Each integration package exports: config, routes, components, dashboard module, and Prisma schema fragment.
+- **Why:** The plugin system that makes all integrations composable. Without this, every integration is bespoke.
+- **Integration package contract:**
+  ```
+  export interface VeloIntegration {
+    name: string;                    // "@velo/integration-stripe"
+    displayName: string;             // "Stripe Payments"
+    description: string;
+    icon: string;                    // Icon component or URL
+    configSchema: ZodSchema;         // Validates SiteIntegration.config
+    routes: Record<string, Handler>; // API route handlers
+    components: Record<string, ComponentType>; // Embeddable UI
+    dashboardModule?: ComponentType; // Settings panel in dashboard
+  }
+  ```
+- **Effort:** L (1-2 weeks)
+- **Depends on:** Database setup.
+- **Status:** TODO
+
+#### P0 — Dashboard Shell
+- **What:** Create `apps/dashboard/` — Next.js app with NextAuth login, sidebar layout, and empty module slots for: Overview, Content, Integrations, QA Reports, Settings, Billing. Dark theme consistent with gallery. Mobile-responsive sidebar.
+- **Why:** The dashboard is the product surface. Everything else plugs into it.
+- **Effort:** L (1-2 weeks)
+- **Depends on:** Database + Auth.
+- **Status:** TODO
+
+### Phase 3.1 — Universal 5 Integrations
+
+#### P1 — Stripe Integration (`@velo/integration-stripe`)
+- **What:** Stripe Checkout for one-time payments, Stripe Billing for subscriptions, webhook handling for payment events, Stripe Customer Portal for self-serve billing. Dashboard module: revenue chart, recent transactions, Stripe API key config.
+- **Why:** Payments = revenue for business owners. This is the #1 reason to upgrade from a static site.
+- **Components:** `<CheckoutButton>`, `<PricingTable>`, `<PaymentStatus>`
+- **Routes:** POST /checkout, POST /webhook, GET /portal
+- **Effort:** L (1-2 weeks)
+- **Depends on:** Integration registry, Dashboard shell.
+- **Status:** TODO
+
+#### P1 — Forms Integration (`@velo/integration-forms`)
+- **What:** Contact forms, lead capture forms, newsletter signup. Form submissions stored in Supabase + email notification via Resend/SendGrid. Dashboard module: form submissions list, export to CSV, email notification settings.
+- **Why:** Every business needs contact forms. Lead capture is the simplest integration that adds immediate value.
+- **Components:** `<ContactForm>`, `<LeadCaptureForm>`, `<NewsletterForm>`
+- **Routes:** POST /submit, GET /submissions
+- **Effort:** M (3-5 days)
+- **Depends on:** Integration registry.
+- **Status:** TODO
+
+#### P1 — Analytics Integration (`@velo/integration-analytics`)
+- **What:** Plausible Analytics (privacy-friendly, no cookie banner needed) or Google Analytics 4. Auto-inject tracking script. Dashboard module: visitor chart, top pages, referrers, real-time visitors.
+- **Why:** Business owners need to see if their site is working. Analytics is the proof.
+- **Components:** `<AnalyticsScript>` (head injection), `<AnalyticsDashboard>` (embed)
+- **Effort:** S (2-3 days)
+- **Depends on:** Integration registry.
+- **Status:** TODO
+
+#### P1 — CMS Integration (`@velo/integration-cms`)
+- **What:** Content editing via dashboard forms. Maps to the existing content type system. Edit content.json fields through a generated form UI (derived from TypeScript types/Zod schemas). Media upload to Supabase Storage. Preview changes before publish.
+- **Why:** Business owners can't edit .ts files. Visual content editing is table stakes.
+- **Components:** `<ContentEditor>`, `<MediaLibrary>`, `<PreviewFrame>`
+- **Routes:** GET/PUT /content/:siteId, POST /media/upload
+- **Effort:** XL (2-3 weeks) — this is the most complex integration
+- **Depends on:** Integration registry, content type codegen.
+- **Status:** TODO
+
+#### P2 — WhatsApp Integration (`@velo/integration-whatsapp`)
+- **What:** WhatsApp Business chat widget embedded on site. Click-to-chat with pre-filled message. Business hours awareness (show/hide based on operating hours). Dashboard module: WhatsApp number config, default message, business hours.
+- **Why:** WhatsApp is the #1 business communication channel in SE Asia, LATAM, and parts of Europe. Zero API cost (uses wa.me links).
+- **Components:** `<WhatsAppWidget>`, `<WhatsAppButton>`
+- **Effort:** S (1-2 days)
+- **Depends on:** Integration registry.
+- **Status:** TODO
+
+### Phase 3.2 — Dashboard Modules
+
+#### P1 — Site Overview Module
+- **What:** Dashboard landing page showing: site health score (from QA pipeline), visitor analytics (from analytics integration), recent form submissions, active integrations status, deployment status. Card-based layout.
+- **Why:** The first thing a business owner sees. Must answer: "Is my site working?"
+- **Effort:** M (3-5 days)
+- **Depends on:** Analytics + Forms + QA integrations.
+- **Status:** TODO
+
+#### P1 — Content Editor Module
+- **What:** Visual form-based editor for site content. Auto-generates form fields from content types (text inputs, image uploaders, array editors for lists). Live preview in iframe. Publish button triggers rebuild + deploy.
+- **Why:** THE core feature that makes this a product vs a CLI tool.
+- **Effort:** XL (2-3 weeks) — shares work with CMS integration
+- **Depends on:** CMS integration.
+- **Status:** TODO
+
+#### P1 — Integration Manager Module
+- **What:** Grid of available integrations with enable/disable toggles. Configuration panel per integration (rendered from integration's dashboardModule export). Status indicators (connected/error/pending).
+- **Why:** The control center for business functionality. Where integrations become tangible.
+- **Effort:** M (3-5 days)
+- **Depends on:** Integration registry, at least 2 integrations built.
+- **Status:** TODO
+
+#### P2 — QA Reports Module
+- **What:** Scheduled QA runs (weekly/monthly) using existing `@velo/qa` pipeline. Report history with health score trend. Detail view for each audit (Lighthouse, a11y, links, meta). Email notifications when health drops below threshold.
+- **Why:** Your QA consulting background becomes a product feature. Automated quality monitoring as a service.
+- **Effort:** M (3-5 days)
+- **Depends on:** QA pipeline (already built), Dashboard shell.
+- **Status:** TODO
+
+#### P2 — Billing Module
+- **What:** Stripe-powered subscription management for Velo itself (not client's customers). Plan tiers: Free (1 site, 3 integrations), Pro ($49/mo, unlimited sites + integrations), Agency ($199/mo, white-label + client management). Usage dashboard, invoice history, plan upgrade/downgrade.
+- **Why:** This is how Velo makes money.
+- **Effort:** L (1-2 weeks)
+- **Depends on:** Stripe integration.
+- **Status:** TODO
+
+#### P2 — Settings Module
+- **What:** Site settings: name, domain, template, theme overrides. Team management: invite members, assign roles (Owner/Admin/Editor). Danger zone: delete site, export data. Profile: account settings, password change.
+- **Why:** Standard SaaS settings. Required for multi-user access.
+- **Effort:** M (3-5 days)
+- **Depends on:** Auth + Database.
+- **Status:** TODO
+
+### Phase 3.3 — Deployment Pipeline
+
+#### P1 — Vercel Deployment API
+- **What:** Programmatic site deployment via Vercel REST API. Create project, deploy from monorepo, assign custom domain, manage environment variables. Triggered from dashboard "Deploy" button or auto-deploy on content change.
+- **Why:** Business owners can't use CLI. One-click deploy from dashboard is the experience.
+- **Effort:** L (1-2 weeks)
+- **Depends on:** Dashboard shell, at least one integration working end-to-end.
+- **Status:** TODO
+
+#### P2 — Custom Domain Management
+- **What:** Dashboard UI for adding custom domains. DNS verification flow. Auto-SSL via Vercel. Domain status monitoring (propagation, SSL certificate health).
+- **Why:** Every business wants their own domain. "yourbusiness.com" not "yourbusiness.velo.app"
+- **Effort:** M (3-5 days)
+- **Depends on:** Vercel deployment API.
+- **Status:** TODO
+
+#### P2 — Auto-Deploy on Content Change
+- **What:** When content is edited via CMS/dashboard, automatically trigger a rebuild + deploy to Vercel. Incremental Static Regeneration (ISR) for near-instant updates without full rebuild. Deploy status shown in dashboard.
+- **Why:** "Edit → See it live in 10 seconds" is the experience that sells.
+- **Effort:** M (3-5 days)
+- **Depends on:** CMS integration, Vercel deployment API.
+- **Status:** TODO
+
+### Phase 3.4 — Vertical Deepening (per template)
+
+#### P2 — Restaurant Vertical (Ember)
+- **What:** Online ordering system (menu → cart → Stripe checkout → order confirmation), menu management CMS (categories, items, prices, dietary tags, photos), reservation/booking system (date/time/party size → Google Calendar), Google Reviews widget (display aggregated reviews).
+- **Why:** Restaurant owners pay $100-300/mo for these individually. Bundled = massive value.
+- **Effort:** XL (3-4 weeks)
+- **Depends on:** Stripe, CMS, Google Calendar integrations.
+- **Status:** TODO
+
+#### P2 — Wellness Vertical (Serenity)
+- **What:** Appointment booking (service → practitioner → time slot → payment), practitioner profile management, service catalog CMS, client intake forms, automated appointment reminders (email/WhatsApp).
+- **Why:** Wellness businesses revolve around appointments. Booking system = core infrastructure.
+- **Effort:** XL (3-4 weeks)
+- **Depends on:** Stripe, Forms, Google Calendar integrations.
+- **Status:** TODO
+
+#### P2 — Real Estate Vertical (Haven)
+- **What:** Property listing management (CRUD + photos + details), lead capture per listing, virtual tour embed (Matterport/YouTube), neighborhood data display, agent profile management.
+- **Why:** Real estate agents pay $200-500/mo for IDX sites. Velo can undercut with better design.
+- **Effort:** L (2-3 weeks)
+- **Depends on:** CMS, Forms integrations.
+- **Status:** TODO
+
+#### P2 — SaaS Vertical (Prism)
+- **What:** Stripe billing portal for SaaS subscriptions, feature comparison table (dynamic from config), signup flow with Stripe checkout, customer dashboard embed, usage tracking display.
+- **Why:** SaaS founders need billing + landing page. This is a Stripe Atlas competitor for the frontend.
+- **Effort:** L (2-3 weeks)
+- **Depends on:** Stripe integration.
+- **Status:** TODO
+
+#### P3 — Agency Vertical (Nexus)
+- **What:** Project portfolio CMS (case studies with metrics), lead capture with CRM integration (HubSpot/Pipedrive), team member management, service page builder, proposal/quote request form.
+- **Why:** Agencies need lead generation + portfolio. The irony: agencies are also Velo's distribution channel.
+- **Effort:** L (2-3 weeks)
+- **Depends on:** CMS, Forms integrations.
+- **Status:** TODO
+
+#### P3 — Sportswear/E-commerce Vertical (Velocity)
+- **What:** Product catalog with category filtering, shopping cart, Stripe checkout, order management dashboard, inventory tracking (basic), size/color variants.
+- **Why:** E-commerce is the largest vertical by revenue. Even basic capability here is valuable.
+- **Effort:** XL (3-4 weeks)
+- **Depends on:** Stripe, CMS integrations.
+- **Status:** TODO
+
+### Phase 3.5 — Growth & Monetization
+
+#### P2 — Template Marketplace
+- **What:** Public marketplace where third-party designers can list templates. Submission flow, review process, revenue sharing. Built on existing gallery architecture.
+- **Why:** Network effects. More templates = more verticals = more customers = more template designers.
+- **Effort:** XL (3-4 weeks)
+- **Depends on:** Dashboard, billing, at least 3 verticals live.
+- **Status:** TODO
+
+#### P3 — White-label / Agency Mode
+- **What:** Agencies can reskin the dashboard with their branding. Client management (agency manages multiple clients' sites). Bulk operations, white-label QA reports, custom domain for dashboard (agency.clientportal.com).
+- **Why:** Agencies become distribution partners. They bring clients, you provide infrastructure.
+- **Effort:** XL (4-6 weeks)
+- **Depends on:** Full dashboard + billing.
+- **Status:** TODO
+
+#### P3 — A/B Testing Infrastructure
+- **What:** Split testing for content variants (headlines, CTAs, images). Traffic splitting via edge middleware. Conversion tracking via analytics integration. Dashboard module showing variant performance.
+- **Why:** Data-driven optimization. "Your variant B headline converts 23% better." Advanced feature for power users.
+- **Effort:** XL (3-4 weeks)
+- **Depends on:** Analytics integration, CMS, deployment pipeline.
+- **Status:** TODO
+
+#### P3 — AI Features (Phase 2 expansion)
+- **What:** AI receptionist chatbot (trained on business content), AI-powered SEO suggestions, AI content refresh ("rewrite this section for summer promotion"), AI-generated social media posts from site content.
+- **Why:** AI is the differentiator. This is what makes Velo 10x better than Squarespace.
+- **Effort:** XL (4-6 weeks)
+- **Depends on:** CMS, content system, AI content writer (already built).
+- **Status:** TODO
 
 ## Security Fixes (do alongside Phase 1)
 
