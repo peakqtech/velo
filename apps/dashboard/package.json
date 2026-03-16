@@ -12,7 +12,13 @@
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "@velo/db": "workspace:*"
+    "@velo/db": "workspace:*",
+    "@velo/integration-registry": "workspace:*",
+    "@velo/integration-cms": "workspace:*",
+    "@velo/integration-forms": "workspace:*",
+    "@velo/integration-payments": "workspace:*",
+    "@velo/integration-analytics": "workspace:*",
+    "@velo/integration-whatsapp": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20",

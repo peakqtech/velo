@@ -38,6 +38,24 @@ importers:
       '@velo/db':
         specifier: workspace:*
         version: link:../../packages/infra/db
+      '@velo/integration-analytics':
+        specifier: workspace:*
+        version: link:../../packages/integrations/analytics
+      '@velo/integration-cms':
+        specifier: workspace:*
+        version: link:../../packages/integrations/cms
+      '@velo/integration-forms':
+        specifier: workspace:*
+        version: link:../../packages/integrations/forms
+      '@velo/integration-payments':
+        specifier: workspace:*
+        version: link:../../packages/integrations/payments
+      '@velo/integration-registry':
+        specifier: workspace:*
+        version: link:../../packages/infra/integration-registry
+      '@velo/integration-whatsapp':
+        specifier: workspace:*
+        version: link:../../packages/integrations/whatsapp
       next:
         specifier: 16.1.6
         version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
