@@ -91,7 +91,7 @@ export function Footer({ content, variant = "default", localeSwitcher }: FooterP
                 Thanks for subscribing!
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex max-w-lg mx-auto gap-3 mt-6">
+              <form onSubmit={handleSubmit} className="flex w-full max-w-xl mx-auto gap-3 mt-6">
                 <input
                   type="email"
                   value={email}
