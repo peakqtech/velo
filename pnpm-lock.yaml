@@ -99,6 +99,12 @@ importers:
       '@velo/animations':
         specifier: workspace:*
         version: link:../../packages/infra/animations
+      '@velo/booking-engine':
+        specifier: workspace:*
+        version: link:../../packages/infra/booking-engine
+      '@velo/db':
+        specifier: workspace:*
+        version: link:../../packages/infra/db
       '@velo/ember-chef':
         specifier: workspace:*
         version: link:../../packages/sections/ember-chef
@@ -442,7 +448,7 @@ importers:
         version: 9.39.4(jiti@2.6.1)
       eslint-config-next:
         specifier: 16.1.6
-        version: 16.1.6(@typescript-eslint/parser@8.57.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+        version: 16.1.6(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0
@@ -542,7 +548,7 @@ importers:
         version: 9.39.4(jiti@2.6.1)
       eslint-config-next:
         specifier: 16.1.6
-        version: 16.1.6(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+        version: 16.1.6(@typescript-eslint/parser@8.57.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0
@@ -924,6 +930,9 @@ importers:
       '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
+      '@velo/booking-engine':
+        specifier: workspace:*
+        version: link:../../infra/booking-engine
       '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
