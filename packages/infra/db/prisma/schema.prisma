@@ -117,6 +117,8 @@ model Site {
   qaReports       QAReport[]
   deployments     Deployment[]
   bookings        Booking[]
+  products        Product[]
+  orders          Order[]
   changeRequests  ChangeRequest[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -125,6 +127,87 @@ model Site {
   @@index([clientId])
   @@index([template])
   @@map("sites")
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  site        Site        @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId      String
+  name        String
+  slug        String
+  description String?
+  price       Int         // Smallest currency unit
+  comparePrice Int?       // Original price (for showing discounts)
+  currency    String      @default("IDR")
+  images      Json        @default("[]") // Array of image URLs
+  category    String?
+  variants    Json?       // [{name: "Size", options: ["S","M","L"]}, {name: "Color", options: ["Black","White"]}]
+  stock       Int         @default(0)
+  trackStock  Boolean     @default(true)
+  isActive    Boolean     @default(true)
+  weight      Int?        // Grams, for shipping
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+
+  @@unique([siteId, slug])
+  @@index([siteId, isActive])
+  @@index([siteId, category])
+  @@map("products")
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  site            Site        @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId          String
+  orderNumber     String      @unique // Human-readable: "ORD-0001"
+  status          OrderStatus @default(PENDING)
+  customerName    String
+  customerEmail   String?
+  customerPhone   String
+  shippingAddress Json?       // {street, city, province, postalCode}
+  items           OrderItem[]
+  subtotal        Int         // Smallest currency unit
+  shippingCost    Int         @default(0)
+  total           Int
+  currency        String      @default("IDR")
+  paymentMethod   String?     // "xendit", "stripe", "midtrans", "cod"
+  paymentId       String?     // External payment reference
+  paidAt          DateTime?
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([siteId, status])
+  @@index([siteId, createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String
+  product     Product @relation(fields: [productId], references: [id])
+  productId   String
+  name        String  // Snapshot at time of order
+  price       Int     // Snapshot at time of order
+  quantity    Int
+  variant     String? // "Size: M, Color: Black"
+  total       Int     // price × quantity
+
+  @@index([orderId])
+  @@map("order_items")
 }
 
 model ChangeRequest {

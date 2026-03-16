@@ -1,0 +1,10 @@
+{
+  "name": "commerce",
+  "displayName": "Commerce",
+  "description": "E-commerce clothing brand with product catalog, cart, checkout, and admin panel",
+  "businessType": "E-commerce / Retail",
+  "style": "Minimal Modern",
+  "contentType": "CommerceContent",
+  "features": ["product-catalog", "shopping-cart", "checkout", "admin-panel", "order-management"],
+  "sections": {}
+}

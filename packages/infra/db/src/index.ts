@@ -1,6 +1,6 @@
 export { prisma } from "./client";
 export type {
   User, Site, SiteIntegration, QAReport, Deployment, Booking,
-  Client, ChangeRequest, Invoice,
-  Role, DeployStatus, BookingStatus, ClientPlan, PaymentStatus, ChangeStatus, InvoiceStatus,
+  Client, ChangeRequest, Invoice, Product, Order, OrderItem,
+  Role, DeployStatus, BookingStatus, ClientPlan, PaymentStatus, ChangeStatus, InvoiceStatus, OrderStatus,
 } from "@prisma/client";
