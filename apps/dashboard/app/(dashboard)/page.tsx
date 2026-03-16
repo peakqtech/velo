@@ -1,11 +1,7 @@
-import Link from "next/link";
+"use client";
 
-const metrics = [
-  { label: "Total Sites", value: "1", sub: "Velocity Demo", icon: "globe", accent: "from-blue-500/20 to-blue-600/5", border: "border-blue-500/20", iconColor: "text-blue-400" },
-  { label: "Health Score", value: "87", sub: "Good", icon: "heart", accent: "from-green-500/20 to-green-600/5", border: "border-green-500/20", iconColor: "text-green-400", suffix: "%" },
-  { label: "Total Visitors", value: "1,247", sub: "+12% vs last week", icon: "users", accent: "from-violet-500/20 to-violet-600/5", border: "border-violet-500/20", iconColor: "text-violet-400", subColor: "text-green-400" },
-  { label: "Active Integrations", value: "3/5", sub: "2 available", icon: "plug", accent: "from-amber-500/20 to-amber-600/5", border: "border-amber-500/20", iconColor: "text-amber-400" },
-];
+import Link from "next/link";
+import { useActiveSite, useSiteIntegrations } from "@/lib/hooks";
 
 const quickActions = [
   { label: "Edit Content", description: "Update site copy and media", href: "/content", icon: "edit", gradient: "from-blue-600 to-blue-700" },
@@ -22,7 +18,78 @@ const recentActivity = [
   { action: "Content updated", detail: "Footer section", time: "5 days ago", icon: "edit", dot: "bg-blue-400" },
 ];
 
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <div>
+        <div className="h-8 w-40 bg-zinc-800 rounded" />
+        <div className="h-4 w-64 bg-zinc-800 rounded mt-2" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-28 rounded-xl bg-zinc-800/50 border border-zinc-800" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CreateSiteCard() {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Overview</h1>
+        <p className="text-zinc-500 mt-1">Welcome! Get started by creating your first site.</p>
+      </div>
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center max-w-md">
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center mb-4">
+            <svg width={28} height={28} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="text-blue-400">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+          </div>
+          <h2 className="text-lg font-semibold text-zinc-100 mb-2">Create your first site</h2>
+          <p className="text-sm text-zinc-500 mb-6">
+            Choose a template and start building your site. You can customize content, connect integrations, and deploy in minutes.
+          </p>
+          <button className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-blue-600/20">
+            Create Site
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function OverviewPage() {
+  const { site, loading, error } = useActiveSite();
+  const { integrations, loading: intLoading } = useSiteIntegrations(site?.id ?? null);
+
+  if (loading) return <LoadingSkeleton />;
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Overview</h1>
+          <p className="text-red-400 mt-1">Failed to load. {error}</p>
+        </div>
+      </div>
+    );
+  }
+  if (!site) return <CreateSiteCard />;
+
+  const enabledIntegrations = integrations.filter((i: any) => i.enabled).length;
+  const totalIntegrations = 5;
+  const deployStatus = site.deployStatus ?? "draft";
+  const isDeployed = deployStatus === "deployed" || deployStatus === "production";
+
+  const metrics = [
+    { label: "Total Sites", value: "1", sub: site.name, icon: "globe", accent: "from-blue-500/20 to-blue-600/5", border: "border-blue-500/20", iconColor: "text-blue-400" },
+    { label: "Template", value: site.template ?? "N/A", sub: site.domain ?? "No domain", icon: "heart", accent: "from-green-500/20 to-green-600/5", border: "border-green-500/20", iconColor: "text-green-400" },
+    { label: "Deploy Status", value: isDeployed ? "Live" : "Draft", sub: isDeployed ? "Production" : "Not deployed yet", icon: "users", accent: "from-violet-500/20 to-violet-600/5", border: "border-violet-500/20", iconColor: "text-violet-400", subColor: isDeployed ? "text-green-400" : undefined },
+    { label: "Active Integrations", value: intLoading ? "..." : `${enabledIntegrations}/${totalIntegrations}`, sub: intLoading ? "Loading" : `${totalIntegrations - enabledIntegrations} available`, icon: "plug", accent: "from-amber-500/20 to-amber-600/5", border: "border-amber-500/20", iconColor: "text-amber-400" },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -48,7 +115,6 @@ export default function OverviewPage() {
               </div>
               <div className="text-3xl font-bold tracking-tight">
                 {metric.value}
-                {metric.suffix && <span className="text-lg text-zinc-400 ml-0.5">{metric.suffix}</span>}
               </div>
               {metric.sub && (
                 <p className={`text-xs mt-1 ${metric.subColor ?? "text-zinc-500"}`}>{metric.sub}</p>
@@ -90,22 +156,21 @@ export default function OverviewPage() {
             <div className="h-32 bg-gradient-to-br from-zinc-800 via-zinc-900 to-zinc-800 flex items-center justify-center relative">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-violet-600/10" />
               <div className="relative text-center">
-                <p className="text-xl font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">Velocity</p>
-                <p className="text-[10px] text-zinc-500 mt-1">Athletic / Sportswear</p>
+                <p className="text-xl font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">{site.name}</p>
+                <p className="text-[10px] text-zinc-500 mt-1">{site.template ?? "Custom template"}</p>
               </div>
             </div>
             <div className="p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-zinc-200">Velocity Demo</p>
-                  <p className="text-xs text-zinc-500">velocity-demo.velo.dev</p>
+                  <p className="text-sm font-medium text-zinc-200">{site.name}</p>
+                  <p className="text-xs text-zinc-500">{site.domain ?? "No domain set"}</p>
                 </div>
-                <span className="flex items-center gap-1.5 text-[11px] font-medium text-green-400 bg-green-500/10 border border-green-500/20 rounded-full px-2.5 py-0.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                  Deployed
+                <span className={`flex items-center gap-1.5 text-[11px] font-medium ${isDeployed ? "text-green-400 bg-green-500/10 border-green-500/20" : "text-zinc-400 bg-zinc-500/10 border-zinc-500/20"} border rounded-full px-2.5 py-0.5`}>
+                  <span className={`h-1.5 w-1.5 rounded-full ${isDeployed ? "bg-green-500" : "bg-zinc-500"}`} />
+                  {isDeployed ? "Deployed" : "Draft"}
                 </span>
               </div>
-              <p className="text-[11px] text-zinc-600">Last deployed 3 days ago</p>
               <div className="flex gap-2">
                 <Link
                   href="/"

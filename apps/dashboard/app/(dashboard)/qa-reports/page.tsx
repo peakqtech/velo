@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useActiveSite } from "@/lib/hooks";
+import { fetchAPI } from "@/lib/api";
 
 /* -------------------------------------------------------------------------- */
 /*  Types (mirrors tools/qa/src/pipeline.ts)                                  */
@@ -28,7 +30,7 @@ interface QAReport {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Demo data                                                                 */
+/*  Demo data (fallback when DB has no reports)                               */
 /* -------------------------------------------------------------------------- */
 
 function makeReport(
@@ -103,7 +105,7 @@ function makeReport(
   return { url: "https://velocity-demo.velo.dev", timestamp: ts, healthScore: health, totalIssues, issuesByAudit, audits };
 }
 
-const INITIAL_REPORTS: QAReport[] = [
+const FALLBACK_REPORTS: QAReport[] = [
   makeReport(87, 92, 85, 95, 75, 0),
   makeReport(82, 88, 80, 90, 70, 7),
   makeReport(78, 85, 75, 88, 65, 14),
@@ -144,15 +146,64 @@ function relativeTime(iso: string) {
   return `${days}d ago`;
 }
 
+/** Convert a DB QAReport row into our local QAReport shape */
+function parseDbReport(row: any): QAReport | null {
+  try {
+    const data = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+    if (data && data.healthScore !== undefined && data.audits) {
+      return {
+        url: data.url ?? row.url ?? "unknown",
+        timestamp: row.createdAt ?? data.timestamp ?? new Date().toISOString(),
+        healthScore: data.healthScore,
+        totalIssues: data.totalIssues ?? 0,
+        issuesByAudit: data.issuesByAudit ?? {},
+        audits: data.audits ?? [],
+      };
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return null;
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Component                                                                 */
 /* -------------------------------------------------------------------------- */
 
 export default function QAReportsPage() {
-  const [reports, setReports] = useState<QAReport[]>(INITIAL_REPORTS);
+  const { site, loading: siteLoading } = useActiveSite();
+  const [reports, setReports] = useState<QAReport[]>([]);
+  const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [expandedAudit, setExpandedAudit] = useState<string | null>(null);
+
+  // Load reports from API, fall back to demo data
+  useEffect(() => {
+    if (!site?.id) return;
+    setLoading(true);
+    fetchAPI<any[]>(`/api/sites/${site.id}/qa-reports`)
+      .then((dbRows) => {
+        const parsed = dbRows.map(parseDbReport).filter(Boolean) as QAReport[];
+        if (parsed.length > 0) {
+          setReports(parsed);
+        } else {
+          setReports(FALLBACK_REPORTS);
+        }
+      })
+      .catch(() => {
+        setReports(FALLBACK_REPORTS);
+      })
+      .finally(() => setLoading(false));
+  }, [site?.id]);
+
+  // Set fallback if no site
+  useEffect(() => {
+    if (!siteLoading && !site) {
+      setReports(FALLBACK_REPORTS);
+      setLoading(false);
+    }
+  }, [siteLoading, site]);
 
   const latest = reports[0];
 
@@ -178,6 +229,39 @@ export default function QAReportsPage() {
 
   /* ---- trend data (last 5) ---- */
   const trendReports = [...reports].reverse().slice(-5);
+
+  if (siteLoading || loading) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">QA Reports</h1>
+          <p className="text-zinc-500 mt-1">Loading reports...</p>
+        </div>
+        <div className="space-y-4 animate-pulse">
+          <div className="h-40 rounded-xl bg-zinc-800/30 border border-zinc-800" />
+          <div className="h-64 rounded-xl bg-zinc-800/30 border border-zinc-800" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!latest) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">QA Reports</h1>
+          <p className="text-zinc-500 mt-1">No reports available yet. Run your first audit.</p>
+        </div>
+        <button
+          onClick={runAudit}
+          disabled={running}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          Run New Audit
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

@@ -3,6 +3,7 @@
 import React, { useState, useCallback } from "react";
 import { getIntegrationIcon } from "./integration-icons";
 import ConfigPanel from "./config-panel";
+import { useActiveSite, useSiteIntegrations } from "@/lib/hooks";
 
 interface IntegrationDef {
   name: string;
@@ -107,49 +108,89 @@ function SuccessToast({ message, onDone }: { message: string; onDone: () => void
 }
 
 export default function IntegrationsPage() {
-  const [enabledMap, setEnabledMap] = useState<Record<string, boolean>>({});
-  const [configMap, setConfigMap] = useState<Record<string, Record<string, unknown>>>(
-    () => {
-      const initial: Record<string, Record<string, unknown>> = {};
-      for (const i of INTEGRATIONS) {
-        initial[i.name] = { ...i.defaultConfig };
-      }
-      return initial;
-    }
-  );
-  const [configuredSet, setConfiguredSet] = useState<Set<string>>(new Set());
+  const { site, loading: siteLoading } = useActiveSite();
+  const { integrations: dbIntegrations, loading: intLoading, upsert } = useSiteIntegrations(site?.id ?? null);
+
   const [activeIntegration, setActiveIntegration] = useState<IntegrationDef | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [savingToggle, setSavingToggle] = useState<string | null>(null);
 
-  const toggleEnabled = useCallback((name: string) => {
-    setEnabledMap((prev) => ({ ...prev, [name]: !prev[name] }));
-  }, []);
+  // Build maps from DB integrations
+  const dbMap = React.useMemo(() => {
+    const map: Record<string, { enabled: boolean; config: Record<string, unknown> }> = {};
+    for (const i of dbIntegrations) {
+      map[i.integration] = { enabled: i.enabled, config: i.config ?? {} };
+    }
+    return map;
+  }, [dbIntegrations]);
+
+  const toggleEnabled = useCallback(async (name: string) => {
+    if (!site) return;
+    const current = dbMap[name];
+    const newEnabled = !(current?.enabled ?? false);
+    const config = current?.config ?? INTEGRATIONS.find(i => i.name === name)?.defaultConfig ?? {};
+    setSavingToggle(name);
+    try {
+      await upsert({ integration: name, enabled: newEnabled, config });
+    } catch {
+      // silently fail
+    } finally {
+      setSavingToggle(null);
+    }
+  }, [site, dbMap, upsert]);
 
   const openConfig = useCallback((integration: IntegrationDef) => {
     setActiveIntegration(integration);
   }, []);
 
   const handleSave = useCallback(
-    (config: Record<string, unknown>) => {
-      if (!activeIntegration) return;
-      setConfigMap((prev) => ({
-        ...prev,
-        [activeIntegration.name]: config,
-      }));
-      setConfiguredSet((prev) => {
-        const next = new Set(prev);
-        next.add(activeIntegration.name);
-        return next;
-      });
+    async (config: Record<string, unknown>) => {
+      if (!activeIntegration || !site) return;
+      const current = dbMap[activeIntegration.name];
+      const enabled = current?.enabled ?? false;
+      try {
+        await upsert({ integration: activeIntegration.name, enabled, config });
+        setToast(`${activeIntegration.displayName} configuration saved`);
+      } catch {
+        setToast(`Failed to save ${activeIntegration.displayName}`);
+      }
       setActiveIntegration(null);
-      setToast(`${activeIntegration.displayName} configuration saved`);
     },
-    [activeIntegration]
+    [activeIntegration, site, dbMap, upsert]
   );
 
   const handleClosePanel = useCallback(() => {
     setActiveIntegration(null);
   }, []);
+
+  const isLoading = siteLoading || intLoading;
+
+  if (isLoading) {
+    return (
+      <div>
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold tracking-tight mb-1">Integrations</h1>
+          <p className="text-zinc-400">Loading integrations...</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="h-48 rounded-xl bg-zinc-800/30 border border-zinc-800 animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!site) {
+    return (
+      <div>
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold tracking-tight mb-1">Integrations</h1>
+          <p className="text-zinc-400">No site found. Create a site first to manage integrations.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -163,8 +204,10 @@ export default function IntegrationsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {INTEGRATIONS.map((integration) => {
-          const isEnabled = enabledMap[integration.name] ?? false;
-          const isConfigured = configuredSet.has(integration.name);
+          const dbEntry = dbMap[integration.name];
+          const isEnabled = dbEntry?.enabled ?? false;
+          const isConfigured = !!dbEntry;
+          const isToggling = savingToggle === integration.name;
 
           return (
             <div
@@ -203,8 +246,9 @@ export default function IntegrationsPage() {
                   type="button"
                   role="switch"
                   aria-checked={isEnabled}
+                  disabled={isToggling}
                   onClick={() => toggleEnabled(integration.name)}
-                  className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
+                  className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
                     isEnabled ? "bg-blue-600" : "bg-zinc-700"
                   }`}
                 >
@@ -259,7 +303,7 @@ export default function IntegrationsPage() {
       {activeIntegration && (
         <ConfigPanel
           integration={activeIntegration}
-          config={configMap[activeIntegration.name] || {}}
+          config={dbMap[activeIntegration.name]?.config || activeIntegration.defaultConfig}
           onSave={handleSave}
           onClose={handleClosePanel}
         />

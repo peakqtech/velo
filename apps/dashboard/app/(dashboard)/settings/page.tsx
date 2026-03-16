@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useActiveSite } from "@/lib/hooks";
+import { api } from "@/lib/api";
 
 export default function SettingsPage() {
+  const { site, loading: siteLoading, error: siteError, refresh } = useActiveSite();
+
   /* Site Settings state */
-  const [siteName, setSiteName] = useState("Velocity Demo");
+  const [siteName, setSiteName] = useState("");
   const [customDomain, setCustomDomain] = useState("");
   const [siteToast, setSiteToast] = useState<string | null>(null);
+  const [siteSaving, setSiteSaving] = useState(false);
 
   /* Team Members state */
   const [showInvite, setShowInvite] = useState(false);
@@ -19,9 +24,28 @@ export default function SettingsPage() {
   const [exportToast, setExportToast] = useState<string | null>(null);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
-  function handleSiteSave() {
-    setSiteToast("Settings saved successfully");
-    setTimeout(() => setSiteToast(null), 3000);
+  // Pre-fill from DB when site loads
+  useEffect(() => {
+    if (site) {
+      setSiteName(site.name ?? "");
+      setCustomDomain(site.domain ?? "");
+    }
+  }, [site]);
+
+  async function handleSiteSave() {
+    if (!site) return;
+    setSiteSaving(true);
+    try {
+      await api.sites.update(site.id, { name: siteName, domain: customDomain || null });
+      setSiteToast("Settings saved successfully");
+      setTimeout(() => setSiteToast(null), 3000);
+      refresh();
+    } catch (err) {
+      setSiteToast(err instanceof Error ? err.message : "Failed to save settings");
+      setTimeout(() => setSiteToast(null), 4000);
+    } finally {
+      setSiteSaving(false);
+    }
   }
 
   function handleInvite() {
@@ -40,6 +64,43 @@ export default function SettingsPage() {
   function handleExport() {
     setExportToast("Data export started. You will receive a download link via email.");
     setTimeout(() => setExportToast(null), 4000);
+  }
+
+  if (siteLoading) {
+    return (
+      <div className="space-y-8 max-w-2xl">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+          <p className="text-zinc-500 mt-1">Loading...</p>
+        </div>
+        <div className="space-y-6 animate-pulse">
+          <div className="h-48 rounded-xl bg-zinc-800/30 border border-zinc-800" />
+          <div className="h-36 rounded-xl bg-zinc-800/30 border border-zinc-800" />
+        </div>
+      </div>
+    );
+  }
+
+  if (siteError) {
+    return (
+      <div className="space-y-8 max-w-2xl">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+          <p className="text-red-400 mt-1">Failed to load. {siteError}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!site) {
+    return (
+      <div className="space-y-8 max-w-2xl">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+          <p className="text-zinc-500 mt-1">No site found. Create a site first to manage settings.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -65,7 +126,7 @@ export default function SettingsPage() {
           <div>
             <label className="block text-sm text-zinc-400 mb-1.5">Template</label>
             <div className="w-full h-10 px-3 flex items-center bg-zinc-950/50 border border-zinc-800 rounded-lg text-zinc-500 text-sm">
-              Velocity &mdash; Athletic / Sportswear
+              {site.template ?? "Custom"} template
             </div>
           </div>
           <div>
@@ -80,12 +141,13 @@ export default function SettingsPage() {
           <div className="flex items-center gap-3 pt-1">
             <button
               onClick={handleSiteSave}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
+              disabled={siteSaving}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
             >
-              Save
+              {siteSaving ? "Saving..." : "Save"}
             </button>
             {siteToast && (
-              <span className="flex items-center gap-1.5 text-sm text-green-400">
+              <span className={`flex items-center gap-1.5 text-sm ${siteToast.includes("Failed") ? "text-red-400" : "text-green-400"}`}>
                 <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 {siteToast}
               </span>
@@ -109,10 +171,10 @@ export default function SettingsPage() {
         {/* Current user */}
         <div className="flex items-center gap-3 py-3 border-b border-zinc-800">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-violet-600 text-white text-sm font-bold">
-            Y
+            {(site.name ?? "S")[0].toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-zinc-200">Yohanes</p>
+            <p className="text-sm font-medium text-zinc-200">Owner</p>
             <p className="text-xs text-zinc-500">Owner</p>
           </div>
           <span className="text-[11px] text-zinc-600 bg-zinc-800 rounded px-2 py-0.5">You</span>
@@ -219,7 +281,7 @@ export default function SettingsPage() {
               <div className="mt-3 p-3 rounded-lg border border-red-500/30 bg-red-950/30">
                 <p className="text-xs text-red-300">
                   This action is irreversible. All content, configuration, and deployment history for
-                  <strong> Velocity Demo</strong> will be permanently deleted. Contact support if you need assistance.
+                  <strong> {site.name}</strong> will be permanently deleted. Contact support if you need assistance.
                 </p>
               </div>
             )}

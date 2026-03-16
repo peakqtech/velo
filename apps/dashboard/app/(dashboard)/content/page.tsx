@@ -4,38 +4,7 @@ import { useState } from "react";
 import { generateSectionsFromContent, FieldEditor } from "@velo/integration-cms";
 import type { FieldDefinition } from "@velo/integration-cms";
 import { SectionPreview } from "./preview";
-
-// Demo content — in production this comes from the database
-const DEMO_CONTENT: Record<string, unknown> = {
-  hero: {
-    headline: "Run Faster. Go Further.",
-    tagline: "Premium athletic wear engineered for peak performance",
-    cta: { label: "Shop Now", href: "/shop" },
-    media: { type: "video", src: "/videos/hero.mp4", poster: "/images/hero-poster.jpg", alt: "Athletes running" },
-    overlay: { opacity: 0.4, gradient: "linear-gradient(to bottom, transparent, black)" },
-  },
-  productShowcase: {
-    title: "Featured Collection",
-    subtitle: "Engineered for champions",
-    products: [
-      { name: "Velocity Pro", image: "/images/shoe-1.jpg", alt: "Running shoe", features: [] },
-      { name: "Aero Jacket", image: "/images/jacket-1.jpg", alt: "Lightweight jacket", features: [] },
-    ],
-  },
-  testimonials: {
-    heading: "What Athletes Say",
-    testimonials: [
-      { quote: "Best running gear I've ever owned.", author: "Sarah K.", role: "Marathon Runner", avatar: "/images/avatar-1.jpg", avatarAlt: "Sarah" },
-    ],
-  },
-  footer: {
-    brand: { name: "Velocity", logo: "/images/logo.svg" },
-    newsletter: { heading: "Stay in the race", placeholder: "Enter your email", cta: "Subscribe" },
-    socials: [{ platform: "Instagram", url: "https://instagram.com", icon: "instagram" }],
-    links: [{ group: "Shop", items: [{ label: "Running", href: "/running" }] }],
-    legal: "\u00a9 2026 Velocity Athletics",
-  },
-};
+import { useActiveSite, useSiteContent } from "@/lib/hooks";
 
 /* -------------------------------------------------------------------------- */
 /*  Field Editor Wrapper                                                      */
@@ -62,20 +31,79 @@ function FieldEditorWrapper({
 /* -------------------------------------------------------------------------- */
 
 export default function ContentPage() {
-  const [content, setContent] = useState<Record<string, unknown>>(DEMO_CONTENT);
+  const { site, loading: siteLoading, error: siteError } = useActiveSite();
+  const { content: dbContent, loading: contentLoading, error: contentError, saveContent } = useSiteContent(site?.id ?? null);
+
+  const [localContent, setLocalContent] = useState<Record<string, unknown> | null>(null);
   const [activeSection, setActiveSection] = useState("hero");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  // Sync DB content into local state when it arrives
+  const content = localContent ?? dbContent;
+
+  // When dbContent loads and localContent hasn't been set, initialize it
+  if (dbContent && !localContent) {
+    // This will trigger a re-render with the DB content
+    // Using a controlled pattern: local edits override DB state
+  }
+
+  const isLoading = siteLoading || contentLoading;
+  const error = siteError || contentError;
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col h-[calc(100vh-4rem)]">
+        <div className="flex items-center justify-center flex-1">
+          <div className="text-center">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent mb-3" />
+            <p className="text-sm text-zinc-500">Loading content...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col h-[calc(100vh-4rem)]">
+        <div className="flex items-center justify-center flex-1">
+          <div className="text-center">
+            <p className="text-sm text-red-400 mb-2">Failed to load content.</p>
+            <p className="text-xs text-zinc-500">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!site || !content) {
+    return (
+      <div className="flex flex-col h-[calc(100vh-4rem)]">
+        <div className="flex items-center justify-center flex-1">
+          <div className="text-center">
+            <p className="text-sm text-zinc-400">No site or content found.</p>
+            <p className="text-xs text-zinc-600 mt-1">Create a site first to start editing content.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const sections = generateSectionsFromContent(content);
 
-  const handleSave = async (updatedContent: Record<string, unknown>) => {
+  const handleSave = async () => {
+    if (!content) return;
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setContent(updatedContent);
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      await saveContent(content);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch {
+      // Error is handled by the hook
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -107,7 +135,7 @@ export default function ContentPage() {
             </span>
           )}
           <button
-            onClick={() => handleSave(content)}
+            onClick={handleSave}
             disabled={saving}
             className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 shadow-lg shadow-blue-600/20"
           >
@@ -140,13 +168,16 @@ export default function ContentPage() {
                       ]
                     }
                     onChange={(newValue) => {
-                      setContent((prev) => ({
-                        ...prev,
-                        [activeSection]: {
-                          ...(prev[activeSection] as Record<string, unknown>),
-                          [field.key]: newValue,
-                        },
-                      }));
+                      setLocalContent((prev) => {
+                        const base = prev ?? content;
+                        return {
+                          ...base,
+                          [activeSection]: {
+                            ...(base[activeSection] as Record<string, unknown>),
+                            [field.key]: newValue,
+                          },
+                        };
+                      });
                     }}
                   />
                 ))}
