@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { useCart } from "@/lib/cart";
 import { useTheme } from "@/lib/theme-context";
 
@@ -10,6 +11,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const { itemCount } = useCart();
   const { theme, variant } = useTheme();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -20,11 +22,19 @@ export function Navbar() {
   // Determine nav styling per theme variant
   const getNavStyles = () => {
     if (variant === "luxury") {
+      if (isHomepage && !scrolled) {
+        return {
+          backgroundColor: "rgba(0,0,0,0.15)",
+          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          color: "#FFFFFF",
+          backdropFilter: "blur(8px)",
+        };
+      }
       return {
-        backgroundColor: scrolled ? `${theme.colors.bg}ee` : "transparent",
-        borderBottom: scrolled ? `1px solid ${theme.colors.border}` : "1px solid transparent",
-        color: scrolled ? theme.colors.text : "#FFFFFF",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
+        backgroundColor: `${theme.colors.bg}ee`,
+        borderBottom: `1px solid ${theme.colors.border}`,
+        color: theme.colors.text,
+        backdropFilter: "blur(12px)",
       };
     }
     if (variant === "streetwear") {
@@ -88,11 +98,12 @@ export function Navbar() {
   const cartIconColor = variant === "luxury" && !scrolled ? "#FFFFFF" : theme.colors.text;
   const badgeBg = variant === "streetwear" ? theme.colors.primary : theme.colors.text;
 
-  const isTransparent = variant === "luxury" && !scrolled;
+  const isHomepage = pathname === "/" || pathname === "";
+  const isTransparent = variant === "luxury" && !scrolled && isHomepage;
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isTransparent ? "nav-transparent" : ""}`}
+      className={`sticky top-0 z-50 transition-all duration-300 ${isTransparent ? "nav-transparent" : ""}`}
       style={{
         ...navStyles,
         height: variant === "minimal" ? "56px" : "64px",
