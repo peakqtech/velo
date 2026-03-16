@@ -1,0 +1,17 @@
+{
+  "name": "@velo/integration-cms",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:ci": "vitest run"
+  },
+  "dependencies": {
+    "@velo/integration-registry": "workspace:*",
+    "zod": "^3.25.67"
+  },
+  "velo": {
+    "type": "integration"
+  }
+}

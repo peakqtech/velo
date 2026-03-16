@@ -700,6 +700,15 @@ importers:
         specifier: ^3.25.67
         version: 3.25.76
 
+  packages/integrations/cms:
+    dependencies:
+      '@velo/integration-registry':
+        specifier: workspace:*
+        version: link:../../infra/integration-registry
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
+
   packages/integrations/forms:
     dependencies:
       '@velo/integration-registry':
