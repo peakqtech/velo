@@ -47,6 +47,15 @@ a, button, img {
   transition: all 0.3s ease;
 }
 
+/* Transparent navbar — force white text/icons over hero */
+.nav-transparent,
+.nav-transparent * {
+  color: #FFFFFF !important;
+}
+.nav-transparent svg {
+  stroke: #FFFFFF !important;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

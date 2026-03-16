@@ -92,7 +92,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${isTransparent ? "[&_*]:!text-white [&_svg]:!stroke-white" : ""}`}
+      className={`sticky top-0 z-50 transition-all duration-300 ${isTransparent ? "nav-transparent" : ""}`}
       style={{
         ...navStyles,
         height: variant === "minimal" ? "56px" : "64px",
