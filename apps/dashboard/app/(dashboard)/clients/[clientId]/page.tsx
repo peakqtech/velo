@@ -216,6 +216,27 @@ export default function ClientDetailPage() {
                 }}
               />
             ))}
+            {/* Fill empty grid slot when odd number of sites */}
+            {client.sites.length % 2 === 1 && (
+              <button
+                onClick={() => setShowCreateSite(true)}
+                className="rounded-xl border-2 border-dashed border-zinc-800 hover:border-zinc-600 bg-transparent flex flex-col items-center justify-center gap-3 transition-colors group cursor-pointer"
+                style={{ aspectRatio: "16/10", minHeight: "200px" }}
+              >
+                <div className="h-12 w-12 rounded-xl border-2 border-dashed border-zinc-700 group-hover:border-zinc-500 flex items-center justify-center transition-colors">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-600 group-hover:text-zinc-400 transition-colors">
+                    <rect x="3" y="3" width="18" height="14" rx="2" />
+                    <line x1="3" y1="7" x2="21" y2="7" />
+                    <circle cx="6" cy="5" r="0.5" fill="currentColor" />
+                    <circle cx="8.5" cy="5" r="0.5" fill="currentColor" />
+                    <circle cx="11" cy="5" r="0.5" fill="currentColor" />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-zinc-600 group-hover:text-zinc-400 transition-colors">
+                  Add Another Great Site
+                </span>
+              </button>
+            )}
           </div>
         )}
       </div>
