@@ -691,6 +691,42 @@ importers:
         specifier: ^19.0.0
         version: 19.2.3
 
+  packages/integrations/analytics:
+    dependencies:
+      '@velo/integration-registry':
+        specifier: workspace:*
+        version: link:../../infra/integration-registry
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
+
+  packages/integrations/forms:
+    dependencies:
+      '@velo/integration-registry':
+        specifier: workspace:*
+        version: link:../../infra/integration-registry
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
+
+  packages/integrations/payments:
+    dependencies:
+      '@velo/integration-registry':
+        specifier: workspace:*
+        version: link:../../infra/integration-registry
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
+
+  packages/integrations/whatsapp:
+    dependencies:
+      '@velo/integration-registry':
+        specifier: workspace:*
+        version: link:../../infra/integration-registry
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
+
   packages/sections/brand-story:
     dependencies:
       '@velo/animations':
