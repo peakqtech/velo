@@ -91,21 +91,19 @@ export function Footer({ content, variant = "default", localeSwitcher }: FooterP
                 Thanks for subscribing!
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="mt-6 flex items-center justify-center">
-                <div className="relative flex w-full max-w-md">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={newsletter.placeholder}
-                    required
-                    aria-label="Email address"
-                    className={styles.input}
-                  />
-                  <button type="submit" className={`${styles.button} whitespace-nowrap absolute right-1.5 top-1/2 -translate-y-1/2`}>
-                    {newsletter.cta}
-                  </button>
-                </div>
+              <form onSubmit={handleSubmit} className="mt-8 flex gap-3 max-w-md mx-auto">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={newsletter.placeholder}
+                  required
+                  aria-label="Email address"
+                  className={styles.input}
+                />
+                <button type="submit" className={styles.button}>
+                  {newsletter.cta}
+                </button>
               </form>
             )}
           </motion.div>
