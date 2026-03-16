@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const navItems = [
   { label: "Overview", href: "/", icon: "grid" },
@@ -23,48 +24,107 @@ const icons: Record<string, React.JSX.Element> = {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [siteDropdownOpen, setSiteDropdownOpen] = useState(false);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-zinc-950">
       {/* Sidebar */}
-      <aside className="w-60 shrink-0 border-r border-zinc-800 flex flex-col">
-        <div className="h-14 flex items-center px-5 border-b border-zinc-800">
-          <span className="font-bold text-lg tracking-tight">Velo</span>
+      <aside className="w-60 shrink-0 border-r border-zinc-800/80 flex flex-col bg-zinc-950">
+        {/* Logo */}
+        <div className="h-14 flex items-center px-5 border-b border-zinc-800/80">
+          <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
+            Velo
+          </span>
         </div>
-        <nav className="flex-1 py-4 px-3 space-y-1">
+
+        {/* Site Selector */}
+        <div className="px-3 pt-3 pb-1">
+          <button
+            onClick={() => setSiteDropdownOpen(!siteDropdownOpen)}
+            className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800/80 transition-colors"
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="h-6 w-6 shrink-0 rounded bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
+                <span className="text-[10px] font-bold text-white">V</span>
+              </div>
+              <div className="min-w-0 text-left">
+                <p className="text-xs font-medium text-zinc-200 truncate">Velocity Demo</p>
+                <p className="text-[10px] text-zinc-500 truncate">velocity-demo.velo.dev</p>
+              </div>
+            </div>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-500 shrink-0">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          {siteDropdownOpen && (
+            <div className="mt-1 rounded-lg border border-zinc-800 bg-zinc-900 p-1 shadow-xl shadow-black/50">
+              <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-md bg-zinc-800">
+                <div className="h-5 w-5 rounded bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
+                  <span className="text-[9px] font-bold text-white">V</span>
+                </div>
+                <span className="text-xs text-zinc-200">Velocity Demo</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-400 ml-auto">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <div className="mt-1 border-t border-zinc-800 pt-1">
+                <button className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 transition-colors">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Add new site
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 py-3 px-3 space-y-0.5">
           {navItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
                   isActive
-                    ? "bg-zinc-800 text-zinc-100"
+                    ? "bg-zinc-800/80 text-zinc-100 shadow-sm"
                     : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900"
                 }`}
               >
-                {icons[item.icon]}
+                <span className="relative flex items-center">
+                  {icons[item.icon]}
+                  {isActive && (
+                    <span className="absolute -left-[18px] top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-blue-500" />
+                  )}
+                </span>
                 {item.label}
               </Link>
             );
           })}
         </nav>
-        <div className="p-3 border-t border-zinc-800">
-          <div className="flex items-center gap-3 px-3 py-2">
-            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-medium">
-              U
+
+        {/* User section */}
+        <div className="p-3 border-t border-zinc-800/80">
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-900 transition-colors cursor-pointer">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-xs font-bold text-white shadow-lg shadow-blue-600/20">
+              Y
             </div>
-            <div className="text-sm">
-              <div className="text-zinc-300">User</div>
-              <div className="text-zinc-500 text-xs">Free plan</div>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-medium text-zinc-200 truncate">Yohanes</div>
+              <div className="text-[11px] text-zinc-500 truncate">Free plan</div>
             </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-600 shrink-0">
+              <circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" />
+            </svg>
           </div>
         </div>
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto bg-zinc-950">
         <div className="p-8">{children}</div>
       </main>
     </div>
