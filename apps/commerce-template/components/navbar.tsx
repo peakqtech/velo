@@ -88,9 +88,11 @@ export function Navbar() {
   const cartIconColor = variant === "luxury" && !scrolled ? "#FFFFFF" : theme.colors.text;
   const badgeBg = variant === "streetwear" ? theme.colors.primary : theme.colors.text;
 
+  const isTransparent = variant === "luxury" && !scrolled;
+
   return (
     <header
-      className="sticky top-0 z-50 transition-all duration-300"
+      className={`sticky top-0 z-50 transition-all duration-300 ${isTransparent ? "[&_*]:!text-white [&_svg]:!stroke-white" : ""}`}
       style={{
         ...navStyles,
         height: variant === "minimal" ? "56px" : "64px",
