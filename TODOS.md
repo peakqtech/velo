@@ -183,12 +183,38 @@
 
 ### Phase 3.1 — Universal 5 Integrations
 
-#### P1 — Stripe Integration (`@velo/integration-stripe`)
-- **What:** Stripe Checkout for one-time payments, Stripe Billing for subscriptions, webhook handling for payment events, Stripe Customer Portal for self-serve billing. Dashboard module: revenue chart, recent transactions, Stripe API key config.
-- **Why:** Payments = revenue for business owners. This is the #1 reason to upgrade from a static site.
-- **Components:** `<CheckoutButton>`, `<PricingTable>`, `<PaymentStatus>`
-- **Routes:** POST /checkout, POST /webhook, GET /portal
-- **Effort:** L (1-2 weeks)
+#### P1 — Payment Integration (`@velo/integration-payments`)
+- **What:** Multi-provider payment system with a unified interface. Supports 4 providers:
+  - **Stripe** — Global, best for international/SaaS (cards, subscriptions, billing portal)
+  - **Xendit** — Indonesia/SE Asia, best DX (VA, e-wallets: GoPay/OVO/Dana, QRIS, cards)
+  - **Durianpay** — Indonesia, best infra flexibility (aggregator, multi-acquirer routing)
+  - **Midtrans** — Indonesia, best ecosystem (Tokopedia/GoTo group, widest payment methods)
+- **Architecture:** Provider adapter pattern — a `PaymentProvider` interface with provider-specific adapters. Site owner picks their provider in dashboard settings. Unified API for the rest of the system.
+  ```
+  interface PaymentProvider {
+    name: string;
+    createCheckout(params: CheckoutParams): Promise<CheckoutSession>;
+    handleWebhook(payload: unknown, signature: string): Promise<PaymentEvent>;
+    getPaymentStatus(id: string): Promise<PaymentStatus>;
+    createBillingPortal?(customerId: string): Promise<string>; // Stripe-only
+    supportedMethods: PaymentMethod[]; // card, va, ewallet, qris, etc.
+  }
+  ```
+- **Why:** Payments = revenue for business owners. Indonesian businesses NEED local payment methods (70%+ of Indonesian e-commerce uses e-wallets/VA, not cards). Supporting Xendit/Midtrans/Durianpay alongside Stripe makes Velo viable for SE Asian market.
+- **Components:** `<CheckoutButton>`, `<PricingTable>`, `<PaymentStatus>`, `<PaymentMethodSelector>` (shows available methods per provider)
+- **Routes:** POST /checkout, POST /webhook/:provider, GET /status/:id, GET /portal
+- **Dashboard:** Revenue chart, recent transactions, provider selection dropdown, API key config per provider, supported payment methods display
+- **Provider comparison (for docs):**
+  | Feature | Stripe | Xendit | Durianpay | Midtrans |
+  |---------|--------|--------|-----------|----------|
+  | Cards | ✅ | ✅ | ✅ | ✅ |
+  | E-wallets (GoPay/OVO/Dana) | ❌ | ✅ | ✅ | ✅ |
+  | Virtual Account (bank transfer) | ❌ | ✅ | ✅ | ✅ |
+  | QRIS | ❌ | ✅ | ✅ | ✅ |
+  | Subscriptions | ✅ | ✅ | ❌ | ❌ |
+  | Billing Portal | ✅ | ❌ | ❌ | ❌ |
+  | Global coverage | ✅ | SE Asia | Indonesia | Indonesia |
+- **Effort:** XL (2-3 weeks — 1 week for abstraction + Stripe, then 2-3 days per additional provider)
 - **Depends on:** Integration registry, Dashboard shell.
 - **Status:** TODO
 
@@ -257,10 +283,10 @@
 - **Status:** TODO
 
 #### P2 — Billing Module
-- **What:** Stripe-powered subscription management for Velo itself (not client's customers). Plan tiers: Free (1 site, 3 integrations), Pro ($49/mo, unlimited sites + integrations), Agency ($199/mo, white-label + client management). Usage dashboard, invoice history, plan upgrade/downgrade.
-- **Why:** This is how Velo makes money.
+- **What:** Subscription management for Velo itself (not client's customers). Uses Stripe for global billing or Xendit for Indonesian billing (IDR pricing). Plan tiers: Free (1 site, 3 integrations), Pro ($49/mo or Rp 499k/mo, unlimited sites + integrations), Agency ($199/mo or Rp 1.99M/mo, white-label + client management). Usage dashboard, invoice history, plan upgrade/downgrade.
+- **Why:** This is how Velo makes money. Indonesian pricing makes it accessible to local market.
 - **Effort:** L (1-2 weeks)
-- **Depends on:** Stripe integration.
+- **Depends on:** Payment integration.
 - **Status:** TODO
 
 #### P2 — Settings Module
