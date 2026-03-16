@@ -48,12 +48,14 @@ export default function ContentPage() {
   };
   const templateUrl = `http://localhost:${templatePorts[site?.template ?? "velocity"] ?? 3000}/en`;
 
+  // Sync DB content into local state when it arrives
+  const content = localContent ?? dbContent;
+
   // Listen for preview-ready message from iframe
   useEffect(() => {
     const handler = (event: MessageEvent) => {
       if (event.data?.type === "velo:preview-ready") {
         setPreviewReady(true);
-        // Send initial content to iframe
         if (content && iframeRef.current?.contentWindow) {
           iframeRef.current.contentWindow.postMessage(
             { type: "velo:content-update", content },
@@ -85,15 +87,6 @@ export default function ContentPage() {
       );
     }
   }, [activeSection, previewReady]);
-
-  // Sync DB content into local state when it arrives
-  const content = localContent ?? dbContent;
-
-  // When dbContent loads and localContent hasn't been set, initialize it
-  if (dbContent && !localContent) {
-    // This will trigger a re-render with the DB content
-    // Using a controlled pattern: local edits override DB state
-  }
 
   const isLoading = siteLoading || contentLoading;
   const error = siteError || contentError;
