@@ -3,9 +3,11 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 import type { TestimonialsProps } from "./testimonials.types";
+import { getTestimonialsVariantStyles } from "./testimonials-variants";
 
-export function Testimonials({ content }: TestimonialsProps) {
+function CarouselTestimonials({ content }: TestimonialsProps) {
   const { heading, testimonials } = content;
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -190,4 +192,95 @@ export function Testimonials({ content }: TestimonialsProps) {
       </div>
     </section>
   );
+}
+
+function GridTestimonials({ content, variant = "ember" }: TestimonialsProps) {
+  const { heading, testimonials } = content;
+  const shouldReduceMotion = useReducedMotion();
+  const styles = getTestimonialsVariantStyles(variant!);
+
+  return (
+    <section
+      className={`testimonials-section ${styles.section}`}
+      aria-label="Testimonials"
+    >
+      <div className="max-w-content mx-auto">
+        {styles.headingWrapper ? (
+          <motion.div
+            className={`testimonials-heading ${styles.headingWrapper}`}
+            initial={shouldReduceMotion ? "visible" : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+          >
+            {variant === "ember" && <div className="w-12 h-[1px] bg-primary mx-auto mb-6" />}
+            <h2 className={styles.heading}>{heading}</h2>
+          </motion.div>
+        ) : (
+          <motion.h2
+            className={`testimonials-heading ${styles.heading}`}
+            initial={shouldReduceMotion ? "visible" : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+          >
+            {heading}
+          </motion.h2>
+        )}
+
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          initial={shouldReduceMotion ? "visible" : "hidden"}
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+        >
+          {testimonials.map((t, i) => (
+            <motion.div key={i} variants={fadeInUp} className={`testimonial-card ${styles.card}`}>
+              {styles.showStars && (
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, j) => (
+                    <svg
+                      key={j}
+                      width="16"
+                      height="16"
+                      className="text-amber-400"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                  ))}
+                </div>
+              )}
+              {styles.quoteMark && (
+                <div className={styles.quoteMark}>&ldquo;</div>
+              )}
+              <p className={styles.quoteText}>{t.quote}</p>
+              <div className={`flex items-center gap-3 mt-6 ${variant === "ember" ? "flex-col" : ""}`}>
+                <Image
+                  src={t.avatar}
+                  alt={t.avatarAlt}
+                  width={48}
+                  height={48}
+                  className={`${styles.avatarSize} rounded-full object-cover`}
+                />
+                <div className={variant === "ember" ? "text-center" : ""}>
+                  <p className={styles.authorName}>{t.author}</p>
+                  <p className={styles.authorRole}>{t.role}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+export function Testimonials({ content, variant = "default" }: TestimonialsProps) {
+  if (variant === "default") {
+    return <CarouselTestimonials content={content} variant={variant} />;
+  }
+  return <GridTestimonials content={content} variant={variant} />;
 }

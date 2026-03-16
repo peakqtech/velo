@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
-@source "../../../packages/sections/haven-hero/src/**/*.tsx";
-@source "../../../packages/sections/haven-properties/src/**/*.tsx";
-@source "../../../packages/sections/haven-amenities/src/**/*.tsx";
-@source "../../../packages/sections/haven-virtual-tour/src/**/*.tsx";
-@source "../../../packages/sections/haven-neighborhood/src/**/*.tsx";
-@source "../../../packages/sections/haven-agent/src/**/*.tsx";
-@source "../../../packages/sections/haven-footer/src/**/*.tsx";
-@source "../../../packages/infra/motion-components/src/**/*.tsx";
+@source "../../../packages/sections/haven-hero/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/haven-properties/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/haven-amenities/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/haven-virtual-tour/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/haven-neighborhood/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/haven-agent/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/footer/src/**/*.{ts,tsx}";
+@source "../../../packages/infra/motion-components/src/**/*.{ts,tsx}";
 
 :root {
   --color-primary: #2dd4bf;

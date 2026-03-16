@@ -1,3 +1,3 @@
 export interface SerenityBookingProps {
-  content: import("@velocity/types").SerenityBookingContent;
+  content: import("@velo/types").SerenityBookingContent;
 }

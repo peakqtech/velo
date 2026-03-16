@@ -1,7 +1,7 @@
 "use client";
 import { motion, useReducedMotion } from "framer-motion";
 import type { HavenAmenitiesProps } from "./haven-amenities.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function HavenAmenities({ content }: HavenAmenitiesProps) {
   const { heading, subtitle, amenities } = content;

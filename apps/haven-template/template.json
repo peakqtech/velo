@@ -6,12 +6,12 @@
   "style": "Glassmorphism",
   "contentType": "HavenContent",
   "sections": {
-    "@velocity/haven-hero": { "component": "HavenHero", "configExport": "havenHeroScrollConfig", "contentKey": "hero" },
-    "@velocity/haven-properties": { "component": "HavenProperties", "configExport": "havenPropertiesScrollConfig", "contentKey": "properties" },
-    "@velocity/haven-amenities": { "component": "HavenAmenities", "configExport": "havenAmenitiesScrollConfig", "contentKey": "amenities" },
-    "@velocity/haven-virtual-tour": { "component": "HavenVirtualTour", "configExport": "havenVirtualTourScrollConfig", "contentKey": "virtualTour" },
-    "@velocity/haven-neighborhood": { "component": "HavenNeighborhood", "configExport": "havenNeighborhoodScrollConfig", "contentKey": "neighborhood" },
-    "@velocity/haven-agent": { "component": "HavenAgent", "configExport": "havenAgentScrollConfig", "contentKey": "agent" },
-    "@velocity/haven-footer": { "component": "HavenFooter", "configExport": "havenFooterScrollConfig", "contentKey": "footer" }
+    "@velo/haven-hero": { "component": "HavenHero", "configExport": "havenHeroScrollConfig", "contentKey": "hero" },
+    "@velo/haven-properties": { "component": "HavenProperties", "configExport": "havenPropertiesScrollConfig", "contentKey": "properties" },
+    "@velo/haven-amenities": { "component": "HavenAmenities", "configExport": "havenAmenitiesScrollConfig", "contentKey": "amenities" },
+    "@velo/haven-virtual-tour": { "component": "HavenVirtualTour", "configExport": "havenVirtualTourScrollConfig", "contentKey": "virtualTour" },
+    "@velo/haven-neighborhood": { "component": "HavenNeighborhood", "configExport": "havenNeighborhoodScrollConfig", "contentKey": "neighborhood" },
+    "@velo/haven-agent": { "component": "HavenAgent", "configExport": "havenAgentScrollConfig", "contentKey": "agent" },
+    "@velo/footer": { "component": "Footer", "configExport": "footerScrollConfig", "contentKey": "footer", "extraProps": { "variant": "haven", "localeSwitcher": "<LocaleSwitcher />" } }
   }
 }

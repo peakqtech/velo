@@ -7,7 +7,7 @@ import {
   slideInFromLeft,
   slideInFromRight,
   staggerContainer,
-} from "@velocity/animations";
+} from "@velo/animations";
 
 export function HavenAgent({ content }: HavenAgentProps) {
   const {

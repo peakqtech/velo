@@ -1,3 +1,3 @@
 export interface PrismFAQProps {
-  content: import("@velocity/types").PrismFAQContent;
+  content: import("@velo/types").PrismFAQContent;
 }

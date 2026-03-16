@@ -1,0 +1,21 @@
+{
+  "name": "prism",
+  "displayName": "Prism",
+  "colors": {
+    "primary": "#7c3aed",
+    "primary-light": "#8b5cf6",
+    "secondary": "#f0f0f5",
+    "accent": "#e0e7ff",
+    "background": "#fafafa",
+    "foreground": "#1a1a2e",
+    "muted": "#6b7280"
+  },
+  "fonts": {
+    "display": "Space Grotesk",
+    "body": "DM Sans"
+  },
+  "layout": {
+    "maxWidth": "1280px",
+    "sectionPadding": "clamp(4rem, 10vw, 7rem)"
+  }
+}

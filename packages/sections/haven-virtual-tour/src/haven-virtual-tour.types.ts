@@ -1,3 +1,3 @@
 export interface HavenVirtualTourProps {
-  content: import("@velocity/types").HavenVirtualTourContent;
+  content: import("@velo/types").HavenVirtualTourContent;
 }

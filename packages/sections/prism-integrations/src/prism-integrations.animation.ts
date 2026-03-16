@@ -1,4 +1,4 @@
-import type { ScrollConfig } from "@velocity/scroll-engine";
+import type { ScrollConfig } from "@velo/scroll-engine";
 
 export const prismIntegrationsScrollConfig: ScrollConfig = {
   trigger: ".prism-integrations-section",

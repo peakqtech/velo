@@ -1,3 +1,3 @@
 export interface PrismIntegrationsProps {
-  content: import("@velocity/types").PrismIntegrationsContent;
+  content: import("@velo/types").PrismIntegrationsContent;
 }

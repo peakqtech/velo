@@ -6,8 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "test": "vitest run"
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "16.1.6",
@@ -16,18 +17,19 @@
     "framer-motion": "^12.36.0",
     "gsap": "^3.14.2",
     "lenis": "^1.3.18",
-    "@velocity/types": "workspace:*",
-    "@velocity/scroll-engine": "workspace:*",
-    "@velocity/animations": "workspace:*",
-    "@velocity/motion-components": "workspace:*",
-    "@velocity/i18n": "workspace:*",
-    "@velocity/serenity-hero": "workspace:*",
-    "@velocity/serenity-services": "workspace:*",
-    "@velocity/serenity-process": "workspace:*",
-    "@velocity/serenity-practitioners": "workspace:*",
-    "@velocity/serenity-testimonials": "workspace:*",
-    "@velocity/serenity-booking": "workspace:*",
-    "@velocity/serenity-footer": "workspace:*"
+    "@velo/types": "workspace:*",
+    "@velo/scroll-engine": "workspace:*",
+    "@velo/animations": "workspace:*",
+    "@velo/motion-components": "workspace:*",
+    "@velo/i18n": "workspace:*",
+    "@velo/serenity-hero": "workspace:*",
+    "@velo/serenity-services": "workspace:*",
+    "@velo/serenity-process": "workspace:*",
+    "@velo/serenity-practitioners": "workspace:*",
+    "@velo/testimonials": "workspace:*",
+    "@velo/serenity-booking": "workspace:*",
+    "@velo/footer": "workspace:*",
+    "@velo/ui": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -1,3 +1,3 @@
 export interface HavenHeroProps {
-  content: import("@velocity/types").HavenHeroContent;
+  content: import("@velo/types").HavenHeroContent;
 }

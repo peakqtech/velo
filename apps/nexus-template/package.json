@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "16.1.6",
@@ -15,18 +16,19 @@
     "framer-motion": "^12.36.0",
     "gsap": "^3.14.2",
     "lenis": "^1.3.18",
-    "@velocity/types": "workspace:*",
-    "@velocity/scroll-engine": "workspace:*",
-    "@velocity/animations": "workspace:*",
-    "@velocity/motion-components": "workspace:*",
-    "@velocity/i18n": "workspace:*",
-    "@velocity/nexus-hero": "workspace:*",
-    "@velocity/nexus-services": "workspace:*",
-    "@velocity/nexus-case-studies": "workspace:*",
-    "@velocity/nexus-team": "workspace:*",
-    "@velocity/nexus-stats": "workspace:*",
-    "@velocity/nexus-contact": "workspace:*",
-    "@velocity/nexus-footer": "workspace:*"
+    "@velo/types": "workspace:*",
+    "@velo/scroll-engine": "workspace:*",
+    "@velo/animations": "workspace:*",
+    "@velo/motion-components": "workspace:*",
+    "@velo/i18n": "workspace:*",
+    "@velo/nexus-hero": "workspace:*",
+    "@velo/nexus-services": "workspace:*",
+    "@velo/nexus-case-studies": "workspace:*",
+    "@velo/nexus-team": "workspace:*",
+    "@velo/nexus-stats": "workspace:*",
+    "@velo/nexus-contact": "workspace:*",
+    "@velo/footer": "workspace:*",
+    "@velo/ui": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -35,42 +35,45 @@ importers:
 
   apps/ember-template:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../packages/infra/animations
-      '@velocity/ember-chef':
+      '@velo/ember-chef':
         specifier: workspace:*
         version: link:../../packages/sections/ember-chef
-      '@velocity/ember-footer':
-        specifier: workspace:*
-        version: link:../../packages/sections/ember-footer
-      '@velocity/ember-gallery':
+      '@velo/ember-gallery':
         specifier: workspace:*
         version: link:../../packages/sections/ember-gallery
-      '@velocity/ember-hero':
+      '@velo/ember-hero':
         specifier: workspace:*
         version: link:../../packages/sections/ember-hero
-      '@velocity/ember-menu':
+      '@velo/ember-menu':
         specifier: workspace:*
         version: link:../../packages/sections/ember-menu
-      '@velocity/ember-reservation':
+      '@velo/ember-reservation':
         specifier: workspace:*
         version: link:../../packages/sections/ember-reservation
-      '@velocity/ember-testimonials':
+      '@velo/footer':
         specifier: workspace:*
-        version: link:../../packages/sections/ember-testimonials
-      '@velocity/i18n':
+        version: link:../../packages/sections/footer
+      '@velo/i18n':
         specifier: workspace:*
         version: link:../../packages/infra/i18n
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../packages/infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../packages/infra/scroll-engine
-      '@velocity/types':
+      '@velo/testimonials':
+        specifier: workspace:*
+        version: link:../../packages/sections/testimonials
+      '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -109,44 +112,72 @@ importers:
         specifier: ^5
         version: 5.9.3
 
+  apps/gallery:
+    dependencies:
+      next:
+        specifier: 16.1.6
+        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      react:
+        specifier: 19.2.3
+        version: 19.2.3
+      react-dom:
+        specifier: 19.2.3
+        version: 19.2.3(react@19.2.3)
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.37
+      '@types/react':
+        specifier: ^19
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.14)
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
   apps/haven-template:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../packages/infra/animations
-      '@velocity/haven-agent':
+      '@velo/footer':
+        specifier: workspace:*
+        version: link:../../packages/sections/footer
+      '@velo/haven-agent':
         specifier: workspace:*
         version: link:../../packages/sections/haven-agent
-      '@velocity/haven-amenities':
+      '@velo/haven-amenities':
         specifier: workspace:*
         version: link:../../packages/sections/haven-amenities
-      '@velocity/haven-footer':
-        specifier: workspace:*
-        version: link:../../packages/sections/haven-footer
-      '@velocity/haven-hero':
+      '@velo/haven-hero':
         specifier: workspace:*
         version: link:../../packages/sections/haven-hero
-      '@velocity/haven-neighborhood':
+      '@velo/haven-neighborhood':
         specifier: workspace:*
         version: link:../../packages/sections/haven-neighborhood
-      '@velocity/haven-properties':
+      '@velo/haven-properties':
         specifier: workspace:*
         version: link:../../packages/sections/haven-properties
-      '@velocity/haven-virtual-tour':
+      '@velo/haven-virtual-tour':
         specifier: workspace:*
         version: link:../../packages/sections/haven-virtual-tour
-      '@velocity/i18n':
+      '@velo/i18n':
         specifier: workspace:*
         version: link:../../packages/infra/i18n
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../packages/infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../packages/infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -187,42 +218,45 @@ importers:
 
   apps/nexus-template:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../packages/infra/animations
-      '@velocity/i18n':
+      '@velo/footer':
+        specifier: workspace:*
+        version: link:../../packages/sections/footer
+      '@velo/i18n':
         specifier: workspace:*
         version: link:../../packages/infra/i18n
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../packages/infra/motion-components
-      '@velocity/nexus-case-studies':
+      '@velo/nexus-case-studies':
         specifier: workspace:*
         version: link:../../packages/sections/nexus-case-studies
-      '@velocity/nexus-contact':
+      '@velo/nexus-contact':
         specifier: workspace:*
         version: link:../../packages/sections/nexus-contact
-      '@velocity/nexus-footer':
-        specifier: workspace:*
-        version: link:../../packages/sections/nexus-footer
-      '@velocity/nexus-hero':
+      '@velo/nexus-hero':
         specifier: workspace:*
         version: link:../../packages/sections/nexus-hero
-      '@velocity/nexus-services':
+      '@velo/nexus-services':
         specifier: workspace:*
         version: link:../../packages/sections/nexus-services
-      '@velocity/nexus-stats':
+      '@velo/nexus-stats':
         specifier: workspace:*
         version: link:../../packages/sections/nexus-stats
-      '@velocity/nexus-team':
+      '@velo/nexus-team':
         specifier: workspace:*
         version: link:../../packages/sections/nexus-team
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../packages/infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -263,42 +297,45 @@ importers:
 
   apps/prism-template:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../packages/infra/animations
-      '@velocity/i18n':
+      '@velo/footer':
+        specifier: workspace:*
+        version: link:../../packages/sections/footer
+      '@velo/i18n':
         specifier: workspace:*
         version: link:../../packages/infra/i18n
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../packages/infra/motion-components
-      '@velocity/prism-faq':
+      '@velo/prism-faq':
         specifier: workspace:*
         version: link:../../packages/sections/prism-faq
-      '@velocity/prism-features':
+      '@velo/prism-features':
         specifier: workspace:*
         version: link:../../packages/sections/prism-features
-      '@velocity/prism-footer':
-        specifier: workspace:*
-        version: link:../../packages/sections/prism-footer
-      '@velocity/prism-hero':
+      '@velo/prism-hero':
         specifier: workspace:*
         version: link:../../packages/sections/prism-hero
-      '@velocity/prism-integrations':
+      '@velo/prism-integrations':
         specifier: workspace:*
         version: link:../../packages/sections/prism-integrations
-      '@velocity/prism-pricing':
+      '@velo/prism-pricing':
         specifier: workspace:*
         version: link:../../packages/sections/prism-pricing
-      '@velocity/prism-testimonials':
-        specifier: workspace:*
-        version: link:../../packages/sections/prism-testimonials
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../packages/infra/scroll-engine
-      '@velocity/types':
+      '@velo/testimonials':
+        specifier: workspace:*
+        version: link:../../packages/sections/testimonials
+      '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -344,7 +381,7 @@ importers:
         version: 9.39.4(jiti@2.6.1)
       eslint-config-next:
         specifier: 16.1.6
-        version: 16.1.6(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+        version: 16.1.6(@typescript-eslint/parser@8.57.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0
@@ -360,42 +397,45 @@ importers:
 
   apps/serenity-template:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../packages/infra/animations
-      '@velocity/i18n':
+      '@velo/footer':
+        specifier: workspace:*
+        version: link:../../packages/sections/footer
+      '@velo/i18n':
         specifier: workspace:*
         version: link:../../packages/infra/i18n
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../packages/infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../packages/infra/scroll-engine
-      '@velocity/serenity-booking':
+      '@velo/serenity-booking':
         specifier: workspace:*
         version: link:../../packages/sections/serenity-booking
-      '@velocity/serenity-footer':
-        specifier: workspace:*
-        version: link:../../packages/sections/serenity-footer
-      '@velocity/serenity-hero':
+      '@velo/serenity-hero':
         specifier: workspace:*
         version: link:../../packages/sections/serenity-hero
-      '@velocity/serenity-practitioners':
+      '@velo/serenity-practitioners':
         specifier: workspace:*
         version: link:../../packages/sections/serenity-practitioners
-      '@velocity/serenity-process':
+      '@velo/serenity-process':
         specifier: workspace:*
         version: link:../../packages/sections/serenity-process
-      '@velocity/serenity-services':
+      '@velo/serenity-services':
         specifier: workspace:*
         version: link:../../packages/sections/serenity-services
-      '@velocity/serenity-testimonials':
+      '@velo/testimonials':
         specifier: workspace:*
-        version: link:../../packages/sections/serenity-testimonials
-      '@velocity/types':
+        version: link:../../packages/sections/testimonials
+      '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -457,39 +497,42 @@ importers:
 
   apps/velocity-template:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../packages/infra/animations
-      '@velocity/brand-story':
+      '@velo/brand-story':
         specifier: workspace:*
         version: link:../../packages/sections/brand-story
-      '@velocity/footer':
+      '@velo/footer':
         specifier: workspace:*
         version: link:../../packages/sections/footer
-      '@velocity/hero':
+      '@velo/hero':
         specifier: workspace:*
         version: link:../../packages/sections/hero
-      '@velocity/i18n':
+      '@velo/i18n':
         specifier: workspace:*
         version: link:../../packages/infra/i18n
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../packages/infra/motion-components
-      '@velocity/product-grid':
+      '@velo/product-grid':
         specifier: workspace:*
         version: link:../../packages/sections/product-grid
-      '@velocity/product-showcase':
+      '@velo/product-showcase':
         specifier: workspace:*
         version: link:../../packages/sections/product-showcase
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../packages/infra/scroll-engine
-      '@velocity/testimonials':
+      '@velo/testimonials':
         specifier: workspace:*
         version: link:../../packages/sections/testimonials
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../packages/infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../packages/infra/ui
       framer-motion:
         specifier: ^12.36.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -535,7 +578,7 @@ importers:
         version: 9.39.4(jiti@2.6.1)
       eslint-config-next:
         specifier: 16.1.6
-        version: 16.1.6(@typescript-eslint/parser@8.57.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+        version: 16.1.6(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0
@@ -559,7 +602,7 @@ importers:
 
   packages/infra/motion-components:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../animations
       framer-motion:
@@ -581,6 +624,12 @@ importers:
         specifier: ^19.0.0
         version: 19.2.3
 
+  packages/infra/theme:
+    dependencies:
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
+
   packages/infra/types: {}
 
   packages/infra/ui:
@@ -591,13 +640,13 @@ importers:
 
   packages/sections/brand-story:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -618,46 +667,16 @@ importers:
 
   packages/sections/ember-chef:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
-  packages/sections/ember-footer:
-    dependencies:
-      '@velocity/animations':
-        specifier: workspace:*
-        version: link:../../infra/animations
-      '@velocity/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -678,16 +697,16 @@ importers:
 
   packages/sections/ember-gallery:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -708,16 +727,16 @@ importers:
 
   packages/sections/ember-hero:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -738,16 +757,16 @@ importers:
 
   packages/sections/ember-menu:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -768,46 +787,16 @@ importers:
 
   packages/sections/ember-reservation:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
-  packages/sections/ember-testimonials:
-    dependencies:
-      '@velocity/animations':
-        specifier: workspace:*
-        version: link:../../infra/animations
-      '@velocity/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -828,12 +817,18 @@ importers:
 
   packages/sections/footer:
     dependencies:
-      '@velocity/scroll-engine':
+      '@velo/animations':
+        specifier: workspace:*
+        version: link:../../infra/animations
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
+      '@velo/ui':
+        specifier: workspace:*
+        version: link:../../infra/ui
       framer-motion:
         specifier: ^12.0.0
         version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -849,16 +844,16 @@ importers:
 
   packages/sections/haven-agent:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -879,46 +874,16 @@ importers:
 
   packages/sections/haven-amenities:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
-  packages/sections/haven-footer:
-    dependencies:
-      '@velocity/animations':
-        specifier: workspace:*
-        version: link:../../infra/animations
-      '@velocity/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -939,16 +904,16 @@ importers:
 
   packages/sections/haven-hero:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -969,16 +934,16 @@ importers:
 
   packages/sections/haven-neighborhood:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -999,16 +964,16 @@ importers:
 
   packages/sections/haven-properties:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1029,16 +994,16 @@ importers:
 
   packages/sections/haven-virtual-tour:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1059,16 +1024,16 @@ importers:
 
   packages/sections/hero:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1089,16 +1054,16 @@ importers:
 
   packages/sections/nexus-case-studies:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1119,46 +1084,16 @@ importers:
 
   packages/sections/nexus-contact:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
-  packages/sections/nexus-footer:
-    dependencies:
-      '@velocity/animations':
-        specifier: workspace:*
-        version: link:../../infra/animations
-      '@velocity/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1179,16 +1114,16 @@ importers:
 
   packages/sections/nexus-hero:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1209,16 +1144,16 @@ importers:
 
   packages/sections/nexus-services:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1239,16 +1174,16 @@ importers:
 
   packages/sections/nexus-stats:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1269,16 +1204,16 @@ importers:
 
   packages/sections/nexus-team:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1299,16 +1234,16 @@ importers:
 
   packages/sections/prism-faq:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1329,46 +1264,16 @@ importers:
 
   packages/sections/prism-features:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
-  packages/sections/prism-footer:
-    dependencies:
-      '@velocity/animations':
-        specifier: workspace:*
-        version: link:../../infra/animations
-      '@velocity/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1389,16 +1294,16 @@ importers:
 
   packages/sections/prism-hero:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1419,16 +1324,16 @@ importers:
 
   packages/sections/prism-integrations:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1449,46 +1354,16 @@ importers:
 
   packages/sections/prism-pricing:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
-  packages/sections/prism-testimonials:
-    dependencies:
-      '@velocity/animations':
-        specifier: workspace:*
-        version: link:../../infra/animations
-      '@velocity/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1509,10 +1384,10 @@ importers:
 
   packages/sections/product-grid:
     dependencies:
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1530,16 +1405,16 @@ importers:
 
   packages/sections/product-showcase:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1560,46 +1435,16 @@ importers:
 
   packages/sections/serenity-booking:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
-  packages/sections/serenity-footer:
-    dependencies:
-      '@velocity/animations':
-        specifier: workspace:*
-        version: link:../../infra/animations
-      '@velocity/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1620,16 +1465,16 @@ importers:
 
   packages/sections/serenity-hero:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1650,16 +1495,16 @@ importers:
 
   packages/sections/serenity-practitioners:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1680,16 +1525,16 @@ importers:
 
   packages/sections/serenity-process:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1710,46 +1555,16 @@ importers:
 
   packages/sections/serenity-services:
     dependencies:
-      '@velocity/animations':
+      '@velo/animations':
         specifier: workspace:*
         version: link:../../infra/animations
-      '@velocity/motion-components':
+      '@velo/motion-components':
         specifier: workspace:*
         version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
-        specifier: workspace:*
-        version: link:../../infra/types
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.36.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      gsap:
-        specifier: ^3.12.0
-        version: 3.14.2
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.3(react@19.2.3)
-
-  packages/sections/serenity-testimonials:
-    dependencies:
-      '@velocity/animations':
-        specifier: workspace:*
-        version: link:../../infra/animations
-      '@velocity/motion-components':
-        specifier: workspace:*
-        version: link:../../infra/motion-components
-      '@velocity/scroll-engine':
-        specifier: workspace:*
-        version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1770,10 +1585,13 @@ importers:
 
   packages/sections/testimonials:
     dependencies:
-      '@velocity/scroll-engine':
+      '@velo/animations':
+        specifier: workspace:*
+        version: link:../../infra/animations
+      '@velo/scroll-engine':
         specifier: workspace:*
         version: link:../../infra/scroll-engine
-      '@velocity/types':
+      '@velo/types':
         specifier: workspace:*
         version: link:../../infra/types
       framer-motion:
@@ -1789,13 +1607,34 @@ importers:
         specifier: ^19.0.0
         version: 19.2.3(react@19.2.3)
 
+  tools/ai-content:
+    dependencies:
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
+
+  tools/codegen:
+    dependencies:
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
+
   tools/create-app:
     dependencies:
       enquirer:
         specifier: ^2.4.1
         version: 2.4.1
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
 
   tools/eject: {}
+
+  tools/qa:
+    dependencies:
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
 
 packages:
 
@@ -4536,8 +4375,8 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
-  zod@4.3.6:
-    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
 snapshots:
 
@@ -6019,8 +5858,8 @@ snapshots:
       '@babel/parser': 7.29.0
       eslint: 9.39.4(jiti@2.6.1)
       hermes-parser: 0.25.1
-      zod: 4.3.6
-      zod-validation-error: 4.0.2(zod@4.3.6)
+      zod: 3.25.76
+      zod-validation-error: 4.0.2(zod@3.25.76)
     transitivePeerDependencies:
       - supports-color
 
@@ -7415,8 +7254,8 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-validation-error@4.0.2(zod@4.3.6):
+  zod-validation-error@4.0.2(zod@3.25.76):
     dependencies:
-      zod: 4.3.6
+      zod: 3.25.76
 
-  zod@4.3.6: {}
+  zod@3.25.76: {}

@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
-@source "../../../packages/sections/prism-hero/src/**/*.tsx";
-@source "../../../packages/sections/prism-features/src/**/*.tsx";
-@source "../../../packages/sections/prism-pricing/src/**/*.tsx";
-@source "../../../packages/sections/prism-integrations/src/**/*.tsx";
-@source "../../../packages/sections/prism-testimonials/src/**/*.tsx";
-@source "../../../packages/sections/prism-faq/src/**/*.tsx";
-@source "../../../packages/sections/prism-footer/src/**/*.tsx";
-@source "../../../packages/infra/motion-components/src/**/*.tsx";
+@source "../../../packages/sections/prism-hero/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/prism-features/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/prism-pricing/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/prism-integrations/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/testimonials/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/prism-faq/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/footer/src/**/*.{ts,tsx}";
+@source "../../../packages/infra/motion-components/src/**/*.{ts,tsx}";
 
 :root {
   --color-primary: #7c3aed;

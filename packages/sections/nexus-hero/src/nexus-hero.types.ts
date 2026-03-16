@@ -1,3 +1,3 @@
 export interface NexusHeroProps {
-  content: import("@velocity/types").NexusHeroContent;
+  content: import("@velo/types").NexusHeroContent;
 }

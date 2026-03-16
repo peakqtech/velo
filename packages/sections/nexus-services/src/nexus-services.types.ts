@@ -1,3 +1,3 @@
 export interface NexusServicesProps {
-  content: import("@velocity/types").NexusServicesContent;
+  content: import("@velo/types").NexusServicesContent;
 }

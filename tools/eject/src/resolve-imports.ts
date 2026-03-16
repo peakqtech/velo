@@ -2,18 +2,18 @@ import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, dirname } from "node:path";
 
 const PACKAGE_PATH_MAP: Record<string, string> = {
-  "@velocity/types": "lib/types",
-  "@velocity/scroll-engine": "lib/scroll-engine",
-  "@velocity/animations": "lib/animations",
-  "@velocity/motion-components": "components/motion",
-  "@velocity/i18n": "lib/i18n-utils",
-  "@velocity/ui": "components/ui",
-  "@velocity/hero": "sections/hero",
-  "@velocity/product-showcase": "sections/product-showcase",
-  "@velocity/brand-story": "sections/brand-story",
-  "@velocity/product-grid": "sections/product-grid",
-  "@velocity/testimonials": "sections/testimonials",
-  "@velocity/footer": "sections/footer",
+  "@velo/types": "lib/types",
+  "@velo/scroll-engine": "lib/scroll-engine",
+  "@velo/animations": "lib/animations",
+  "@velo/motion-components": "components/motion",
+  "@velo/i18n": "lib/i18n-utils",
+  "@velo/ui": "components/ui",
+  "@velo/hero": "sections/hero",
+  "@velo/product-showcase": "sections/product-showcase",
+  "@velo/brand-story": "sections/brand-story",
+  "@velo/product-grid": "sections/product-grid",
+  "@velo/testimonials": "sections/testimonials",
+  "@velo/footer": "sections/footer",
 };
 
 export function rewriteImports(dir: string, baseDir: string): void {
@@ -46,7 +46,7 @@ export function rewriteImports(dir: string, baseDir: string): void {
 
       let newContent = content.replace(regex, `$1${rel}$2`);
 
-      // Also rewrite inline import("@velocity/...") type expressions
+      // Also rewrite inline import("@velo/...") type expressions
       const importCallRegex = new RegExp(
         `(import\\(["'])${pkg.replace("/", "\\/")}(["']\\))`,
         "g"

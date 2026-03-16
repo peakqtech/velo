@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { SerenityPractitionersProps } from "./serenity-practitioners.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function SerenityPractitioners({ content }: SerenityPractitionersProps) {
   const { heading, subtitle, practitioners } = content;

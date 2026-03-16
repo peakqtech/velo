@@ -1,5 +1,8 @@
-export type { TestimonialsContent } from "@velocity/types";
+export type { TestimonialsContent } from "@velo/types";
+
+export type TestimonialsVariant = "default" | "ember" | "prism" | "serenity";
 
 export interface TestimonialsProps {
-  content: import("@velocity/types").TestimonialsContent;
+  content: import("@velo/types").BaseTestimonialContent;
+  variant?: TestimonialsVariant;
 }

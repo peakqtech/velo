@@ -1,7 +1,7 @@
 "use client";
 import { motion, useReducedMotion } from "framer-motion";
 import type { NexusContactProps } from "./nexus-contact.types";
-import { fadeInUp, fadeInBlur } from "@velocity/animations";
+import { fadeInUp, fadeInBlur } from "@velo/animations";
 
 export function NexusContact({ content }: NexusContactProps) {
   const { heading, subtitle, cta, email, features } = content;

@@ -1,0 +1,21 @@
+{
+  "name": "serenity",
+  "displayName": "Serenity",
+  "colors": {
+    "primary": "#5b8c5a",
+    "primary-light": "#6fa06e",
+    "secondary": "#f0f4f0",
+    "accent": "#9b8ec4",
+    "background": "#f8faf8",
+    "foreground": "#1a2e1a",
+    "muted": "#6b7b6b"
+  },
+  "fonts": {
+    "display": "Figtree",
+    "body": "Noto Sans"
+  },
+  "layout": {
+    "maxWidth": "1280px",
+    "sectionPadding": "clamp(4rem, 10vw, 7rem)"
+  }
+}

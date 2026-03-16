@@ -1,7 +1,7 @@
 "use client";
 import { motion, useReducedMotion } from "framer-motion";
 import type { EmberReservationProps } from "./ember-reservation.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function EmberReservation({ content }: EmberReservationProps) {
   const { heading, subtitle, cta, hours, phone, address } = content;

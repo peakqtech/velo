@@ -1,8 +1,8 @@
 "use client";
 import { motion, useReducedMotion } from "framer-motion";
 import type { NexusStatsProps } from "./nexus-stats.types";
-import { Counter } from "@velocity/motion-components";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { Counter } from "@velo/motion-components";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function NexusStats({ content }: NexusStatsProps) {
   const { heading, stats } = content;

@@ -1,3 +1,3 @@
 export interface SerenityHeroProps {
-  content: import("@velocity/types").SerenityHeroContent;
+  content: import("@velo/types").SerenityHeroContent;
 }

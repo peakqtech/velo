@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { fadeInUp } from "@velocity/animations";
+import { fadeInUp } from "@velo/animations";
 import type { ReactNode } from "react";
 
 interface MotionSectionProps {

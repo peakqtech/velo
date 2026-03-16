@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
-@source "../../../packages/sections/ember-hero/src/**/*.tsx";
-@source "../../../packages/sections/ember-menu/src/**/*.tsx";
-@source "../../../packages/sections/ember-chef/src/**/*.tsx";
-@source "../../../packages/sections/ember-reservation/src/**/*.tsx";
-@source "../../../packages/sections/ember-gallery/src/**/*.tsx";
-@source "../../../packages/sections/ember-testimonials/src/**/*.tsx";
-@source "../../../packages/sections/ember-footer/src/**/*.tsx";
-@source "../../../packages/infra/motion-components/src/**/*.tsx";
+@source "../../../packages/sections/ember-hero/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/ember-menu/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/ember-chef/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/ember-reservation/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/ember-gallery/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/testimonials/src/**/*.{ts,tsx}";
+@source "../../../packages/sections/footer/src/**/*.{ts,tsx}";
+@source "../../../packages/infra/motion-components/src/**/*.{ts,tsx}";
 
 :root {
   --color-primary: #5c3d2e;

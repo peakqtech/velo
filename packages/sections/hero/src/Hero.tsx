@@ -4,8 +4,8 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { HeroProps } from "./hero.types";
-import { AnimatedText } from "@velocity/motion-components";
-import { springConfig } from "@velocity/animations";
+import { AnimatedText } from "@velo/motion-components";
+import { springConfig } from "@velo/animations";
 
 export function Hero({ content }: HeroProps) {
   const { headline, tagline, cta, media, overlay } = content;

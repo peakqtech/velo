@@ -1,3 +1,3 @@
 export interface HavenAgentProps {
-  content: import("@velocity/types").HavenAgentContent;
+  content: import("@velo/types").HavenAgentContent;
 }

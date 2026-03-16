@@ -1,6 +1,9 @@
 import { cpSync, mkdirSync, readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { getMonorepoRoot, discoverInfraPackages, loadTemplateManifest } from "./discover";
+import type { TemplateManifest } from "./template-schema";
+
+type SectionMeta = TemplateManifest["sections"][string];
 
 interface GenerateOptions {
   appName: string;
@@ -9,7 +12,19 @@ interface GenerateOptions {
   locales: string[];
 }
 
+const VALID_APP_NAME = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
+
 export function generate(opts: GenerateOptions): void {
+  if (!opts.appName || !VALID_APP_NAME.test(opts.appName)) {
+    throw new Error(`Invalid app name: "${opts.appName}". Use only letters, numbers, hyphens, dots, and underscores.`);
+  }
+  if (opts.sections.length === 0) {
+    throw new Error("At least one section is required");
+  }
+  if (opts.locales.length === 0) {
+    throw new Error("At least one locale is required");
+  }
+
   const root = getMonorepoRoot();
   const sourceDir = join(root, "apps", opts.sourceApp);
   const targetDir = join(root, "apps", opts.appName);
@@ -20,7 +35,7 @@ export function generate(opts: GenerateOptions): void {
 
   // Load section metadata from template.json (fall back to section packages)
   const manifest = loadTemplateManifest(opts.sourceApp);
-  const SECTION_META: Record<string, { component: string; configExport: string; contentKey: string }> = manifest?.sections ?? {};
+  const SECTION_META: Record<string, SectionMeta> = manifest?.sections ?? {};
 
   // 1. Copy source app
   cpSync(sourceDir, targetDir, { recursive: true });
@@ -57,7 +72,7 @@ export function generate(opts: GenerateOptions): void {
     dependencies: {
       ...Object.fromEntries(
         Object.entries(sourcePkg.dependencies as Record<string, string>).filter(
-          ([k]) => !k.startsWith("@velocity/")
+          ([k]) => !k.startsWith("@velo/")
         )
       ),
       ...infraDeps,
@@ -79,13 +94,49 @@ export function generate(opts: GenerateOptions): void {
 
 const nextConfig: NextConfig = {
   transpilePackages: ${JSON.stringify(allVelocityPkgs, null, 4)},
+  headers: async () => [
+    {
+      source: "/(.*)",
+      headers: [
+        {
+          key: "Content-Security-Policy",
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: https:",
+            "font-src 'self' data:",
+            "connect-src 'self' https:",
+            "frame-ancestors 'none'",
+          ].join("; "),
+        },
+        { key: "X-Frame-Options", value: "DENY" },
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      ],
+    },
+  ],
 };
 
 export default nextConfig;
 `;
   writeFileSync(join(targetDir, "next.config.ts"), nextConfigContent);
 
-  // 5. Generate page-client.tsx with selected sections
+  // 5. Generate .gitignore
+  const gitignoreContent = `node_modules/
+.next/
+out/
+build/
+.DS_Store
+*.pem
+.env*
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+`;
+  writeFileSync(join(targetDir, ".gitignore"), gitignoreContent);
+
+  // 6. Generate page-client.tsx with selected sections
   generatePageClient(targetDir, opts.sections, SECTION_META, manifest?.contentType ?? "VelocityContent");
 
   // 6. Generate content stubs for selected locales
@@ -95,6 +146,9 @@ export default nextConfig;
 
   // 7. Generate lib/i18n.ts
   generateI18n(targetDir, opts.appName, opts.locales, manifest?.contentType ?? "VelocityContent");
+
+  // 8. Generate OG image API route
+  generateOgRoute(targetDir, opts.appName, manifest?.displayName ?? opts.appName);
 
   console.log(`\n✓ Created apps/${opts.appName} with ${opts.sections.length} sections`);
   console.log(`✓ Locales: ${opts.locales.join(", ")}`);
@@ -106,12 +160,13 @@ export default nextConfig;
 function generatePageClient(
   targetDir: string,
   sections: string[],
-  SECTION_META: Record<string, { component: string; configExport: string; contentKey: string }>,
+  SECTION_META: Record<string, SectionMeta>,
   contentType: string
 ): void {
   const imports: string[] = [];
   const configs: string[] = [];
   const components: string[] = [];
+  let needsLocaleSwitcher = false;
 
   for (const pkg of sections) {
     const meta = SECTION_META[pkg];
@@ -121,25 +176,35 @@ function generatePageClient(
     );
     configs.push(meta.configExport);
 
-    if (pkg === "@velocity/footer") {
-      components.push(
-        `      <${meta.component} content={content.${meta.contentKey}} localeSwitcher={<LocaleSwitcher />} />`
-      );
-    } else {
-      components.push(
-        `      <${meta.component} content={content.${meta.contentKey}} />`
-      );
+    // Build extra props from template.json extraProps field
+    const extraPropParts: string[] = [];
+    if (meta.extraProps) {
+      for (const [key, value] of Object.entries(meta.extraProps)) {
+        if (typeof value === "string" && value.startsWith("<") && value.endsWith("/>")) {
+          // JSX expression — render as JSX (unwrapped)
+          extraPropParts.push(`${key}={${value}}`);
+          if (value.includes("LocaleSwitcher")) {
+            needsLocaleSwitcher = true;
+          }
+        } else {
+          // Literal value
+          extraPropParts.push(`${key}={${JSON.stringify(value)}}`);
+        }
+      }
     }
-  }
 
-  const hasFooter = sections.includes("@velocity/footer");
+    const extraPropsStr = extraPropParts.length > 0 ? " " + extraPropParts.join(" ") : "";
+    components.push(
+      `      <${meta.component} content={content.${meta.contentKey}}${extraPropsStr} />`
+    );
+  }
 
   const content = `"use client";
 
 ${imports.join("\n")}
-import { useScrollEngine } from "@velocity/scroll-engine";
-import type { ${contentType} } from "@velocity/types";
-${hasFooter ? 'import { LocaleSwitcher } from "@/components/locale-switcher";' : ""}
+import { useScrollEngine } from "@velo/scroll-engine";
+import type { ${contentType} } from "@velo/types";
+${needsLocaleSwitcher ? 'import { LocaleSwitcher } from "@/components/locale-switcher";' : ""}
 
 const scrollConfigs = [
   ${configs.join(",\n  ")},
@@ -168,7 +233,7 @@ function generateContentStub(
   appName: string,
   locale: string,
   sections: string[],
-  SECTION_META: Record<string, { component: string; configExport: string; contentKey: string }>,
+  SECTION_META: Record<string, SectionMeta>,
   contentType: string
 ): void {
   const stubs: string[] = [];
@@ -179,7 +244,7 @@ function generateContentStub(
     stubs.push(`  ${meta.contentKey}: {} as any, // TODO: fill in ${meta.component} content`);
   }
 
-  const content = `import type { ${contentType} } from "@velocity/types";
+  const content = `import type { ${contentType} } from "@velo/types";
 
 const content: ${contentType} = {
 ${stubs.join("\n")}
@@ -198,8 +263,8 @@ export default content;
 }
 
 function generateI18n(targetDir: string, appName: string, locales: string[], contentType: string): void {
-  const content = `import { createContentLoader } from "@velocity/i18n";
-import type { ${contentType} } from "@velocity/types";
+  const content = `import { createContentLoader } from "@velo/i18n";
+import type { ${contentType} } from "@velo/types";
 
 export const defaultLocale = "${locales[0]}";
 export const locales = ${JSON.stringify(locales)} as const;
@@ -218,3 +283,66 @@ export const getContent = createContentLoader<${contentType}>(
   mkdirSync(join(targetDir, "lib"), { recursive: true });
   writeFileSync(join(targetDir, "lib/i18n.ts"), content);
 }
+
+function generateOgRoute(targetDir: string, appName: string, displayName: string): void {
+  const content = `import { ImageResponse } from "next/og";
+
+export const runtime = "edge";
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const title = searchParams.get("title") ?? "${displayName}";
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, var(--color-background, #000) 0%, var(--color-secondary, #111) 100%)",
+          fontFamily: "system-ui, sans-serif",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "16px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 64,
+              fontWeight: 800,
+              color: "white",
+              textAlign: "center",
+              maxWidth: "80%",
+            }}
+          >
+            {title}
+          </div>
+          <div
+            style={{
+              fontSize: 24,
+              color: "rgba(255,255,255,0.6)",
+            }}
+          >
+            Built with Velo
+          </div>
+        </div>
+      </div>
+    ),
+    { width: 1200, height: 630 }
+  );
+}
+`;
+  const dir = join(targetDir, "app/api/og");
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "route.tsx"), content);
+}
+

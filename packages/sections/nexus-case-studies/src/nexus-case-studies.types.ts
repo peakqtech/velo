@@ -1,3 +1,3 @@
 export interface NexusCaseStudiesProps {
-  content: import("@velocity/types").NexusCaseStudiesContent;
+  content: import("@velo/types").NexusCaseStudiesContent;
 }

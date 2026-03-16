@@ -1,3 +1,3 @@
 export interface EmberReservationProps {
-  content: import("@velocity/types").EmberReservationContent;
+  content: import("@velo/types").EmberReservationContent;
 }

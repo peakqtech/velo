@@ -1,3 +1,3 @@
 export interface NexusTeamProps {
-  content: import("@velocity/types").NexusTeamContent;
+  content: import("@velo/types").NexusTeamContent;
 }

@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { SerenityServicesProps } from "./serenity-services.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function SerenityServices({ content }: SerenityServicesProps) {
   const { heading, subtitle, services } = content;

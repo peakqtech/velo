@@ -6,40 +6,42 @@
   "style": "Soft UI",
   "contentType": "SerenityContent",
   "sections": {
-    "@velocity/serenity-hero": {
+    "@velo/serenity-hero": {
       "component": "SerenityHero",
       "configExport": "serenityHeroScrollConfig",
       "contentKey": "hero"
     },
-    "@velocity/serenity-services": {
+    "@velo/serenity-services": {
       "component": "SerenityServices",
       "configExport": "serenityServicesScrollConfig",
       "contentKey": "services"
     },
-    "@velocity/serenity-process": {
+    "@velo/serenity-process": {
       "component": "SerenityProcess",
       "configExport": "serenityProcessScrollConfig",
       "contentKey": "process"
     },
-    "@velocity/serenity-practitioners": {
+    "@velo/serenity-practitioners": {
       "component": "SerenityPractitioners",
       "configExport": "serenityPractitionersScrollConfig",
       "contentKey": "practitioners"
     },
-    "@velocity/serenity-testimonials": {
-      "component": "SerenityTestimonials",
-      "configExport": "serenityTestimonialsScrollConfig",
-      "contentKey": "testimonials"
+    "@velo/testimonials": {
+      "component": "Testimonials",
+      "configExport": "testimonialsScrollConfig",
+      "contentKey": "testimonials",
+      "extraProps": { "variant": "serenity" }
     },
-    "@velocity/serenity-booking": {
+    "@velo/serenity-booking": {
       "component": "SerenityBooking",
       "configExport": "serenityBookingScrollConfig",
       "contentKey": "booking"
     },
-    "@velocity/serenity-footer": {
-      "component": "SerenityFooter",
-      "configExport": "serenityFooterScrollConfig",
-      "contentKey": "footer"
+    "@velo/footer": {
+      "component": "Footer",
+      "configExport": "footerScrollConfig",
+      "contentKey": "footer",
+      "extraProps": { "variant": "serenity", "localeSwitcher": "<LocaleSwitcher />" }
     }
   }
 }

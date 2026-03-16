@@ -1,14 +1,14 @@
 "use client";
 
-import { SerenityHero, serenityHeroScrollConfig } from "@velocity/serenity-hero";
-import { SerenityServices, serenityServicesScrollConfig } from "@velocity/serenity-services";
-import { SerenityProcess, serenityProcessScrollConfig } from "@velocity/serenity-process";
-import { SerenityPractitioners, serenityPractitionersScrollConfig } from "@velocity/serenity-practitioners";
-import { SerenityTestimonials, serenityTestimonialsScrollConfig } from "@velocity/serenity-testimonials";
-import { SerenityBooking, serenityBookingScrollConfig } from "@velocity/serenity-booking";
-import { SerenityFooter, serenityFooterScrollConfig } from "@velocity/serenity-footer";
-import { useScrollEngine } from "@velocity/scroll-engine";
-import type { SerenityContent } from "@velocity/types";
+import { SerenityHero, serenityHeroScrollConfig } from "@velo/serenity-hero";
+import { SerenityServices, serenityServicesScrollConfig } from "@velo/serenity-services";
+import { SerenityProcess, serenityProcessScrollConfig } from "@velo/serenity-process";
+import { SerenityPractitioners, serenityPractitionersScrollConfig } from "@velo/serenity-practitioners";
+import { Testimonials, testimonialsScrollConfig } from "@velo/testimonials";
+import { SerenityBooking, serenityBookingScrollConfig } from "@velo/serenity-booking";
+import { Footer, footerScrollConfig } from "@velo/footer";
+import { useScrollEngine } from "@velo/scroll-engine";
+import type { SerenityContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 
 const scrollConfigs = [
@@ -16,9 +16,9 @@ const scrollConfigs = [
   serenityServicesScrollConfig,
   serenityProcessScrollConfig,
   serenityPractitionersScrollConfig,
-  serenityTestimonialsScrollConfig,
+  testimonialsScrollConfig,
   serenityBookingScrollConfig,
-  serenityFooterScrollConfig,
+  footerScrollConfig,
 ];
 
 interface PageClientProps {
@@ -34,9 +34,9 @@ export function PageClient({ content }: PageClientProps) {
       <SerenityServices content={content.services} />
       <SerenityProcess content={content.process} />
       <SerenityPractitioners content={content.practitioners} />
-      <SerenityTestimonials content={content.testimonials} />
+      <Testimonials content={content.testimonials} variant="serenity" />
       <SerenityBooking content={content.booking} />
-      <SerenityFooter content={content.footer} localeSwitcher={<LocaleSwitcher />} />
+      <Footer content={content.footer} variant="serenity" localeSwitcher={<LocaleSwitcher />} />
     </main>
   );
 }

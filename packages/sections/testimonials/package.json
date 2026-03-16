@@ -1,5 +1,5 @@
 {
-  "name": "@velocity/testimonials",
+  "name": "@velo/testimonials",
   "version": "0.0.0",
   "private": true,
   "main": "src/index.ts",
@@ -11,10 +11,15 @@
     "framer-motion": "^12.0.0"
   },
   "dependencies": {
-    "@velocity/types": "workspace:*",
-    "@velocity/scroll-engine": "workspace:*"
+    "@velo/types": "workspace:*",
+    "@velo/scroll-engine": "workspace:*",
+    "@velo/animations": "workspace:*"
   },
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:ci": "vitest run"
+  },
+  "velo": {
+    "type": "section"
   }
 }

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { EmberMenuProps } from "./ember-menu.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function EmberMenu({ content }: EmberMenuProps) {
   const { heading, subtitle, categories, items } = content;

@@ -1,8 +1,8 @@
 "use client";
 import { motion, useReducedMotion } from "framer-motion";
 import type { PrismFAQProps } from "./prism-faq.types";
-import { Accordion } from "@velocity/motion-components";
-import { fadeInUp } from "@velocity/animations";
+import { Accordion } from "@velo/motion-components";
+import { fadeInUp } from "@velo/animations";
 
 export function PrismFAQ({ content }: PrismFAQProps) {
   const { heading, subtitle, questions } = content;

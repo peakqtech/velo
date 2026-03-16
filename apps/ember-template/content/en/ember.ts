@@ -1,4 +1,4 @@
-import type { EmberContent } from "@velocity/types";
+import type { EmberContent } from "@velo/types";
 
 const content: EmberContent = {
   hero: {

@@ -1,3 +1,3 @@
 export interface EmberHeroProps {
-  content: import("@velocity/types").EmberHeroContent;
+  content: import("@velo/types").EmberHeroContent;
 }

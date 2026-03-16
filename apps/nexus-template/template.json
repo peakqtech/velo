@@ -6,12 +6,12 @@
   "style": "Kinetic Brutalism",
   "contentType": "NexusContent",
   "sections": {
-    "@velocity/nexus-hero": { "component": "NexusHero", "configExport": "nexusHeroScrollConfig", "contentKey": "hero" },
-    "@velocity/nexus-services": { "component": "NexusServices", "configExport": "nexusServicesScrollConfig", "contentKey": "services" },
-    "@velocity/nexus-case-studies": { "component": "NexusCaseStudies", "configExport": "nexusCaseStudiesScrollConfig", "contentKey": "caseStudies" },
-    "@velocity/nexus-team": { "component": "NexusTeam", "configExport": "nexusTeamScrollConfig", "contentKey": "team" },
-    "@velocity/nexus-stats": { "component": "NexusStats", "configExport": "nexusStatsScrollConfig", "contentKey": "stats" },
-    "@velocity/nexus-contact": { "component": "NexusContact", "configExport": "nexusContactScrollConfig", "contentKey": "contact" },
-    "@velocity/nexus-footer": { "component": "NexusFooter", "configExport": "nexusFooterScrollConfig", "contentKey": "footer" }
+    "@velo/nexus-hero": { "component": "NexusHero", "configExport": "nexusHeroScrollConfig", "contentKey": "hero" },
+    "@velo/nexus-services": { "component": "NexusServices", "configExport": "nexusServicesScrollConfig", "contentKey": "services" },
+    "@velo/nexus-case-studies": { "component": "NexusCaseStudies", "configExport": "nexusCaseStudiesScrollConfig", "contentKey": "caseStudies" },
+    "@velo/nexus-team": { "component": "NexusTeam", "configExport": "nexusTeamScrollConfig", "contentKey": "team" },
+    "@velo/nexus-stats": { "component": "NexusStats", "configExport": "nexusStatsScrollConfig", "contentKey": "stats" },
+    "@velo/nexus-contact": { "component": "NexusContact", "configExport": "nexusContactScrollConfig", "contentKey": "contact" },
+    "@velo/footer": { "component": "Footer", "configExport": "footerScrollConfig", "contentKey": "footer", "extraProps": { "variant": "nexus", "localeSwitcher": "<LocaleSwitcher />" } }
   }
 }

@@ -1,14 +1,14 @@
 "use client";
 
-import { EmberHero, emberHeroScrollConfig } from "@velocity/ember-hero";
-import { EmberMenu, emberMenuScrollConfig } from "@velocity/ember-menu";
-import { EmberChef, emberChefScrollConfig } from "@velocity/ember-chef";
-import { EmberReservation, emberReservationScrollConfig } from "@velocity/ember-reservation";
-import { EmberGallery, emberGalleryScrollConfig } from "@velocity/ember-gallery";
-import { EmberTestimonials, emberTestimonialsScrollConfig } from "@velocity/ember-testimonials";
-import { EmberFooter, emberFooterScrollConfig } from "@velocity/ember-footer";
-import { useScrollEngine } from "@velocity/scroll-engine";
-import type { EmberContent } from "@velocity/types";
+import { EmberHero, emberHeroScrollConfig } from "@velo/ember-hero";
+import { EmberMenu, emberMenuScrollConfig } from "@velo/ember-menu";
+import { EmberChef, emberChefScrollConfig } from "@velo/ember-chef";
+import { EmberReservation, emberReservationScrollConfig } from "@velo/ember-reservation";
+import { EmberGallery, emberGalleryScrollConfig } from "@velo/ember-gallery";
+import { Testimonials, testimonialsScrollConfig } from "@velo/testimonials";
+import { Footer, footerScrollConfig } from "@velo/footer";
+import { useScrollEngine } from "@velo/scroll-engine";
+import type { EmberContent } from "@velo/types";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 
 const scrollConfigs = [
@@ -17,8 +17,8 @@ const scrollConfigs = [
   emberChefScrollConfig,
   emberReservationScrollConfig,
   emberGalleryScrollConfig,
-  emberTestimonialsScrollConfig,
-  emberFooterScrollConfig,
+  testimonialsScrollConfig,
+  footerScrollConfig,
 ];
 
 interface PageClientProps {
@@ -34,8 +34,8 @@ export function PageClient({ content }: PageClientProps) {
       <EmberChef content={content.chef} />
       <EmberReservation content={content.reservation} />
       <EmberGallery content={content.gallery} />
-      <EmberTestimonials content={content.testimonials} />
-      <EmberFooter content={content.footer} localeSwitcher={<LocaleSwitcher />} />
+      <Testimonials content={content.testimonials} variant="ember" />
+      <Footer content={content.footer} variant="ember" localeSwitcher={<LocaleSwitcher />} />
     </main>
   );
 }

@@ -1,3 +1,3 @@
 export interface EmberMenuProps {
-  content: import("@velocity/types").EmberMenuContent;
+  content: import("@velo/types").EmberMenuContent;
 }

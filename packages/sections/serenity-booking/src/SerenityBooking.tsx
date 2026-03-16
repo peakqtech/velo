@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { SerenityBookingProps } from "./serenity-booking.types";
-import { fadeInUp, staggerContainer } from "@velocity/animations";
+import { fadeInUp, staggerContainer } from "@velo/animations";
 
 export function SerenityBooking({ content }: SerenityBookingProps) {
   const { heading, subtitle, cta, phone, email, hours } = content;
