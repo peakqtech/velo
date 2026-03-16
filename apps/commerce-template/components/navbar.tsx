@@ -1,35 +1,115 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart";
+import { useTheme } from "@/lib/theme-context";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { itemCount } = useCart();
+  const { theme, variant } = useTheme();
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Determine nav styling per theme variant
+  const getNavStyles = () => {
+    if (variant === "luxury") {
+      return {
+        backgroundColor: scrolled ? `${theme.colors.bg}ee` : "transparent",
+        borderBottom: scrolled ? `1px solid ${theme.colors.border}` : "1px solid transparent",
+        color: scrolled ? theme.colors.text : "#FFFFFF",
+        backdropFilter: scrolled ? "blur(12px)" : "none",
+      };
+    }
+    if (variant === "streetwear") {
+      return {
+        backgroundColor: theme.colors.surface,
+        borderBottom: `1px solid ${theme.colors.border}`,
+        color: theme.colors.text,
+        backdropFilter: "none",
+      };
+    }
+    // minimal
+    return {
+      backgroundColor: scrolled ? `${theme.colors.bg}ee` : theme.colors.bg,
+      borderBottom: `1px solid ${theme.colors.border}`,
+      color: theme.colors.text,
+      backdropFilter: scrolled ? "blur(12px)" : "none",
+    };
+  };
+
+  const navStyles = getNavStyles();
+
+  const logoContent = () => {
+    if (variant === "luxury") {
+      return (
+        <span
+          className="text-xl tracking-[0.15em] font-medium"
+          style={{ fontFamily: theme.fonts.heading }}
+        >
+          Atelier
+        </span>
+      );
+    }
+    if (variant === "streetwear") {
+      return (
+        <span
+          className="text-xl font-bold tracking-wider uppercase"
+          style={{ fontFamily: theme.fonts.heading }}
+        >
+          HYPE
+        </span>
+      );
+    }
+    return (
+      <span
+        className="text-lg font-medium"
+        style={{ fontFamily: theme.fonts.heading }}
+      >
+        Muji
+      </span>
+    );
+  };
+
+  const linkStyle = {
+    color: variant === "luxury" && !scrolled ? "rgba(255,255,255,0.8)" : theme.colors.textSecondary,
+    fontSize: variant === "minimal" ? "13px" : "14px",
+    textTransform: (variant === "streetwear" ? "uppercase" : "none") as React.CSSProperties["textTransform"],
+    letterSpacing: variant === "streetwear" ? "0.08em" : "0",
+    fontWeight: variant === "streetwear" ? 600 : 400,
+  };
+
+  const cartIconColor = variant === "luxury" && !scrolled ? "#FFFFFF" : theme.colors.text;
+  const badgeBg = variant === "streetwear" ? theme.colors.primary : theme.colors.text;
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[var(--color-border)]">
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+    <header
+      className="sticky top-0 z-50 transition-all duration-300"
+      style={{
+        ...navStyles,
+        height: variant === "minimal" ? "56px" : "64px",
+      }}
+    >
+      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-full">
+        <div className="flex h-full items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="text-xl font-semibold tracking-tight">
-            COMMERCE
+          <Link href="/" style={{ color: navStyles.color }}>
+            {logoContent()}
           </Link>
 
           {/* Desktop nav */}
           <div className="hidden sm:flex items-center gap-8">
-            <Link
-              href="/"
-              className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-            >
+            <Link href="/" className="transition-opacity hover:opacity-70" style={linkStyle}>
               Home
             </Link>
-            <Link
-              href="/products"
-              className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-            >
-              Products
+            <Link href="/products" className="transition-opacity hover:opacity-70" style={linkStyle}>
+              {variant === "streetwear" ? "Drops" : variant === "minimal" ? "Shop" : "Collection"}
             </Link>
           </div>
 
@@ -41,7 +121,7 @@ export function Navbar() {
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
-                stroke="currentColor"
+                stroke={cartIconColor}
                 className="w-5 h-5"
               >
                 <path
@@ -51,7 +131,10 @@ export function Navbar() {
                 />
               </svg>
               {itemCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-text)] text-[10px] font-medium text-white">
+                <span
+                  className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white"
+                  style={{ backgroundColor: badgeBg }}
+                >
                   {itemCount}
                 </span>
               )}
@@ -68,7 +151,7 @@ export function Navbar() {
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
-                stroke="currentColor"
+                stroke={cartIconColor}
                 className="w-5 h-5"
               >
                 {mobileOpen ? (
@@ -91,20 +174,25 @@ export function Navbar() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="sm:hidden border-t border-[var(--color-border)] py-4 space-y-3">
+          <div
+            className="sm:hidden py-4 space-y-3"
+            style={{ borderTop: `1px solid ${theme.colors.border}` }}
+          >
             <Link
               href="/"
-              className="block text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+              className="block text-sm"
+              style={{ color: theme.colors.textSecondary }}
               onClick={() => setMobileOpen(false)}
             >
               Home
             </Link>
             <Link
               href="/products"
-              className="block text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+              className="block text-sm"
+              style={{ color: theme.colors.textSecondary }}
               onClick={() => setMobileOpen(false)}
             >
-              Products
+              {variant === "streetwear" ? "Drops" : "Products"}
             </Link>
           </div>
         )}

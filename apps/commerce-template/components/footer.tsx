@@ -1,63 +1,277 @@
+"use client";
+
+import { useTheme } from "@/lib/theme-context";
+
 export function Footer() {
+  const { theme, variant } = useTheme();
+
+  if (variant === "luxury") return <LuxuryFooter theme={theme} />;
+  if (variant === "streetwear") return <StreetwearFooter theme={theme} />;
+  return <MinimalFooter theme={theme} />;
+}
+
+function LuxuryFooter({ theme }: { theme: import("@/lib/themes").ThemeConfig }) {
   return (
-    <footer className="border-t border-[var(--color-border)] bg-[var(--color-surface)]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+    <footer
+      style={{
+        backgroundColor: theme.colors.bg,
+        borderTop: `1px solid ${theme.colors.border}`,
+      }}
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-10">
           {/* Brand */}
-          <div>
-            <h3 className="text-lg font-semibold tracking-tight">COMMERCE</h3>
-            <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-              Modern essentials for the everyday wardrobe.
+          <div className="sm:col-span-2">
+            <h3
+              className="text-2xl font-medium tracking-[0.1em]"
+              style={{ fontFamily: theme.fonts.heading, color: theme.colors.text }}
+            >
+              Atelier
+            </h3>
+            <p
+              className="mt-4 text-sm leading-relaxed max-w-sm"
+              style={{ color: theme.colors.textSecondary }}
+            >
+              Crafting refined essentials for the modern wardrobe. Each piece tells
+              a story of quality and timeless design.
             </p>
+            {/* Gold accent line */}
+            <div
+              className="mt-6 w-12 h-0.5"
+              style={{ backgroundColor: theme.colors.accent }}
+            />
           </div>
 
-          {/* Links */}
+          {/* Shop */}
           <div>
-            <h4 className="text-sm font-medium mb-3">Shop</h4>
-            <ul className="space-y-2 text-sm text-[var(--color-text-muted)]">
-              <li>
-                <a href="/products" className="hover:text-[var(--color-text)]">
-                  All Products
-                </a>
-              </li>
-              <li>
-                <a href="/products?category=Tops" className="hover:text-[var(--color-text)]">
-                  Tops
-                </a>
-              </li>
-              <li>
-                <a href="/products?category=Bottoms" className="hover:text-[var(--color-text)]">
-                  Bottoms
-                </a>
-              </li>
-              <li>
-                <a href="/products?category=Outerwear" className="hover:text-[var(--color-text)]">
-                  Outerwear
-                </a>
-              </li>
+            <h4
+              className="text-xs font-medium tracking-[0.2em] uppercase mb-4"
+              style={{ color: theme.colors.text }}
+            >
+              Shop
+            </h4>
+            <ul className="space-y-3">
+              {["All Products", "Tops", "Bottoms", "Outerwear", "Accessories"].map((item) => (
+                <li key={item}>
+                  <a
+                    href={item === "All Products" ? "/products" : `/products?category=${item}`}
+                    className="text-sm hover:opacity-70 transition-opacity"
+                    style={{ color: theme.colors.textSecondary }}
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4
+              className="text-xs font-medium tracking-[0.2em] uppercase mb-4"
+              style={{ color: theme.colors.text }}
+            >
+              Connect
+            </h4>
+            <ul className="space-y-3">
+              {["Instagram", "Twitter", "Email Us"].map((item) => (
+                <li key={item}>
+                  <a
+                    href="#"
+                    className="text-sm hover:opacity-70 transition-opacity"
+                    style={{ color: theme.colors.textSecondary }}
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div
+          className="mt-16 pt-6 text-center text-xs"
+          style={{
+            borderTop: `1px solid ${theme.colors.border}`,
+            color: theme.colors.textSecondary,
+          }}
+        >
+          &copy; {new Date().getFullYear()} Atelier. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function StreetwearFooter({ theme }: { theme: import("@/lib/themes").ThemeConfig }) {
+  return (
+    <footer
+      style={{
+        backgroundColor: theme.colors.surface,
+        borderTop: `1px solid ${theme.colors.border}`,
+      }}
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-10">
+          {/* Brand */}
+          <div className="sm:col-span-2">
+            <h3
+              className="text-3xl font-bold uppercase tracking-wider"
+              style={{ fontFamily: theme.fonts.heading, color: theme.colors.text }}
+            >
+              HYPE
+            </h3>
+            <p
+              className="mt-4 text-sm leading-relaxed max-w-sm"
+              style={{ color: theme.colors.textSecondary }}
+            >
+              Limited drops. No compromises. Defining street culture one piece at a time.
+            </p>
+            {/* Neon accent dot */}
+            <div className="mt-4 flex items-center gap-2">
+              <div
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ backgroundColor: theme.colors.accent }}
+              />
+              <span className="text-xs uppercase tracking-wider" style={{ color: theme.colors.accent }}>
+                Shipping worldwide
+              </span>
+            </div>
+          </div>
+
+          {/* Shop */}
+          <div>
+            <h4
+              className="text-xs font-bold tracking-[0.15em] uppercase mb-4"
+              style={{ color: theme.colors.text }}
+            >
+              Shop
+            </h4>
+            <ul className="space-y-3">
+              {["All Drops", "Tops", "Bottoms", "Outerwear", "Accessories"].map((item) => (
+                <li key={item}>
+                  <a
+                    href={item === "All Drops" ? "/products" : `/products?category=${item}`}
+                    className="text-sm uppercase tracking-wide hover:opacity-70 transition-opacity"
+                    style={{ color: theme.colors.textSecondary }}
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Social */}
           <div>
-            <h4 className="text-sm font-medium mb-3">Follow Us</h4>
-            <div className="flex gap-4 text-[var(--color-text-muted)]">
-              <a href="#" className="hover:text-[var(--color-text)]" aria-label="Instagram">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
-                </svg>
-              </a>
-              <a href="#" className="hover:text-[var(--color-text)]" aria-label="Twitter">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
+            <h4
+              className="text-xs font-bold tracking-[0.15em] uppercase mb-4"
+              style={{ color: theme.colors.text }}
+            >
+              Follow
+            </h4>
+            <ul className="space-y-3">
+              {["Instagram", "TikTok", "Twitter", "Discord"].map((item) => (
+                <li key={item}>
+                  <a
+                    href="#"
+                    className="text-sm uppercase tracking-wide transition-colors"
+                    style={{ color: theme.colors.textSecondary }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = theme.colors.accent)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = theme.colors.textSecondary)}
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div
+          className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs uppercase tracking-wider"
+          style={{
+            borderTop: `1px solid ${theme.colors.border}`,
+            color: theme.colors.textSecondary,
+          }}
+        >
+          <span>&copy; {new Date().getFullYear()} HYPE. All rights reserved.</span>
+          <span style={{ color: theme.colors.accent }}>Built different.</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function MinimalFooter({ theme }: { theme: import("@/lib/themes").ThemeConfig }) {
+  return (
+    <footer
+      style={{
+        backgroundColor: theme.colors.bg,
+        borderTop: `1px solid ${theme.colors.border}`,
+      }}
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-12">
+          {/* Brand */}
+          <div>
+            <h3
+              className="text-lg font-medium"
+              style={{ fontFamily: theme.fonts.heading, color: theme.colors.text }}
+            >
+              Muji
+            </h3>
+            <p
+              className="mt-3 text-sm leading-relaxed max-w-xs"
+              style={{ color: theme.colors.textSecondary }}
+            >
+              Essential pieces designed with purpose.
+            </p>
+          </div>
+
+          {/* Minimal links */}
+          <div className="flex gap-12">
+            <div>
+              <ul className="space-y-2">
+                {["Shop", "About", "Contact"].map((item) => (
+                  <li key={item}>
+                    <a
+                      href={item === "Shop" ? "/products" : "#"}
+                      className="text-sm hover:opacity-70 transition-opacity"
+                      style={{ color: theme.colors.textSecondary }}
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <ul className="space-y-2">
+                {["Instagram", "Twitter"].map((item) => (
+                  <li key={item}>
+                    <a
+                      href="#"
+                      className="text-sm hover:opacity-70 transition-opacity"
+                      style={{ color: theme.colors.textSecondary }}
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-[var(--color-border)] text-center text-xs text-[var(--color-text-muted)]">
-          &copy; {new Date().getFullYear()} Commerce Store. All rights reserved.
+        <div
+          className="mt-16 pt-6 text-xs"
+          style={{
+            borderTop: `1px solid ${theme.colors.border}`,
+            color: theme.colors.textSecondary,
+          }}
+        >
+          &copy; {new Date().getFullYear()} Muji
         </div>
       </div>
     </footer>

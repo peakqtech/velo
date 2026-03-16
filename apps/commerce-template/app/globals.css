@@ -1,16 +1,66 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #18181b;
-  --color-primary-light: #3f3f46;
-  --color-accent: #a78bfa;
-  --color-accent-hover: #8b5cf6;
-  --color-background: #ffffff;
-  --color-surface: #f4f4f5;
-  --color-text: #18181b;
-  --color-text-muted: #71717a;
-  --color-border: #e4e4e7;
+  /* Theme-driven variables (overridden by ThemeProvider) */
+  --color-bg: #FAF9F7;
+  --color-surface: #FFFFFF;
+  --color-text: #1A1A1A;
+  --color-text-secondary: #6B6B6B;
+  --color-primary: #1A1A1A;
+  --color-primary-hover: #333333;
+  --color-accent: #C5A572;
+  --color-border: #E8E5E0;
+  --color-card-bg: #FFFFFF;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --border-radius: 0px;
+
+  /* Backward-compatible aliases for cart/checkout pages */
+  --color-background: var(--color-bg);
+  --color-text-muted: var(--color-text-secondary);
+  --color-primary-light: var(--color-primary-hover);
+  --color-error: #ef4444;
   --color-success: #22c55e;
   --color-warning: #f59e0b;
-  --color-error: #ef4444;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Smooth transitions for theme switching */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* Reset transition for interactive elements */
+a, button, img {
+  transition: all 0.3s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
 }

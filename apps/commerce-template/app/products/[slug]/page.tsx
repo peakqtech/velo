@@ -2,15 +2,18 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { demoProducts, formatPrice } from "@/lib/demo-products";
 import { useCart } from "@/lib/cart";
+import { useTheme } from "@/lib/theme-context";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
   const product = demoProducts.find((p) => p.slug === slug);
   const { addItem } = useCart();
+  const { theme, variant } = useTheme();
 
   const [selectedVariants, setSelectedVariants] = useState<
     Record<string, string>
@@ -20,11 +23,20 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-20 text-center">
-        <h1 className="text-2xl font-semibold">Product not found</h1>
+      <div
+        className="mx-auto max-w-7xl px-4 py-20 text-center"
+        style={{ backgroundColor: theme.colors.bg }}
+      >
+        <h1
+          className="text-2xl font-semibold"
+          style={{ fontFamily: theme.fonts.heading, color: theme.colors.text }}
+        >
+          Product not found
+        </h1>
         <Link
           href="/products"
-          className="mt-4 inline-block text-sm text-[var(--color-text-muted)] hover:underline"
+          className="mt-4 inline-block text-sm hover:opacity-70"
+          style={{ color: theme.colors.textSecondary }}
         >
           &larr; Back to products
         </Link>
@@ -32,7 +44,19 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Initialize default selections
+  const relatedProducts = demoProducts
+    .filter((p) => p.category === product.category && p.id !== product.id)
+    .slice(0, 4);
+
+  // Fill remaining slots with other products if needed
+  const additionalNeeded = 4 - relatedProducts.length;
+  if (additionalNeeded > 0) {
+    const others = demoProducts
+      .filter((p) => p.id !== product.id && !relatedProducts.find((r) => r.id === p.id))
+      .slice(0, additionalNeeded);
+    relatedProducts.push(...others);
+  }
+
   const getVariantString = () => {
     return product.variants
       .map((v) => selectedVariants[v.name] || v.options[0])
@@ -54,172 +78,321 @@ export default function ProductDetailPage() {
   }
 
   function handleWhatsApp() {
-    const variant = getVariantString();
+    const variantStr = getVariantString();
     const text = encodeURIComponent(
-      `Hi! I'm interested in ${product!.name} (${variant}) - ${formatPrice(product!.price)}`
+      `Hi! I'm interested in ${product!.name} (${variantStr}) - ${formatPrice(product!.price)}`
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-      {/* Breadcrumb */}
-      <nav className="mb-8 text-sm text-[var(--color-text-muted)]">
-        <Link href="/" className="hover:text-[var(--color-text)]">
-          Home
-        </Link>
-        <span className="mx-2">/</span>
-        <Link href="/products" className="hover:text-[var(--color-text)]">
-          Products
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-[var(--color-text)]">{product.name}</span>
-      </nav>
+    <div style={{ backgroundColor: theme.colors.bg }} className="min-h-screen">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+        {/* Breadcrumb */}
+        <nav className="mb-8 text-sm" style={{ color: theme.colors.textSecondary }}>
+          <Link href="/" className="hover:opacity-70 transition-opacity">
+            Home
+          </Link>
+          <span className="mx-2">/</span>
+          <Link href="/products" className="hover:opacity-70 transition-opacity">
+            {variant === "streetwear" ? "Drops" : "Products"}
+          </Link>
+          <span className="mx-2">/</span>
+          <span style={{ color: theme.colors.text }}>{product.name}</span>
+        </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
-        {/* Image */}
-        <div className="aspect-[3/4] rounded-xl bg-gradient-to-br from-zinc-100 via-zinc-150 to-zinc-200 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-zinc-300 text-6xl mb-3">&#9634;</div>
-            <span className="text-sm text-zinc-400 uppercase tracking-wider font-medium">
-              {product.category}
-            </span>
-          </div>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+          {/* Product Image */}
+          <div
+            className="relative aspect-[3/4] overflow-hidden"
+            style={{
+              borderRadius: theme.borderRadius,
+              backgroundColor: theme.colors.surface,
+            }}
+          >
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              className="object-cover"
+              unoptimized
+              priority
+            />
 
-        {/* Details */}
-        <div className="flex flex-col">
-          <div className="mb-1">
-            <span className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider font-medium">
-              {product.category}
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-            {product.name}
-          </h1>
-
-          {/* Price */}
-          <div className="flex items-center gap-3 mt-4">
-            <span className="text-xl font-semibold">
-              {formatPrice(product.price)}
-            </span>
             {product.comparePrice && (
-              <span className="text-base text-[var(--color-text-muted)] line-through">
-                {formatPrice(product.comparePrice)}
-              </span>
-            )}
-            {product.comparePrice && (
-              <span className="text-xs font-bold text-[var(--color-error)] bg-red-50 px-2 py-0.5 rounded-full">
+              <span
+                className="absolute top-4 right-4 text-xs font-bold px-3 py-1"
+                style={{
+                  backgroundColor: variant === "streetwear" ? theme.colors.accent : theme.colors.primary,
+                  color: variant === "streetwear" ? "#0A0A0A" : "#FFFFFF",
+                  borderRadius: theme.borderRadius,
+                }}
+              >
                 {Math.round(
-                  ((product.comparePrice - product.price) /
-                    product.comparePrice) *
-                    100
-                )}
-                % OFF
+                  ((product.comparePrice - product.price) / product.comparePrice) * 100
+                )}% OFF
               </span>
             )}
           </div>
 
-          <p className="mt-6 text-[var(--color-text-muted)] leading-relaxed">
-            {product.description}
-          </p>
+          {/* Product Details */}
+          <div className="flex flex-col">
+            <span
+              className="text-xs tracking-[0.2em] uppercase font-medium mb-2"
+              style={{
+                color: variant === "streetwear" ? theme.colors.accent : theme.colors.textSecondary,
+              }}
+            >
+              {product.category}
+            </span>
 
-          {/* Variants */}
-          <div className="mt-8 space-y-6">
-            {product.variants.map((variant) => (
-              <div key={variant.name}>
-                <label className="block text-sm font-medium mb-2">
-                  {variant.name}
-                </label>
-                {variant.name === "Color" ? (
-                  <div className="flex gap-2">
-                    {variant.options.map((opt) => (
-                      <button
-                        key={opt}
-                        onClick={() =>
-                          setSelectedVariants((prev) => ({
-                            ...prev,
-                            [variant.name]: opt,
-                          }))
-                        }
-                        className={`px-4 py-2 text-sm rounded-md border transition-colors ${
-                          (selectedVariants[variant.name] || variant.options[0]) === opt
-                            ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white"
-                            : "border-[var(--color-border)] hover:border-[var(--color-primary-light)]"
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <select
-                    value={selectedVariants[variant.name] || variant.options[0]}
-                    onChange={(e) =>
-                      setSelectedVariants((prev) => ({
-                        ...prev,
-                        [variant.name]: e.target.value,
-                      }))
-                    }
-                    className="block w-full max-w-xs px-3 py-2.5 border border-[var(--color-border)] rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
-                  >
-                    {variant.options.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-            ))}
-          </div>
+            <h1
+              className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight"
+              style={{
+                fontFamily: theme.fonts.heading,
+                color: theme.colors.text,
+                textTransform: variant === "streetwear" ? "uppercase" : "none",
+              }}
+            >
+              {product.name}
+            </h1>
 
-          {/* Quantity */}
-          <div className="mt-6">
-            <label className="block text-sm font-medium mb-2">Quantity</label>
-            <div className="inline-flex items-center border border-[var(--color-border)] rounded-md">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="px-3 py-2 text-sm hover:bg-[var(--color-surface)] transition-colors"
+            {/* Price */}
+            <div className="flex items-center gap-3 mt-4">
+              <span
+                className="text-xl font-semibold"
+                style={{ color: theme.colors.text }}
               >
-                -
-              </button>
-              <span className="px-4 py-2 text-sm font-medium border-x border-[var(--color-border)]">
-                {quantity}
+                {formatPrice(product.price)}
               </span>
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="px-3 py-2 text-sm hover:bg-[var(--color-surface)] transition-colors"
+              {product.comparePrice && (
+                <span
+                  className="text-base line-through"
+                  style={{ color: theme.colors.textSecondary }}
+                >
+                  {formatPrice(product.comparePrice)}
+                </span>
+              )}
+            </div>
+
+            {/* Divider */}
+            <div
+              className="my-6"
+              style={{ borderBottom: `1px solid ${theme.colors.border}` }}
+            />
+
+            <p
+              className="text-sm leading-relaxed"
+              style={{ color: theme.colors.textSecondary }}
+            >
+              {product.description}
+            </p>
+
+            {/* Variants */}
+            <div className="mt-8 space-y-6">
+              {product.variants.map((v) => (
+                <div key={v.name}>
+                  <label
+                    className="block text-sm font-medium mb-3"
+                    style={{
+                      color: theme.colors.text,
+                      textTransform: variant === "streetwear" ? "uppercase" : "none",
+                      letterSpacing: variant === "streetwear" ? "0.05em" : "0",
+                    }}
+                  >
+                    {v.name}
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {v.options.map((opt) => {
+                      const isSelected =
+                        (selectedVariants[v.name] || v.options[0]) === opt;
+                      return (
+                        <button
+                          key={opt}
+                          onClick={() =>
+                            setSelectedVariants((prev) => ({
+                              ...prev,
+                              [v.name]: opt,
+                            }))
+                          }
+                          className="px-4 py-2.5 text-sm transition-all duration-200"
+                          style={{
+                            backgroundColor: isSelected
+                              ? theme.colors.primary
+                              : "transparent",
+                            color: isSelected ? "#FFFFFF" : theme.colors.text,
+                            border: isSelected
+                              ? `1px solid ${theme.colors.primary}`
+                              : `1px solid ${theme.colors.border}`,
+                            borderRadius: theme.borderRadius,
+                            fontWeight: isSelected ? 600 : 400,
+                          }}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Quantity */}
+            <div className="mt-6">
+              <label
+                className="block text-sm font-medium mb-3"
+                style={{
+                  color: theme.colors.text,
+                  textTransform: variant === "streetwear" ? "uppercase" : "none",
+                }}
               >
-                +
+                Quantity
+              </label>
+              <div
+                className="inline-flex items-center"
+                style={{
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: theme.borderRadius,
+                }}
+              >
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="px-4 py-2.5 text-sm hover:opacity-70 transition-opacity"
+                  style={{ color: theme.colors.text }}
+                >
+                  -
+                </button>
+                <span
+                  className="px-4 py-2.5 text-sm font-medium"
+                  style={{
+                    color: theme.colors.text,
+                    borderLeft: `1px solid ${theme.colors.border}`,
+                    borderRight: `1px solid ${theme.colors.border}`,
+                  }}
+                >
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="px-4 py-2.5 text-sm hover:opacity-70 transition-opacity"
+                  style={{ color: theme.colors.text }}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Stock */}
+            <p className="mt-3 text-xs" style={{ color: theme.colors.textSecondary }}>
+              {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
+            </p>
+
+            {/* Actions */}
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={handleAddToCart}
+                disabled={product.stock === 0}
+                className="flex-1 px-6 py-3.5 text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90"
+                style={{
+                  backgroundColor: theme.colors.primary,
+                  color: "#FFFFFF",
+                  borderRadius: theme.borderRadius,
+                  textTransform: variant === "streetwear" ? "uppercase" : "none",
+                  letterSpacing: variant === "streetwear" ? "0.1em" : "0",
+                }}
+              >
+                {added
+                  ? variant === "streetwear"
+                    ? "ADDED!"
+                    : "Added!"
+                  : variant === "streetwear"
+                    ? "ADD TO CART"
+                    : "Add to Cart"}
+              </button>
+              <button
+                onClick={handleWhatsApp}
+                className="flex-1 px-6 py-3.5 text-sm font-medium transition-all duration-200 hover:opacity-90"
+                style={{
+                  backgroundColor: "transparent",
+                  color: "#22c55e",
+                  border: "1px solid #22c55e",
+                  borderRadius: theme.borderRadius,
+                  textTransform: variant === "streetwear" ? "uppercase" : "none",
+                }}
+              >
+                {variant === "streetwear" ? "ORDER VIA WHATSAPP" : "Buy via WhatsApp"}
               </button>
             </div>
           </div>
-
-          {/* Stock */}
-          <p className="mt-3 text-xs text-[var(--color-text-muted)]">
-            {product.stock > 0
-              ? `${product.stock} in stock`
-              : "Out of stock"}
-          </p>
-
-          {/* Actions */}
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={handleAddToCart}
-              disabled={product.stock === 0}
-              className="flex-1 px-6 py-3 bg-[var(--color-primary)] text-white text-sm font-medium rounded-md hover:bg-[var(--color-primary-light)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {added ? "Added!" : "Add to Cart"}
-            </button>
-            <button
-              onClick={handleWhatsApp}
-              className="flex-1 px-6 py-3 border border-green-600 text-green-600 text-sm font-medium rounded-md hover:bg-green-50 transition-colors"
-            >
-              Buy via WhatsApp
-            </button>
-          </div>
         </div>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <section className="mt-20">
+            <div
+              className="mb-8 pb-4"
+              style={{ borderBottom: `1px solid ${theme.colors.border}` }}
+            >
+              <h2
+                className="text-xl sm:text-2xl font-semibold tracking-tight"
+                style={{
+                  fontFamily: theme.fonts.heading,
+                  color: theme.colors.text,
+                  textTransform: variant === "streetwear" ? "uppercase" : "none",
+                }}
+              >
+                {variant === "streetwear"
+                  ? "You Might Also Cop"
+                  : variant === "minimal"
+                    ? "Related"
+                    : "You May Also Like"}
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedProducts.map((rp) => (
+                <Link
+                  key={rp.id}
+                  href={`/products/${rp.slug}`}
+                  className="group block"
+                >
+                  <div
+                    className="relative aspect-[3/4] overflow-hidden mb-3"
+                    style={{
+                      borderRadius: theme.borderRadius,
+                      backgroundColor: theme.colors.surface,
+                    }}
+                  >
+                    <Image
+                      src={rp.image}
+                      alt={rp.name}
+                      fill
+                      className={`object-cover transition-transform duration-500 ${
+                        variant === "luxury"
+                          ? "group-hover:scale-110"
+                          : variant === "streetwear"
+                            ? "group-hover:scale-105"
+                            : "group-hover:scale-[1.02]"
+                      }`}
+                      unoptimized
+                    />
+                  </div>
+                  <h3
+                    className="text-sm font-medium"
+                    style={{
+                      color: theme.colors.text,
+                      textTransform: variant === "streetwear" ? "uppercase" : "none",
+                    }}
+                  >
+                    {rp.name}
+                  </h3>
+                  <span className="text-sm mt-1 block" style={{ color: theme.colors.textSecondary }}>
+                    {formatPrice(rp.price)}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
