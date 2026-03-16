@@ -9,23 +9,26 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "next": "16.1.6",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "@auth/prisma-adapter": "^2.11.1",
     "@velo/db": "workspace:*",
-    "@velo/integration-registry": "workspace:*",
+    "@velo/integration-analytics": "workspace:*",
     "@velo/integration-cms": "workspace:*",
     "@velo/integration-forms": "workspace:*",
     "@velo/integration-payments": "workspace:*",
-    "@velo/integration-analytics": "workspace:*",
-    "@velo/integration-whatsapp": "workspace:*"
+    "@velo/integration-registry": "workspace:*",
+    "@velo/integration-whatsapp": "workspace:*",
+    "bcryptjs": "^3.0.3",
+    "next": "16.1.6",
+    "next-auth": "5.0.0-beta.25",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "typescript": "^5",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

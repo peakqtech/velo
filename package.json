@@ -15,7 +15,11 @@
     "eject": "tsx tools/eject/src/index.ts",
     "codegen": "tsx tools/codegen/src/index.ts",
     "qa": "tsx tools/qa/src/index.ts",
-    "ai-content": "tsx tools/ai-content/src/index.ts"
+    "ai-content": "tsx tools/ai-content/src/index.ts",
+    "db:generate": "pnpm --filter @velo/db db:generate",
+    "db:push": "pnpm --filter @velo/db db:push",
+    "db:seed": "pnpm --filter @velo/db db:seed",
+    "db:studio": "pnpm --filter @velo/db db:studio"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
