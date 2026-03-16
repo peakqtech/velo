@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { generateSectionsFromContent, FieldEditor } from "@velo/integration-cms";
 import type { FieldDefinition } from "@velo/integration-cms";
-import { SectionPreview } from "./preview";
 import { useActiveSite, useSiteContent } from "@/lib/hooks";
 
 /* -------------------------------------------------------------------------- */
@@ -38,6 +37,54 @@ export default function ContentPage() {
   const [activeSection, setActiveSection] = useState("hero");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [previewReady, setPreviewReady] = useState(false);
+  const [previewScale, setPreviewScale] = useState(0.5);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Template site URL — maps template name to port
+  const templatePorts: Record<string, number> = {
+    velocity: 3000, ember: 3001, haven: 3002,
+    nexus: 3003, prism: 3004, serenity: 3005,
+  };
+  const templateUrl = `http://localhost:${templatePorts[site?.template ?? "velocity"] ?? 3000}/en`;
+
+  // Listen for preview-ready message from iframe
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (event.data?.type === "velo:preview-ready") {
+        setPreviewReady(true);
+        // Send initial content to iframe
+        if (content && iframeRef.current?.contentWindow) {
+          iframeRef.current.contentWindow.postMessage(
+            { type: "velo:content-update", content },
+            "*"
+          );
+        }
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [content]);
+
+  // Send content updates to iframe on every edit
+  const sendToPreview = useCallback((updatedContent: Record<string, unknown>) => {
+    if (previewReady && iframeRef.current?.contentWindow) {
+      iframeRef.current.contentWindow.postMessage(
+        { type: "velo:content-update", content: updatedContent },
+        "*"
+      );
+    }
+  }, [previewReady]);
+
+  // Scroll iframe to active section when tab changes
+  useEffect(() => {
+    if (previewReady && iframeRef.current?.contentWindow) {
+      iframeRef.current.contentWindow.postMessage(
+        { type: "velo:scroll-to", section: activeSection },
+        "*"
+      );
+    }
+  }, [activeSection, previewReady]);
 
   // Sync DB content into local state when it arrives
   const content = localContent ?? dbContent;
@@ -170,13 +217,15 @@ export default function ContentPage() {
                     onChange={(newValue) => {
                       setLocalContent((prev) => {
                         const base = prev ?? content;
-                        return {
+                        const updated = {
                           ...base,
                           [activeSection]: {
                             ...(base[activeSection] as Record<string, unknown>),
                             [field.key]: newValue,
                           },
                         };
+                        sendToPreview(updated);
+                        return updated;
                       });
                     }}
                   />
@@ -185,20 +234,38 @@ export default function ContentPage() {
             ))}
         </div>
 
-        {/* Right: Live Preview */}
-        <div className="w-1/2 overflow-y-auto pl-6">
-          <div className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-sm pb-3 mb-3">
+        {/* Right: Live Preview (iframe of real template) */}
+        <div className="w-1/2 flex flex-col pl-4">
+          <div className="flex items-center justify-between pb-3">
             <div className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+              <div className={`h-1.5 w-1.5 rounded-full ${previewReady ? "bg-green-500 animate-pulse" : "bg-zinc-600"}`} />
               <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
-                Live Preview
+                {previewReady ? "Live Preview" : "Connecting..."}
               </span>
             </div>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setPreviewScale(previewScale === 1 ? 0.75 : previewScale === 0.75 ? 0.5 : 1)}
+                className="text-xs px-2 py-1 rounded bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors"
+              >
+                {Math.round(previewScale * 100)}%
+              </button>
+            </div>
           </div>
-          <SectionPreview
-            sectionKey={activeSection}
-            data={(content[activeSection] as Record<string, unknown>) || {}}
-          />
+          <div className="flex-1 rounded-lg border border-zinc-800 overflow-hidden bg-black relative">
+            <iframe
+              ref={iframeRef}
+              src={templateUrl}
+              className="absolute inset-0 border-0"
+              style={{
+                width: `${100 / previewScale}%`,
+                height: `${100 / previewScale}%`,
+                transform: `scale(${previewScale})`,
+                transformOrigin: "top left",
+              }}
+              title="Site preview"
+            />
+          </div>
         </div>
       </div>
     </div>
