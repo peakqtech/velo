@@ -132,17 +132,23 @@
 ## Phase 3: Vertical SaaS Platform (Weeks 17+)
 
 > Vision: Transform Velo from "generates websites" into "generates businesses online."
-> Each template becomes a vertical business solution. Integrations ARE the product.
-> Business owners get a running business online in 30 minutes for $50-200/mo.
+> Each template is a vertical business solution with configurable business sections.
+> Business owners don't think "I need a Stripe integration" — they think "I need to take reservations."
 >
-> Architecture decisions (from CEO review 2026-03-16):
-> - Vertical SaaS platform (not just website builder)
-> - All 6 verticals simultaneously via generic integration layer
-> - Monorepo integration packages (packages/integrations/*)
-> - Full-featured dashboard (apps/dashboard/)
-> - Supabase (Postgres) + Prisma ORM
-> - Vercel deployment
-> - Universal 5 integrations first: Stripe, Forms, Analytics, CMS, WhatsApp
+> KEY INSIGHT (CEO review 2026-03-16, refined):
+> **Business sections, not integrations.** A restaurant template comes WITH a reservation
+> section — you configure it (time slots, deposit yes/no, notification via WhatsApp/email).
+> An event organizer template comes WITH a product catalog — you configure where clicks go
+> (WhatsApp order, external link, checkout). Technology (Stripe, WhatsApp API) is an
+> implementation detail hidden behind the business feature.
+>
+> Architecture decisions:
+> - Configurable business sections per vertical (not generic integration toggles)
+> - Dashboard configures business logic (slots, deposit, CTA targets)
+> - Supabase (Postgres) + Prisma ORM for persistence
+> - Notifications: WhatsApp to owner + Email (configurable per section)
+> - Payment: Stripe/Xendit/Durianpay/Midtrans for deposits/checkout
+> - Priority verticals: Restaurant, Event Organizer, Real Estate
 
 ### Phase 3.0 — Platform Foundation
 
@@ -319,48 +325,149 @@
 - **Depends on:** CMS integration, Vercel deployment API.
 - **Status:** TODO
 
-### Phase 3.4 — Vertical Deepening (per template)
+### Phase 3.4 — Vertical Business Sections (PRIORITY)
 
-#### P2 — Restaurant Vertical (Ember)
-- **What:** Online ordering system (menu → cart → Stripe checkout → order confirmation), menu management CMS (categories, items, prices, dietary tags, photos), reservation/booking system (date/time/party size → Google Calendar), Google Reviews widget (display aggregated reviews).
-- **Why:** Restaurant owners pay $100-300/mo for these individually. Bundled = massive value.
-- **Effort:** XL (3-4 weeks)
-- **Depends on:** Stripe, CMS, Google Calendar integrations.
+> Philosophy: Business sections, not integrations. Each section solves a real business
+> problem and is configurable from the dashboard. Technology (payments, WhatsApp, email)
+> is invisible — it's just how the section works internally.
+
+#### P0 — Restaurant Vertical (Ember) 🔥 FIRST PRIORITY
+
+**Reservation Section** (`@velo/ember-reservation` — enhance existing)
+- Customer-facing: date picker → time slot picker → party size → guest name + phone → confirm
+- **Configurable from dashboard:**
+  - Operating days/hours per day (Mon: 11:00-14:00, 18:00-22:00)
+  - Time slot intervals (30min, 45min, 1hr)
+  - Max party size
+  - Slots per time block (e.g., max 5 reservations at 19:00)
+  - Blocked dates (holidays, private events)
+  - Deposit toggle: on/off
+  - Deposit amount: fixed (e.g., Rp 100k) or per-person (e.g., Rp 50k/person)
+  - Payment provider for deposit: Xendit/Midtrans/Stripe (uses existing payment adapters)
+  - Confirmation message (custom text)
+- **Notifications:**
+  - WhatsApp to owner: "New reservation: {name}, {date} {time}, {partySize} guests"
+  - Email to owner: formatted reservation details
+  - WhatsApp to customer: confirmation with details
+  - Configurable: owner picks which channels (WhatsApp/email/both)
+- **Dashboard module:** Today's reservations, upcoming bookings, calendar view, manage/cancel
+- **Database:** `Reservation` model (siteId, guestName, guestPhone, guestEmail, date, time, partySize, status, depositPaid, notes)
+- **Effort:** XL (2-3 weeks)
 - **Status:** TODO
 
-#### P2 — Wellness Vertical (Serenity)
-- **What:** Appointment booking (service → practitioner → time slot → payment), practitioner profile management, service catalog CMS, client intake forms, automated appointment reminders (email/WhatsApp).
-- **Why:** Wellness businesses revolve around appointments. Booking system = core infrastructure.
-- **Effort:** XL (3-4 weeks)
-- **Depends on:** Stripe, Forms, Google Calendar integrations.
+**Menu Section** (`@velo/ember-menu` — enhance existing)
+- Already exists as a static section. Enhance to be editable from dashboard:
+  - Add/edit/remove menu items from dashboard
+  - Toggle categories, reorder items
+  - Upload food photos
+  - Set prices, dietary tags (vegetarian, halal, gluten-free)
+  - Toggle show/hide prices
+- **Effort:** M (3-5 days)
 - **Status:** TODO
 
-#### P2 — Real Estate Vertical (Haven)
-- **What:** Property listing management (CRUD + photos + details), lead capture per listing, virtual tour embed (Matterport/YouTube), neighborhood data display, agent profile management.
-- **Why:** Real estate agents pay $200-500/mo for IDX sites. Velo can undercut with better design.
-- **Effort:** L (2-3 weeks)
-- **Depends on:** CMS, Forms integrations.
+#### P0 — Event Organizer Vertical (NEW TEMPLATE) 🎪
+
+**New template: `apps/event-template/`** with sections:
+
+**Event Catalog Section** (`@velo/event-catalog`)
+- Displays upcoming events as cards: image, title, date, venue, short description
+- Each event has a configurable CTA button:
+  - **WhatsApp order:** Click → opens WhatsApp with pre-filled message: "Hi, I want to register for {eventName} on {date}"
+  - **External link:** Click → redirects to external URL (e.g., Eventbrite, Loket.com)
+  - **Built-in checkout:** Click → payment flow for ticket purchase
+  - CTA type configurable per event from dashboard
+- Event statuses: upcoming / sold out / past (auto-calculated from date)
+- **Configurable from dashboard:**
+  - Add/edit/remove events
+  - Set CTA type + target per event
+  - WhatsApp number (shared or per-event)
+  - Message template with variables: {eventName}, {date}, {venue}, {price}
+  - Upload event images
+- **Database:** `Event` model (siteId, title, date, venue, description, image, price, ctaType, ctaTarget, status, capacity, soldCount)
+- **Effort:** L (1-2 weeks)
 - **Status:** TODO
 
-#### P2 — SaaS Vertical (Prism)
-- **What:** Stripe billing portal for SaaS subscriptions, feature comparison table (dynamic from config), signup flow with Stripe checkout, customer dashboard embed, usage tracking display.
-- **Why:** SaaS founders need billing + landing page. This is a Stripe Atlas competitor for the frontend.
-- **Effort:** L (2-3 weeks)
-- **Depends on:** Stripe integration.
+**Product/Merch Section** (`@velo/event-products`)
+- Product cards with image, name, price
+- Click action configurable per product:
+  - **WhatsApp order:** "Hi, I want to order {productName} ({price})" → configurable message template
+  - **External link:** redirect to Tokopedia/Shopee listing
+  - **Built-in checkout:** payment flow
+- **Configurable from dashboard:**
+  - Add/edit/remove products
+  - CTA type + target per product
+  - WhatsApp message template with {productName}, {price}, {quantity}
+  - Show/hide prices
+- **Effort:** M (3-5 days)
 - **Status:** TODO
 
-#### P3 — Agency Vertical (Nexus)
-- **What:** Project portfolio CMS (case studies with metrics), lead capture with CRM integration (HubSpot/Pipedrive), team member management, service page builder, proposal/quote request form.
-- **Why:** Agencies need lead generation + portfolio. The irony: agencies are also Velo's distribution channel.
-- **Effort:** L (2-3 weeks)
-- **Depends on:** CMS, Forms integrations.
+**Event Gallery Section** (`@velo/event-gallery`)
+- Photo grid of past events
+- Configurable from dashboard: upload photos, captions, reorder
+- **Effort:** S (1-2 days)
 - **Status:** TODO
 
-#### P3 — Sportswear/E-commerce Vertical (Velocity)
-- **What:** Product catalog with category filtering, shopping cart, Stripe checkout, order management dashboard, inventory tracking (basic), size/color variants.
-- **Why:** E-commerce is the largest vertical by revenue. Even basic capability here is valuable.
-- **Effort:** XL (3-4 weeks)
-- **Depends on:** Stripe, CMS integrations.
+#### P1 — Real Estate Vertical (Haven) 🏠
+
+**Property Listings Section** (enhance existing `@velo/haven-properties`)
+- Already exists. Enhance to be configurable:
+  - Add/edit/remove properties from dashboard
+  - Configurable fields per property: beds, baths, area (sqft/sqm configurable), price, type (sale/rent), status (available/sold/pending)
+  - Photo gallery per property (upload from dashboard)
+  - Virtual tour embed URL (YouTube/Matterport)
+  - Location/map embed
+- **Per-listing CTA configurable:**
+  - WhatsApp inquiry: "Hi, I'm interested in {propertyName} at {address}"
+  - Contact form: inline form that emails the agent
+  - Phone call: click-to-call
+- **Configurable from dashboard:**
+  - Currency (USD, IDR, SGD, etc.)
+  - Area unit (sqft, sqm)
+  - Which fields to show/hide
+  - Agent assignment per listing
+  - WhatsApp number for inquiries
+- **Database:** `Property` model (siteId, title, address, price, beds, baths, area, type, status, images, virtualTourUrl, agentId)
+- **Effort:** L (1-2 weeks)
+- **Status:** TODO
+
+**Agent Section** (enhance existing `@velo/haven-agent`)
+- Agent profiles editable from dashboard
+- Each agent linked to their listings
+- Contact info, photo, bio, specialization
+- **Effort:** S (1-2 days)
+- **Status:** TODO
+
+#### P2 — Shared Business Infrastructure
+
+These support ALL verticals:
+
+**Notification Service** (shared infra)
+- WhatsApp notification: build wa.me URL with pre-filled message, configurable per section
+- Email notification: via Resend API (transactional emails)
+- Template variables: {guestName}, {date}, {productName}, {price}, etc.
+- Owner configures: which channels (WhatsApp/email), phone number, email address
+- **Effort:** M (3-5 days)
+- **Status:** TODO
+
+**Configurable CTA System** (shared component)
+- A reusable component that renders different CTAs based on config:
+  - WhatsApp: opens wa.me link with templated message
+  - External link: redirects to URL
+  - Checkout: triggers payment flow
+  - Contact form: inline form submission
+  - Phone call: click-to-call
+- Used by: Event Catalog, Product/Merch, Property Listings, Reservation deposit
+- Config stored per-item in the section's content JSON
+- **Effort:** M (3-5 days)
+- **Status:** TODO
+
+**Booking/Slot Engine** (shared infra)
+- Time slot management: define available slots per day, capacity per slot
+- Blocks fully-booked slots
+- Deposit flow: optional, integrates with payment adapters
+- Used by: Restaurant Reservation, Wellness Booking (future)
+- **Database:** `Booking` model (siteId, sectionType, guestName, guestContact, date, time, slotId, status, depositAmount, depositPaid, paymentId)
+- **Effort:** L (1-2 weeks)
 - **Status:** TODO
 
 ### Phase 3.5 — Growth & Monetization
