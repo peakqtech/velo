@@ -35,22 +35,23 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
 
-/* Smooth transitions for theme switching */
+/* Smooth transitions for theme switching — exclude color to prevent inheritance issues */
 *, *::before, *::after {
-  transition-property: background-color, border-color, color;
+  transition-property: background-color, border-color;
   transition-duration: 0.3s;
   transition-timing-function: ease;
 }
 
-/* Reset transition for interactive elements */
-a, button, img {
-  transition: all 0.3s ease;
-}
-
 /* Transparent navbar — force white text/icons over hero */
 .nav-transparent,
+.nav-transparent a,
+.nav-transparent span,
+.nav-transparent button,
+.nav-transparent p,
+.nav-transparent div,
 .nav-transparent * {
   color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }
 .nav-transparent svg {
   stroke: #FFFFFF !important;
