@@ -220,8 +220,7 @@ export default function ClientDetailPage() {
             {client.sites.length % 2 === 1 && (
               <button
                 onClick={() => setShowCreateSite(true)}
-                className="rounded-xl border-2 border-dashed border-zinc-800 hover:border-zinc-600 bg-transparent flex flex-col items-center justify-center gap-3 transition-colors group cursor-pointer"
-                style={{ aspectRatio: "16/10", minHeight: "200px" }}
+                className="rounded-xl border-2 border-dashed border-zinc-800 hover:border-zinc-600 bg-transparent flex flex-col items-center justify-center gap-3 transition-colors group cursor-pointer min-h-[200px]"
               >
                 <div className="h-12 w-12 rounded-xl border-2 border-dashed border-zinc-700 group-hover:border-zinc-500 flex items-center justify-center transition-colors">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-600 group-hover:text-zinc-400 transition-colors">
