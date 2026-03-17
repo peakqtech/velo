@@ -783,17 +783,24 @@ function Step4Review({
 /*  Success animation                                          */
 /* ────────────────────────────────────────────────────────── */
 
-function SuccessOverlay({ siteName }: { siteName: string }) {
+function SuccessOverlay({ siteName, message }: { siteName: string; message?: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/80 backdrop-blur-md">
-      <div className="text-center animate-in fade-in zoom-in duration-500">
+      <div className="text-center max-w-md">
         <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-green-600/20 flex items-center justify-center ring-4 ring-green-600/10">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-zinc-100 mb-2">Site Created!</h2>
-        <p className="text-zinc-400">{siteName} is ready to go. Redirecting...</p>
+        <h2 className="text-2xl font-bold text-zinc-100 mb-2">Site Generated!</h2>
+        <p className="text-zinc-400 mb-4">{siteName} has been created successfully.</p>
+        {message && (
+          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-left">
+            <p className="text-xs text-zinc-500 mb-1">Next steps:</p>
+            <code className="text-xs text-green-400 break-all">{message}</code>
+          </div>
+        )}
+        <p className="text-xs text-zinc-600 mt-4">Redirecting to client page...</p>
       </div>
     </div>
   );
@@ -828,6 +835,7 @@ export default function NewSiteWizardPage() {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   /* ── Load client + templates ────────────────────────── */
   useEffect(() => {
@@ -882,36 +890,36 @@ export default function NewSiteWizardPage() {
     setError(null);
 
     try {
-      // Get default content for the template
-      const templateRes = await fetch(`/api/templates?withContent=${selectedTemplate}`);
-      const { defaultContent } = await templateRes.json();
-
       // Build features array
       const features = Array.from(enabledFeatures);
 
-      // Create site
-      const res = await fetch("/api/sites", {
+      // Generate the site (creates app directory + DB record)
+      const res = await fetch("/api/sites/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: siteName.trim(),
           template: selectedTemplate,
-          content: defaultContent || {},
           clientId,
           domain: domain.trim() || undefined,
+          description: description.trim() || undefined,
           features,
         }),
       });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to create site");
+        throw new Error(data.error || "Failed to generate site");
       }
 
+      const result = await res.json();
+
       setShowSuccess(true);
+      // Show the generated path in success message
+      setSuccessMessage(result.message);
       setTimeout(() => {
         router.push(`/clients/${clientId}`);
-      }, 2000);
+      }, 3000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create site");
     } finally {
@@ -939,7 +947,7 @@ export default function NewSiteWizardPage() {
   return (
     <div className="min-h-[80vh] flex flex-col">
       {/* Success overlay */}
-      {showSuccess && <SuccessOverlay siteName={siteName} />}
+      {showSuccess && <SuccessOverlay siteName={siteName} message={successMessage} />}
 
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-zinc-500 mb-6">
