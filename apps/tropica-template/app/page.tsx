@@ -106,7 +106,7 @@ export default function HomePage() {
 
           {/* Glassmorphism Booking Widget */}
           <div className="w-full max-w-4xl mx-auto">
-            <div className="glass-strong rounded-2xl p-6 md:p-8">
+            <div className="liquid-glass-strong rounded-2xl p-6 md:p-8">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
                 <div className="flex flex-col">
                   <label
@@ -287,7 +287,7 @@ export default function HomePage() {
                 unoptimized
               />
               {/* Floating badge */}
-              <div className="absolute bottom-6 left-6 glass-dark rounded-2xl px-6 py-4 text-white">
+              <div className="absolute bottom-6 left-6 liquid-glass-dark rounded-2xl px-6 py-4 text-white">
                 <p
                   className="text-3xl font-semibold"
                   style={{ fontFamily: "var(--font-heading)" }}

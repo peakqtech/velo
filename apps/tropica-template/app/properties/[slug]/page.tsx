@@ -186,7 +186,7 @@ export default async function PropertyDetailPage({
                 priority
                 unoptimized
               />
-              <div className="absolute top-4 left-4 glass-dark rounded-full px-4 py-2 text-white text-xs font-medium" style={{ fontFamily: "var(--font-body)" }}>
+              <div className="absolute top-4 left-4 liquid-glass-dark rounded-full px-4 py-2 text-white text-xs font-medium" style={{ fontFamily: "var(--font-body)" }}>
                 {villa.images.length} Photos
               </div>
             </div>
