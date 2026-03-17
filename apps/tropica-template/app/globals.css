@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-@source "../app/**/*.{ts,tsx}";
-@source "../components/**/*.{ts,tsx}";
-
 :root {
   --color-primary: #0D4F4F;
   --color-primary-light: #1A6B6B;
@@ -16,12 +13,6 @@
   --radius: 12px;
   --font-heading: "Cormorant Garamond", Georgia, serif;
   --font-body: "Montserrat", system-ui, sans-serif;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
 
 html {
