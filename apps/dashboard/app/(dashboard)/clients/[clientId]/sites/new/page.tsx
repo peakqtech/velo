@@ -380,6 +380,11 @@ function StepIndicator({ current }: { current: number }) {
 /*  Step 1: Choose Template                                    */
 /* ────────────────────────────────────────────────────────── */
 
+const templatePorts: Record<string, number> = {
+  velocity: 3000, ember: 3001, haven: 3002, nexus: 3003, prism: 3004,
+  serenity: 3005, commerce: 3006, tropica: 3007, medica: 3008, lexis: 3009, forma: 3010,
+};
+
 function Step1ChooseTemplate({
   templates,
   selected,
@@ -389,83 +394,123 @@ function Step1ChooseTemplate({
   selected: string | null;
   onSelect: (name: string) => void;
 }) {
+  const [previewOpen, setPreviewOpen] = useState<string | null>(null);
+
   return (
     <div>
       <h2 className="text-xl font-semibold text-zinc-100 mb-1">Choose a Template</h2>
-      <p className="text-sm text-zinc-500 mb-6">Pick the perfect starting point for your client&apos;s website.</p>
+      <p className="text-sm text-zinc-500 mb-6">Pick the perfect starting point. Click &quot;Preview&quot; to see the live template.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {templates.map((t) => {
           const isSelected = selected === t.name;
           const preview = templatePreviews[t.name];
           const badges = templateBadges[t.name] ?? [t.businessType];
+          const isPreviewOpen = previewOpen === t.name;
+          const port = templatePorts[t.name];
+          const liveUrl = port ? `http://localhost:${port}` : null;
 
           return (
-            <button
+            <div
               key={t.name}
-              onClick={() => onSelect(t.name)}
-              className={`group text-left rounded-xl border-2 overflow-hidden transition-all duration-200 ${
+              className={`rounded-xl border-2 overflow-hidden transition-all duration-200 ${
                 isSelected
                   ? "border-blue-500 ring-2 ring-blue-500/20 bg-zinc-900"
-                  : "border-zinc-800 hover:border-zinc-600 bg-zinc-900/50 hover:bg-zinc-900"
+                  : "border-zinc-800 hover:border-zinc-600 bg-zinc-900/50"
               }`}
             >
-              {/* Preview image */}
-              <div className="relative h-44 overflow-hidden bg-zinc-800">
-                {preview ? (
-                  <Image
-                    src={preview}
-                    alt={t.displayName}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    unoptimized
-                  />
-                ) : (
-                  <div className={`absolute inset-0 bg-gradient-to-br ${templateGradients[t.name] ?? "from-zinc-700 to-zinc-800"}`} />
-                )}
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-transparent to-transparent" />
+              {/* Clickable header to select */}
+              <button
+                onClick={() => onSelect(t.name)}
+                className="group text-left w-full"
+              >
+                {/* Preview image */}
+                <div className="relative h-40 overflow-hidden bg-zinc-800">
+                  {preview ? (
+                    <Image
+                      src={preview}
+                      alt={t.displayName}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className={`absolute inset-0 bg-gradient-to-br ${templateGradients[t.name] ?? "from-zinc-700 to-zinc-800"}`} />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-transparent to-transparent" />
 
-                {/* Selected badge */}
-                {isSelected && (
-                  <div className="absolute top-3 right-3 h-7 w-7 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  </div>
-                )}
+                  {isSelected && (
+                    <div className="absolute top-3 right-3 h-7 w-7 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
+                    </div>
+                  )}
 
-                {/* Template icon */}
-                <div className="absolute bottom-3 left-4 flex items-center gap-3">
-                  <div className={`h-10 w-10 rounded-lg bg-gradient-to-br ${templateGradients[t.name] ?? "from-zinc-600 to-zinc-700"} flex items-center justify-center shadow-lg`}>
-                    <span className="text-sm font-bold text-white">{t.name[0].toUpperCase()}</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white drop-shadow-md">{t.displayName}</p>
-                    <p className="text-xs text-zinc-300/80">{t.businessType}</p>
+                  <div className="absolute bottom-3 left-4 flex items-center gap-3">
+                    <div className={`h-9 w-9 rounded-lg bg-gradient-to-br ${templateGradients[t.name] ?? "from-zinc-600 to-zinc-700"} flex items-center justify-center shadow-lg`}>
+                      <span className="text-xs font-bold text-white">{t.name[0].toUpperCase()}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white drop-shadow-md">{t.displayName}</p>
+                      <p className="text-[11px] text-zinc-300/80">{t.businessType}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </button>
 
               {/* Card body */}
               <div className="p-4">
-                <p className="text-sm text-zinc-400 line-clamp-2 mb-3">{t.description}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {badges.map((badge) => (
-                    <span
-                      key={badge}
-                      className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/50"
+                <p className="text-xs text-zinc-400 line-clamp-2 mb-3">{t.description}</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-wrap gap-1.5">
+                    {badges.slice(0, 3).map((badge) => (
+                      <span key={badge} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/50">
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
+                  {liveUrl && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPreviewOpen(isPreviewOpen ? null : t.name);
+                      }}
+                      className="text-[11px] font-medium px-2.5 py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:border-zinc-500 transition-colors flex items-center gap-1.5"
                     >
-                      {badge}
-                    </span>
-                  ))}
-                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-zinc-800/50 text-zinc-500">
-                    {t.sectionCount} sections
-                  </span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                      {isPreviewOpen ? "Hide" : "Preview"}
+                    </button>
+                  )}
                 </div>
               </div>
-            </button>
+
+              {/* Live iframe preview — expands on click */}
+              {isPreviewOpen && liveUrl && (
+                <div className="border-t border-zinc-800">
+                  <div className="relative bg-black" style={{ aspectRatio: "16/10" }}>
+                    <iframe
+                      src={liveUrl}
+                      className="absolute inset-0 border-0"
+                      style={{
+                        width: "250%",
+                        height: "250%",
+                        transform: "scale(0.4)",
+                        transformOrigin: "top left",
+                      }}
+                      title={`Live preview of ${t.displayName}`}
+                      loading="lazy"
+                    />
+                    <div className="absolute top-2 right-2 flex items-center gap-1.5 bg-black/70 backdrop-blur-sm rounded-full px-2 py-0.5">
+                      <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                      <span className="text-[10px] font-medium text-zinc-300">Live</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           );
         })}
       </div>
