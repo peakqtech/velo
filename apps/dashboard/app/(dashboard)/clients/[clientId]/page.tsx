@@ -95,8 +95,6 @@ export default function ClientDetailPage() {
   const [client, setClient] = useState<ClientDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showCreateSite, setShowCreateSite] = useState(false);
-
   useEffect(() => {
     fetch(`/api/clients/${clientId}`)
       .then(async (res) => {
@@ -187,22 +185,22 @@ export default function ClientDetailPage() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider">Sites</h2>
-          <button
-            onClick={() => setShowCreateSite(true)}
+          <Link
+            href={`/clients/${clientId}/sites/new`}
             className="px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
           >
             + Create Site
-          </button>
+          </Link>
         </div>
         {client.sites.length === 0 ? (
           <div className="rounded-xl border border-dashed border-zinc-700 bg-zinc-900/30 p-8 text-center">
             <p className="text-sm text-zinc-400 mb-3">No sites yet. Create one from a template.</p>
-            <button
-              onClick={() => setShowCreateSite(true)}
+            <Link
+              href={`/clients/${clientId}/sites/new`}
               className="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
             >
               Create First Site
-            </button>
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -218,8 +216,8 @@ export default function ClientDetailPage() {
             ))}
             {/* Fill empty grid slot when odd number of sites */}
             {client.sites.length % 2 === 1 && (
-              <button
-                onClick={() => setShowCreateSite(true)}
+              <Link
+                href={`/clients/${clientId}/sites/new`}
                 className="rounded-xl border-2 border-dashed border-zinc-800 hover:border-zinc-600 bg-transparent flex flex-col items-center justify-center gap-3 transition-colors group cursor-pointer min-h-[200px]"
               >
                 <div className="h-12 w-12 rounded-xl border-2 border-dashed border-zinc-700 group-hover:border-zinc-500 flex items-center justify-center transition-colors">
@@ -234,7 +232,7 @@ export default function ClientDetailPage() {
                 <span className="text-sm font-medium text-zinc-600 group-hover:text-zinc-400 transition-colors">
                   Add Another Great Site
                 </span>
-              </button>
+              </Link>
             )}
           </div>
         )}
@@ -316,23 +314,6 @@ export default function ClientDetailPage() {
         </div>
       </div>
 
-      {/* Create Site Modal */}
-      {showCreateSite && (
-        <CreateSiteModal
-          clientId={clientId}
-          clientName={client.name}
-          onClose={() => setShowCreateSite(false)}
-          onCreated={() => {
-            setShowCreateSite(false);
-            // Reload client data
-            setLoading(true);
-            fetch(`/api/clients/${clientId}`)
-              .then((r) => r.json())
-              .then(setClient)
-              .finally(() => setLoading(false));
-          }}
-        />
-      )}
     </div>
   );
 }
@@ -507,174 +488,3 @@ function SiteCard({ site, clientId, onUpdate }: { site: Site; clientId: string; 
   );
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  Create Site Modal                                         */
-/* ────────────────────────────────────────────────────────── */
-
-interface Template {
-  name: string;
-  displayName: string;
-  description: string;
-  businessType: string;
-  style: string;
-  sectionCount: number;
-}
-
-function CreateSiteModal({
-  clientId,
-  clientName,
-  onClose,
-  onCreated,
-}: {
-  clientId: string;
-  clientName: string;
-  onClose: () => void;
-  onCreated: () => void;
-}) {
-  const [templates, setTemplates] = useState<Template[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [siteName, setSiteName] = useState(clientName);
-  const [domain, setDomain] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch("/api/templates")
-      .then((r) => r.json())
-      .then((data) => setTemplates(data.templates ?? []))
-      .catch(() => {});
-  }, []);
-
-  const handleCreate = async () => {
-    if (!selectedTemplate || !siteName.trim()) return;
-
-    setCreating(true);
-    setError(null);
-
-    try {
-      // Get default content for the template
-      const templateRes = await fetch(`/api/templates?withContent=${selectedTemplate}`);
-      const { defaultContent } = await templateRes.json();
-
-      // Create site
-      const res = await fetch("/api/sites", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: siteName.trim(),
-          template: selectedTemplate,
-          content: defaultContent || {},
-          clientId,
-          domain: domain.trim() || undefined,
-        }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to create site");
-      }
-
-      onCreated();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create site");
-    } finally {
-      setCreating(false);
-    }
-  };
-
-  const templateColors: Record<string, string> = {
-    velocity: "from-red-600 to-orange-600",
-    ember: "from-amber-600 to-red-700",
-    haven: "from-emerald-600 to-teal-700",
-    nexus: "from-orange-500 to-amber-600",
-    prism: "from-violet-600 to-indigo-600",
-    serenity: "from-green-600 to-emerald-700",
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl">
-        <div className="p-6 border-b border-zinc-800">
-          <h2 className="text-lg font-semibold">Create Site for {clientName}</h2>
-          <p className="text-sm text-zinc-500 mt-1">Choose a template and customize the basics</p>
-        </div>
-
-        <div className="p-6 space-y-6">
-          {/* Template picker */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-3">Choose Template</label>
-            <div className="grid grid-cols-2 gap-3">
-              {templates.map((t) => (
-                <button
-                  key={t.name}
-                  onClick={() => setSelectedTemplate(t.name)}
-                  className={`text-left p-4 rounded-xl border transition-all ${
-                    selectedTemplate === t.name
-                      ? "border-blue-500 bg-blue-500/5 ring-1 ring-blue-500"
-                      : "border-zinc-800 hover:border-zinc-700 bg-zinc-900/50"
-                  }`}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${templateColors[t.name] ?? "from-zinc-600 to-zinc-700"} flex items-center justify-center`}>
-                      <span className="text-xs font-bold text-white">{t.name[0].toUpperCase()}</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-zinc-200">{t.displayName}</p>
-                      <p className="text-[11px] text-zinc-500">{t.businessType}</p>
-                    </div>
-                  </div>
-                  <p className="text-xs text-zinc-400 line-clamp-2">{t.description}</p>
-                  <p className="text-[11px] text-zinc-600 mt-1">{t.sectionCount} sections · {t.style}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Site details */}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Site Name</label>
-              <input
-                value={siteName}
-                onChange={(e) => setSiteName(e.target.value)}
-                className="w-full h-10 px-3 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="My Restaurant"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">Custom Domain <span className="text-zinc-500 font-normal">(optional)</span></label>
-              <input
-                value={domain}
-                onChange={(e) => setDomain(e.target.value)}
-                className="w-full h-10 px-3 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="myrestaurant.com"
-              />
-            </div>
-          </div>
-
-          {error && (
-            <p className="text-sm text-red-400">{error}</p>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="p-6 border-t border-zinc-800 flex items-center justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm text-zinc-400 hover:text-zinc-200 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleCreate}
-            disabled={!selectedTemplate || !siteName.trim() || creating}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {creating ? "Creating..." : "Create Site"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
