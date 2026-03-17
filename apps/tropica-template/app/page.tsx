@@ -286,8 +286,17 @@ export default function HomePage() {
                 className="object-cover"
                 unoptimized
               />
-              {/* Floating badge */}
-              <div className="absolute bottom-6 right-6 liquid-glass-dark rounded-2xl px-6 py-4 text-white z-10">
+              {/* Floating badge — no liquid-glass to avoid ::after layout issues */}
+              <div
+                className="absolute bottom-6 right-6 rounded-2xl px-6 py-4 text-white z-10"
+                style={{
+                  background: "linear-gradient(135deg, rgba(13,79,79,0.55), rgba(13,79,79,0.35))",
+                  backdropFilter: "blur(40px) saturate(1.6)",
+                  WebkitBackdropFilter: "blur(40px) saturate(1.6)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.15)",
+                }}
+              >
                 <p
                   className="text-3xl font-semibold"
                   style={{ fontFamily: "var(--font-heading)" }}
