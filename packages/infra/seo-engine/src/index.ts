@@ -45,3 +45,9 @@ export { BlogFormatter } from "./content/channels/blog";
 export { GBPFormatter } from "./content/channels/gbp";
 export { SocialFormatter } from "./content/channels/social";
 export { EmailFormatter } from "./content/channels/email";
+
+// Keyword source providers
+export type { KeywordSourceProvider } from "./keywords/source";
+export { VerticalKeywordProvider } from "./keywords/vertical";
+export { GSCKeywordProvider } from "./keywords/gsc";
+export { SerpAPIKeywordProvider } from "./keywords/serpapi";

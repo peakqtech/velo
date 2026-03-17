@@ -19,6 +19,7 @@
     "db:generate": "pnpm --filter @velo/db db:generate",
     "db:push": "pnpm --filter @velo/db db:push",
     "db:seed": "pnpm --filter @velo/db db:seed",
+    "db:seed-seo": "pnpm --filter @velo/db db:seed-seo",
     "db:studio": "pnpm --filter @velo/db db:studio"
   },
   "devDependencies": {
