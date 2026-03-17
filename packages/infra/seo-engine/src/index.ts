@@ -51,3 +51,13 @@ export type { KeywordSourceProvider } from "./keywords/source";
 export { VerticalKeywordProvider } from "./keywords/vertical";
 export { GSCKeywordProvider } from "./keywords/gsc";
 export { SerpAPIKeywordProvider } from "./keywords/serpapi";
+
+// Campaign planner, scheduler, executor
+export type { PlanInput } from "./campaign/planner";
+export { CampaignPlanner } from "./campaign/planner";
+export { mapScheduleToDates } from "./campaign/scheduler";
+export { CampaignExecutor, getNextDuePieces } from "./campaign/executor";
+
+// Content generator
+export type { GenerateOptions, GenerateResult } from "./content/generator";
+export { ContentGenerator } from "./content/generator";
