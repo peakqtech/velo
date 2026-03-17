@@ -32,3 +32,16 @@ export type {
   ContentMetaData,
 } from "./types/content";
 export { GBPCtaType, SocialPlatform } from "./types/content";
+
+// Channel formatter interface + context/result types
+export type {
+  ChannelFormatter,
+  PromptContext,
+  ValidationResult,
+} from "./content/channel";
+
+// Channel formatter implementations
+export { BlogFormatter } from "./content/channels/blog";
+export { GBPFormatter } from "./content/channels/gbp";
+export { SocialFormatter } from "./content/channels/social";
+export { EmailFormatter } from "./content/channels/email";
