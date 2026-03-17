@@ -287,7 +287,7 @@ export default function HomePage() {
                 unoptimized
               />
               {/* Floating badge */}
-              <div className="absolute bottom-6 left-6 liquid-glass-dark rounded-2xl px-6 py-4 text-white">
+              <div className="absolute bottom-6 right-6 liquid-glass-dark rounded-2xl px-6 py-4 text-white z-10">
                 <p
                   className="text-3xl font-semibold"
                   style={{ fontFamily: "var(--font-heading)" }}
