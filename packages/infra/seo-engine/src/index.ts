@@ -1,3 +1,14 @@
+// Publish pipeline
+export { encrypt, decrypt } from "./publish/crypto";
+export { generateMDX, commitMDXToGitHub, writeMDXLocal } from "./publish/mdx-writer";
+export type { PublishResult, Publisher } from "./publish/publisher";
+export { triggerVercelDeploy } from "./publish/deploy-trigger";
+
+// AI model types and adapters
+export type { ModelOptions, GenerateResponse, ContentModel } from "./ai/model";
+export { ClaudeAdapter } from "./ai/claude";
+export { OpenAIAdapter } from "./ai/openai";
+
 // Keyword types (exported first to avoid re-export conflicts)
 export type { KeywordSuggestion } from "./types/keyword";
 export { KeywordIntent, KeywordChannel } from "./types/keyword";
