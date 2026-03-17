@@ -38,6 +38,7 @@ model User {
   role            Role            @default(OWNER)
   sites           Site[]
   assignedChanges ChangeRequest[] @relation("AssignedTo")
+  reviewedContent ContentPiece[]  @relation("ContentReviewer")
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
@@ -120,6 +121,12 @@ model Site {
   products        Product[]
   orders          Order[]
   changeRequests  ChangeRequest[]
+  campaigns       Campaign[]
+  contentPieces   ContentPiece[]
+  keywordSources  KeywordSource[]
+  repoUrl         String?
+  repoBranch      String?
+  repoToken       String?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
@@ -318,4 +325,150 @@ model Deployment {
   @@index([siteId])
   @@index([createdAt])
   @@map("deployments")
+}
+
+// ─── SEO Engine Enums ───────────────────────────────────────────────────────
+
+enum CampaignStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+enum Channel {
+  BLOG
+  GBP
+  SOCIAL
+  EMAIL
+}
+
+enum ContentPieceStatus {
+  PLANNED
+  GENERATING
+  DRAFT
+  FAILED
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+  REJECTED
+}
+
+enum KeywordProvider {
+  VERTICAL
+  GSC
+  SERPAPI
+  SEMRUSH
+}
+
+enum KeywordIntent {
+  INFORMATIONAL
+  TRANSACTIONAL
+  NAVIGATIONAL
+  LOCAL
+}
+
+// ─── SEO Engine Models ───────────────────────────────────────────────────────
+
+model Campaign {
+  id             String         @id @default(cuid())
+  site           Site           @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId         String
+  name           String
+  goal           String?
+  status         CampaignStatus @default(DRAFT)
+  channels       Channel[]
+  totalPieces    Int
+  publishedCount Int            @default(0)
+  schedule       Json
+  keywordTargets Json
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  contentPieces  ContentPiece[]
+
+  @@index([siteId])
+  @@map("campaigns")
+}
+
+model ContentPiece {
+  id                String             @id @default(cuid())
+  campaign          Campaign           @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId        String
+  site              Site               @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId            String
+  channel           Channel
+  status            ContentPieceStatus @default(PLANNED)
+  title             String
+  slug              String?
+  targetKeyword     String?
+  outline           String?
+  content           Json?
+  metaData          Json?
+  scheduledFor      DateTime?
+  publishedAt       DateTime?
+  modelUsed         String?
+  contentTemplateId String?
+  contentTemplate   ContentTemplate?   @relation(fields: [contentTemplateId], references: [id])
+  generatedAt       DateTime?
+  reviewedById      String?
+  reviewedBy        User?              @relation("ContentReviewer", fields: [reviewedById], references: [id])
+  reviewNote        String?
+  tokenCount        Int?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([siteId])
+  @@index([campaignId])
+  @@index([status])
+  @@index([scheduledFor])
+  @@map("content_pieces")
+}
+
+model KeywordSource {
+  id         String          @id @default(cuid())
+  site       Site            @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId     String
+  provider   KeywordProvider
+  config     Json            @default("{}")
+  enabled    Boolean         @default(true)
+  lastSyncAt DateTime?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  keywords   KeywordData[]
+
+  @@unique([siteId, provider])
+  @@map("keyword_sources")
+}
+
+model KeywordData {
+  id           String        @id @default(cuid())
+  source       KeywordSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  sourceId     String
+  keyword      String
+  volume       Int?
+  difficulty   Int?
+  intent       KeywordIntent
+  relatedTerms String[]
+  fetchedAt    DateTime
+  updatedAt    DateTime      @updatedAt
+
+  @@unique([sourceId, keyword])
+  @@index([sourceId])
+  @@map("keyword_data")
+}
+
+model ContentTemplate {
+  id             String         @id @default(cuid())
+  vertical       String
+  channel        Channel
+  name           String
+  promptTemplate String
+  outputSchema   Json
+  tone           String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  contentPieces  ContentPiece[]
+
+  @@unique([vertical, channel, name])
+  @@map("content_templates")
 }
