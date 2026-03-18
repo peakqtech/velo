@@ -1,51 +1,33 @@
+/* apps/peakq/app/globals.css */
 @import "tailwindcss";
 
 :root {
-  --color-primary: #6366F1;
-  --color-primary-light: #818CF8;
-  --color-accent: #06B6D4;
-  --color-surface: #111827;
-  --color-surface-elevated: #1F2937;
-  --color-text: #F9FAFB;
-  --color-text-muted: #9CA3AF;
-  --radius: 8px;
-  --font-heading: "Inter", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  --bg-base: #020a1a;
+  --bg-surface: #050d1f;
+  --bg-elevated: #030d20;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-blue: rgba(59, 130, 246, 0.2);
+  --accent-blue: #3b82f6;
+  --accent-blue-light: #60a5fa;
+  --accent-blue-muted: rgba(59, 130, 246, 0.1);
+  --text-primary: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.45);
+  --text-dim: rgba(255, 255, 255, 0.25);
 }
 
-html {
-  scroll-behavior: smooth;
+@keyframes marquee {
+  from { transform: translateX(0%); }
+  to   { transform: translateX(-50%); }
 }
 
-body {
-  font-family: var(--font-body);
-  color: var(--color-text);
-  background-color: #030712;
-  font-weight: 400;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@keyframes bounce-dot {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(8px); }
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  line-height: 1.2;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #111827;
-}
-::-webkit-scrollbar-thumb {
-  background: #374151;
-  border-radius: 4px;
-}
-
-/* Selection */
-::selection {
-  background: rgba(99, 102, 241, 0.3);
-  color: var(--color-text);
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

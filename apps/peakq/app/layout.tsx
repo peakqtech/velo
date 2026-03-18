@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Bebas_Neue, Space_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const bebasNeue = Bebas_Neue({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-display",
+});
+const spaceMono = Space_Mono({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
   title: "PeakQ — AI-Powered Business Operating System",
@@ -18,11 +26,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} bg-gray-950 text-white antialiased`}>
-        <Navbar />
+    <html
+      lang="en"
+      className={`dark ${inter.variable} ${bebasNeue.variable} ${spaceMono.variable}`}
+    >
+      <body className="bg-[#020a1a] text-white antialiased">
         <main className="min-h-screen">{children}</main>
-        <Footer />
       </body>
     </html>
   );
