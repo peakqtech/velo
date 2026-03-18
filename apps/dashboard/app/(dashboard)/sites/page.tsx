@@ -107,7 +107,6 @@ export default async function SitesPage() {
                         href={site.siteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
                         className="text-xs text-blue-400 hover:underline truncate max-w-[140px]"
                       >
                         {site.siteUrl.replace(/^https?:\/\//, "")}
