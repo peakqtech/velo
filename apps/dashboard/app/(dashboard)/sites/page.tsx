@@ -103,14 +103,9 @@ export default async function SitesPage() {
                   <div className="flex items-center justify-between mb-3">
                     <StatusBadge status={site.deployStatus} />
                     {site.siteUrl && (
-                      <a
-                        href={site.siteUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-400 hover:underline truncate max-w-[140px]"
-                      >
+                      <span className="text-xs text-blue-400 truncate max-w-[140px]">
                         {site.siteUrl.replace(/^https?:\/\//, "")}
-                      </a>
+                      </span>
                     )}
                   </div>
 
