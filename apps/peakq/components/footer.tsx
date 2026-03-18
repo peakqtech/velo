@@ -25,7 +25,7 @@ const FOOTER_LINKS = {
 
 export function Footer() {
   return (
-    <footer style={{ backgroundColor: "#020a1a", borderTop: "1px solid rgba(59,130,246,0.12)" }}>
+    <footer style={{ backgroundColor: "#020a1a", borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "rgba(59,130,246,0.12)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
           {/* Brand column */}
@@ -72,7 +72,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div
           className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "rgba(255,255,255,0.06)" }}
         >
           <p
             className="text-[10px]"
