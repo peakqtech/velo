@@ -53,15 +53,17 @@ export function CompoundingStack() {
         {/* Connector lines (desktop only) */}
         <svg
           className="hidden md:block absolute top-8 left-0 w-full pointer-events-none"
+          width="100%"
           style={{ height: "2px", zIndex: 0 }}
           viewBox="0 0 100 2"
           preserveAspectRatio="none"
         >
-          <motion.line
-            x1="33" y1="1" x2="67" y2="1"
+          <motion.path
+            d="M33,1 L67,1"
             stroke="#3b82f6"
             strokeWidth="0.5"
             strokeDasharray="4 4"
+            fill="none"
             initial={{ pathLength: 0, opacity: 0 }}
             animate={isInView ? { pathLength: 1, opacity: 1 } : {}}
             transition={{ duration: 0.6, delay: 0.4 }}

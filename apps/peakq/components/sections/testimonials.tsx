@@ -62,7 +62,9 @@ export function Testimonials() {
           {["←", "→"].map((arrow, i) => (
             <button
               key={i}
-              className="w-10 h-10 flex items-center justify-center text-sm transition-colors"
+              disabled
+              aria-disabled="true"
+              className="w-10 h-10 flex items-center justify-center text-sm transition-colors opacity-40 cursor-not-allowed"
               style={{
                 borderWidth: "1px",
                 borderStyle: "solid",
@@ -70,7 +72,7 @@ export function Testimonials() {
                 color: "rgba(255,255,255,0.4)",
                 fontFamily: "var(--font-mono)",
               }}
-              aria-label={i === 0 ? "Previous" : "Next"}
+              aria-label={i === 0 ? "Previous (coming soon)" : "Next (coming soon)"}
             >
               {arrow}
             </button>

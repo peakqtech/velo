@@ -64,7 +64,7 @@ export function PlatformPreview() {
           {/* Window chrome */}
           <div
             className="flex items-center gap-2 px-4 py-3"
-            style={{ backgroundColor: "#050d1f", borderBottom: "1px solid rgba(59,130,246,0.15)" }}
+            style={{ backgroundColor: "#050d1f", borderBottomWidth: "1px", borderBottomStyle: "solid", borderBottomColor: "rgba(59,130,246,0.15)" }}
           >
             <span className="w-3 h-3 rounded-full bg-red-500/60" />
             <span className="w-3 h-3 rounded-full bg-yellow-500/60" />
@@ -108,7 +108,7 @@ export function PlatformPreview() {
                   "Follow-up email triggered",
                   "New booking confirmed",
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 py-1.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                  <div key={item} className="flex items-center gap-2 py-1.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
                     <span className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0" />
                     <span className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>{item}</span>
                   </div>
@@ -121,7 +121,7 @@ export function PlatformPreview() {
                 <div className="text-[10px] uppercase tracking-[0.1em] mb-3" style={{ fontFamily: "Courier New, monospace", color: "rgba(255,255,255,0.4)" }}>
                   Lead Volume — 7d
                 </div>
-                <svg viewBox="0 0 200 60" className="flex-1">
+                <svg viewBox="0 0 200 60" className="flex-1" aria-hidden="true">
                   <polyline
                     points="0,50 30,40 60,45 90,25 120,30 150,15 200,10"
                     fill="none"
