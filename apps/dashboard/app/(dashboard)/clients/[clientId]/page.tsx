@@ -413,6 +413,12 @@ function SiteCard({ site, clientId, onUpdate }: { site: Site; clientId: string; 
             {localSiteUrl ? "Change URL" : "Set URL"}
           </button>
           <Link
+            href={`/clients/${clientId}/sites/${site.id}/seo`}
+            className="px-3 py-1.5 text-xs font-medium text-zinc-300 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors"
+          >
+            SEO
+          </Link>
+          <Link
             href={`/clients/${clientId}/sites/${site.id}/reservations`}
             className="px-3 py-1.5 text-xs font-medium text-zinc-300 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors"
           >
