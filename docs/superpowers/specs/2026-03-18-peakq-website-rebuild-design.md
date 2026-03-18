@@ -178,12 +178,25 @@ velocity-template/
 
 ## Pricing Model (The Compounding Stack)
 
-| Tier | What They Get | Monthly Price |
-|------|--------------|---------------|
+**Internal pricing ranges** (actual billing flexibility):
+
+| Tier | What They Get | Price Range |
+|------|--------------|-------------|
 | Starter | Website + Hosting + CMS | $99-199/mo |
 | Growth | + SEO + Lead Capture + Reviews | $499-799/mo |
 | Scale | + Ads Autopilot + Full BI Dashboard | $999-1,499/mo |
 | Enterprise | + Custom integrations + Priority support | $2,000-5,000/mo |
+
+**Website display prices** (anchored at "starting from"):
+
+| Tier | Display Price |
+|------|--------------|
+| Starter | $99/mo |
+| Growth | $499/mo |
+| Scale | $999/mo |
+| Enterprise | Custom |
+
+The website shows "starting from" prices. The `/pricing` detail page will include a "Price depends on industry and scope" note. Exact pricing per client is determined during the get-started/sales process.
 
 **Key messaging:** Each tier compounds the one below it. The value proposition is not "more features" but "compounding returns."
 
@@ -250,13 +263,71 @@ The current peakq site (Next.js + MongoDB, atomic design) will be fully replaced
 6. Lighthouse performance score > 90
 7. The site itself is indistinguishable from a "real" product site — it IS the real product site
 
+## Sections Strategy
+
+The existing sections packages are template-specific (e.g., `prism-pricing`, `nexus-contact`). For the PeakQ site, we will:
+
+1. **Create PeakQ-specific sections** where needed — `peakq-hero`, `peakq-pricing`, `peakq-features`, `peakq-contact`, `peakq-faq`, `peakq-stats`, `peakq-team`. These live inside `apps/peakq/components/sections/` (not in shared packages) since they contain PeakQ-specific content and layout.
+2. **Reuse shared UI primitives** from the dashboard and existing sections (cards, buttons, badges, grids).
+3. **Extract generic sections later** — if patterns emerge that benefit other template apps, refactor PeakQ sections into shared `@velo/` packages. Don't prematurely abstract.
+
+## Template Metadata
+
+A `templates.config.ts` file at the monorepo root (or in `packages/`) maps template names to metadata:
+
+```ts
+export const templates = [
+  {
+    slug: "tropica",
+    name: "Tropica",
+    industry: "Restaurant & Dining",
+    category: "food-hospitality",
+    capabilities: ["Menu SEO", "Online reservations", "Review management"],
+    previewUrl: "https://tropica-template.vercel.app", // deployed URL
+    gradient: ["#f97316", "#dc2626"],
+  },
+  // ... all templates
+] as const;
+```
+
+This is the single source of truth for the `/templates` gallery page and the homepage industry showcase. Adding a new template = adding one entry here.
+
+## Industry-to-Template Mapping
+
+| Industry | Category | Templates |
+|----------|----------|-----------|
+| Restaurant & Dining | food-hospitality | Tropica |
+| Real Estate | real-estate | Haven |
+| Wellness & Spa | health-wellness | Serenity |
+| Healthcare | health-wellness | Medica |
+| E-Commerce | e-commerce | Commerce |
+| Legal & Professional | professional-services | Lexis |
+| Creative & Portfolio | creative | Prism |
+| Events & Entertainment | creative | Ember |
+| Fitness | health-wellness | Forma |
+| Tech & SaaS | professional-services | Nexus |
+
+## Pages with Deferred Functionality
+
+Some pages are listed in the route structure but launch with reduced scope:
+
+### `/get-started`
+- **Launch version:** Simple lead capture form — "Tell us about your business" (name, email, industry, template preference). Submissions stored via `@velo/integration-forms` and trigger email notification.
+- **Future version:** Full onboarding wizard with auth, template provisioning, and setup flow. Requires `@velo/db` auth + template provisioning system.
+- **Why launch simple:** Every CTA needs somewhere to go. A lead capture form converts visitors while the full onboarding system is being built.
+
+### `/blog`
+- **Launch version:** Static "Coming Soon" page with email signup for updates. Minimal — just a heading, description, and email capture.
+- **Future version:** Full blog powered by `@velo/integration-cms` with industry insights and platform updates.
+- **Why defer:** Blog requires CMS integration setup and content creation. Not a launch blocker.
+
 ## Out of Scope (For Now)
 
 - Client portal / dashboard login on peakq.tech
 - Demo scheduling via booking engine
 - Payment processing for subscriptions
 - WhatsApp support chat widget
-- Blog content (requires `@velo/integration-cms` setup)
-- Get-started onboarding wizard (requires auth + template provisioning)
+- Full blog CMS (launch with "Coming Soon" + email signup)
+- Full onboarding wizard (launch with lead capture form)
 
 These will be added as the platform matures through Phase 4A-4E.
