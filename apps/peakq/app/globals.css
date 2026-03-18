@@ -1,6 +1,15 @@
 /* apps/peakq/app/globals.css */
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
 :root {
   --bg-base: #020a1a;
   --bg-surface: #050d1f;

@@ -30,8 +30,8 @@ export default function RootLayout({
       lang="en"
       className={`dark ${inter.variable} ${bebasNeue.variable} ${spaceMono.variable}`}
     >
-      <body className="bg-[#020a1a] text-white antialiased">
-        <main className="min-h-screen">{children}</main>
+      <body className="bg-[var(--bg-base)] text-white antialiased">
+        {children}
       </body>
     </html>
   );
