@@ -29,7 +29,7 @@ export function LogoMarquee() {
             <span
               key={`${i}-${name}`}
               className="text-sm tracking-[0.1em]"
-              style={{ fontFamily: "Courier New, monospace", color: "rgba(255,255,255,0.25)" }}
+              style={{ fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.25)" }}
             >
               {name}
             </span>

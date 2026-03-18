@@ -98,15 +98,17 @@ export function ServicesPreview() {
             <div
               className="w-9 h-9 flex items-center justify-center text-lg"
               style={{
-                background: "rgba(59,130,246,0.1)",
-                border: "1px solid rgba(59,130,246,0.2)",
+                backgroundColor: "rgba(59,130,246,0.1)",
+                borderWidth: "1px",
+                borderStyle: "solid",
+                borderColor: "rgba(59,130,246,0.2)",
               }}
             >
               {service.icon}
             </div>
             <div
               className="text-lg uppercase"
-              style={{ fontFamily: "Impact, sans-serif" }}
+              style={{ fontFamily: "var(--font-display)" }}
             >
               {service.name}
             </div>
@@ -116,7 +118,7 @@ export function ServicesPreview() {
             <Link
               href={service.href}
               className="text-[10px] uppercase tracking-[0.1em] mt-auto transition-opacity hover:opacity-70"
-              style={{ fontFamily: "Courier New, monospace", color: "#3b82f6" }}
+              style={{ fontFamily: "var(--font-mono)", color: "#3b82f6" }}
             >
               Learn More →
             </Link>

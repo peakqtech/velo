@@ -15,7 +15,7 @@ const FOOTER_LINKS = {
   Services: [
     { label: "QA & Testing", href: "/services/qa-testing" },
     { label: "Custom Dev", href: "/services/custom-development" },
-    { label: "Managed", href: "/services/managed" },
+    { label: "Managed", href: "/services/managed-services" },
   ],
   "Get In Touch": [
     { label: "hello@peakq.tech", href: "mailto:hello@peakq.tech" },

@@ -9,7 +9,7 @@ function KpiCard({ label, value, delta }: { label: string; value: string; delta?
       className="flex flex-col gap-1 p-4"
       style={{ backgroundColor: "#020a1a", borderWidth: "1px", borderStyle: "solid", borderColor: "rgba(59,130,246,0.15)" }}
     >
-      <div className="text-[10px] uppercase tracking-[0.1em]" style={{ fontFamily: "Courier New, monospace", color: "rgba(255,255,255,0.4)" }}>
+      <div className="text-[10px] uppercase tracking-[0.1em]" style={{ fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.4)" }}>
         {label}
       </div>
       <div className="text-2xl font-bold text-white">{value}</div>
@@ -72,7 +72,7 @@ export function PlatformPreview() {
             <div
               className="ml-4 px-4 py-1 text-[11px] flex-1 max-w-xs"
               style={{
-                fontFamily: "Courier New, monospace",
+                fontFamily: "var(--font-mono)",
                 backgroundColor: "#020a1a",
                 color: "rgba(255,255,255,0.4)",
                 borderWidth: "1px",
@@ -99,7 +99,7 @@ export function PlatformPreview() {
                 className="p-4"
                 style={{ backgroundColor: "#020a1a", borderWidth: "1px", borderStyle: "solid", borderColor: "rgba(59,130,246,0.15)" }}
               >
-                <div className="text-[10px] uppercase tracking-[0.1em] mb-3" style={{ fontFamily: "Courier New, monospace", color: "rgba(255,255,255,0.4)" }}>
+                <div className="text-[10px] uppercase tracking-[0.1em] mb-3" style={{ fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.4)" }}>
                   Recent Activity
                 </div>
                 {[
@@ -118,7 +118,7 @@ export function PlatformPreview() {
                 className="p-4 flex flex-col"
                 style={{ backgroundColor: "#020a1a", borderWidth: "1px", borderStyle: "solid", borderColor: "rgba(59,130,246,0.15)" }}
               >
-                <div className="text-[10px] uppercase tracking-[0.1em] mb-3" style={{ fontFamily: "Courier New, monospace", color: "rgba(255,255,255,0.4)" }}>
+                <div className="text-[10px] uppercase tracking-[0.1em] mb-3" style={{ fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.4)" }}>
                   Lead Volume — 7d
                 </div>
                 <svg viewBox="0 0 200 60" className="flex-1" aria-hidden="true">

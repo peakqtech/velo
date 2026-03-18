@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 
 const STATS = [
@@ -10,11 +10,11 @@ const STATS = [
   { number: 0, suffix: "", label: "Setup Cost — Ever", prefix: "$" },
 ];
 
-function useCountUp(target: number, duration = 1200, trigger: boolean) {
+function useCountUp(target: number, duration = 1200, trigger: boolean, reduce = false) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     if (!trigger) return;
-    if (target === 0) { setCount(0); return; }
+    if (target === 0 || reduce) { setCount(target); return; }
     let start = 0;
     const step = target / (duration / 16);
     const timer = setInterval(() => {
@@ -23,7 +23,7 @@ function useCountUp(target: number, duration = 1200, trigger: boolean) {
       else setCount(Math.floor(start));
     }, 16);
     return () => clearInterval(timer);
-  }, [target, duration, trigger]);
+  }, [target, duration, trigger, reduce]);
   return count;
 }
 
@@ -31,12 +31,14 @@ function StatItem({
   stat,
   delay,
   trigger,
+  reduceMotion,
 }: {
   stat: (typeof STATS)[0];
   delay: number;
   trigger: boolean;
+  reduceMotion: boolean;
 }) {
-  const count = useCountUp(stat.number, 1200, trigger);
+  const count = useCountUp(stat.number, 1200, trigger, reduceMotion);
   return (
     <motion.div
       className="flex flex-col items-center justify-center py-10 px-6 text-center"
@@ -45,14 +47,14 @@ function StatItem({
       transition={{ duration: 0.6, delay, ease: "easeOut" }}
       style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}
     >
-      <div className="text-4xl font-bold mb-1" style={{ fontFamily: "Impact, sans-serif" }}>
+      <div className="text-4xl font-bold mb-1" style={{ fontFamily: "var(--font-display)" }}>
         {stat.prefix && <span style={{ color: "#3b82f6" }}>{stat.prefix}</span>}
         <span className="text-white">{count}</span>
         <span style={{ color: "#3b82f6" }}>{stat.suffix}</span>
       </div>
       <div
         className="text-[10px] uppercase tracking-[0.12em]"
-        style={{ fontFamily: "Courier New, monospace", color: "rgba(255,255,255,0.45)" }}
+        style={{ fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.45)" }}
       >
         {stat.label}
       </div>
@@ -63,6 +65,7 @@ function StatItem({
 export function Stats() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <div
@@ -74,7 +77,7 @@ export function Stats() {
       }}
     >
       {STATS.map((stat, i) => (
-        <StatItem key={stat.label} stat={stat} delay={i * 0.15} trigger={isInView} />
+        <StatItem key={stat.label} stat={stat} delay={i * 0.15} trigger={isInView} reduceMotion={!!shouldReduceMotion} />
       ))}
     </div>
   );

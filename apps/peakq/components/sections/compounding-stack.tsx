@@ -92,7 +92,7 @@ export function CompoundingStack() {
             </div>
             <div
               className="text-xl uppercase"
-              style={{ fontFamily: "Impact, sans-serif" }}
+              style={{ fontFamily: "var(--font-display)" }}
             >
               {step.title}
             </div>

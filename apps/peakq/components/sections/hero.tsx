@@ -171,7 +171,7 @@ export function Hero() {
         >
           {/* Eyebrow badge */}
           <motion.div variants={itemVariants} className="flex items-center gap-2 px-4 py-2 rounded-full"
-            style={{ border: "1px solid rgba(59,130,246,0.3)", background: "rgba(59,130,246,0.05)" }}>
+            style={{ borderWidth: "1px", borderStyle: "solid", borderColor: "rgba(59,130,246,0.3)", backgroundColor: "rgba(59,130,246,0.05)" }}>
             <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
             <span
               className="text-[10px] uppercase tracking-[0.15em]"
