@@ -65,7 +65,7 @@ export function Hero() {
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
 
   // Stroke dasharray for edge draw animation
-  const edgeLength = 200; // approximate
+  const edgeLength = 600; // covers all edge lengths in the 1200×700 viewBox
 
   return (
     <section
@@ -104,12 +104,12 @@ export function Hero() {
         >
           {EDGES.map(([a, b, dashed], i) => (
             <motion.line
-              key={i}
+              key={`edge-${a}-${b}`}
               x1={NODES[a].cx} y1={NODES[a].cy}
               x2={NODES[b].cx} y2={NODES[b].cy}
               stroke="#3b82f6"
               strokeWidth="0.5"
-              strokeDasharray={dashed ? "4 4" : undefined}
+              strokeDasharray={dashed ? `4 4` : `${edgeLength}`}
               strokeDashoffset={shouldReduceMotion ? 0 : edgeLength}
               animate={shouldReduceMotion ? {} : { strokeDashoffset: 0 }}
               transition={{ duration: 1.2, delay: i * 0.04, ease: "easeOut" }}
@@ -117,13 +117,11 @@ export function Hero() {
           ))}
           {NODES.map((node, i) => (
             <motion.circle
-              key={i}
+              key={`node-${i}`}
               cx={node.cx} cy={node.cy} r={node.r}
               fill={node.fill}
-              animate={shouldReduceMotion ? {} : {
-                opacity: [0.2, 0.8, 0.2],
-                transition: { duration: 3, repeat: Infinity, delay: i * 0.12, ease: "easeInOut" },
-              }}
+              animate={shouldReduceMotion ? {} : { opacity: [0.2, 0.8, 0.2] }}
+              transition={shouldReduceMotion ? {} : { duration: 3, repeat: Infinity, delay: i * 0.12, ease: "easeInOut" as const }}
               initial={{ opacity: 0.2 }}
             />
           ))}
@@ -131,7 +129,7 @@ export function Hero() {
       </motion.div>
 
       {/* Floating navigation */}
-      <nav className="relative z-10 flex items-center justify-between px-8 py-6">
+      <nav aria-label="Main navigation" className="relative z-10 flex items-center justify-between px-8 py-6">
         <div
           className="text-lg font-bold tracking-[0.12em]"
           style={{ fontFamily: "var(--font-mono)" }}
