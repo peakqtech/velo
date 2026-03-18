@@ -46,7 +46,7 @@ function StatItem({
       style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}
     >
       <div className="text-4xl font-bold mb-1" style={{ fontFamily: "Impact, sans-serif" }}>
-        {stat.prefix && <span className="text-white">{stat.prefix}</span>}
+        {stat.prefix && <span style={{ color: "#3b82f6" }}>{stat.prefix}</span>}
         <span className="text-white">{count}</span>
         <span style={{ color: "#3b82f6" }}>{stat.suffix}</span>
       </div>

@@ -23,11 +23,11 @@ export function LogoMarquee() {
       <div className="flex overflow-hidden">
         <div
           className="flex gap-16 whitespace-nowrap"
-          style={{ animation: "marquee 25s linear infinite" }}
+          style={{ animation: "marquee 25s linear infinite", width: "max-content" }}
         >
           {items.map((name, i) => (
             <span
-              key={i}
+              key={`${i}-${name}`}
               className="text-sm tracking-[0.1em]"
               style={{ fontFamily: "Courier New, monospace", color: "rgba(255,255,255,0.25)" }}
             >

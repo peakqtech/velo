@@ -79,8 +79,10 @@ export function ServicesPreview() {
             key={service.name}
             className="flex flex-col p-6 gap-4"
             style={{
-              background: "rgba(5,13,31,0.8)",
-              border: "1px solid rgba(255,255,255,0.06)",
+              backgroundColor: "rgba(5,13,31,0.8)",
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderColor: "rgba(255,255,255,0.06)",
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
