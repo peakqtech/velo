@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "PeakQ — AI-Powered Business Operating System",
+  description: "We don't just build websites. We build revenue machines. AI-powered platform purpose-built for your industry.",
+};
+
 import { Hero } from "@/components/sections/hero";
 import { IndustryShowcase } from "@/components/sections/industry-showcase";
 import { CompoundingStack } from "@/components/sections/compounding-stack";
