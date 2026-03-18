@@ -4,7 +4,7 @@ export const metadata = {
 };
 
 import { Hero } from "@/components/sections/hero";
-import { IndustryShowcase } from "@/components/sections/industry-showcase";
+import { Stats } from "@/components/sections/stats";
 import { CompoundingStack } from "@/components/sections/compounding-stack";
 import { PricingPreview } from "@/components/sections/pricing-preview";
 import { ServicesPreview } from "@/components/sections/services-preview";
@@ -14,7 +14,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <IndustryShowcase />
+      <Stats />
       <CompoundingStack />
       <PricingPreview />
       <ServicesPreview />
