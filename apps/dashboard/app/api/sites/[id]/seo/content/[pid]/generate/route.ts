@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@velo/db";
 import {
-  ClaudeAdapter,
+  createModel,
   ContentGenerator,
   BlogFormatter,
   GBPFormatter,
@@ -86,9 +86,7 @@ export async function POST(
         (siteContent?.city as string) ??
         "";
 
-      const apiKey = process.env.ANTHROPIC_API_KEY;
-      if (!apiKey) throw new Error("ANTHROPIC_API_KEY is not configured");
-      const model = new ClaudeAdapter(apiKey);
+      const model = createModel();
       const generator = new ContentGenerator(model);
 
       const result = await generator.generate({

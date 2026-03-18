@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@velo/db";
 import {
-  ClaudeAdapter,
+  createModel,
   ContentGenerator,
   BlogFormatter,
   GBPFormatter,
@@ -34,11 +34,11 @@ function getFormatterForChannel(channel: string): ChannelFormatter | null {
 
 async function processBatchAsync(
   pieceIds: string[],
-  apiKey: string,
+  _apiKey: string,
   siteContext: SiteContext
 ): Promise<void> {
-  const adapter = new ClaudeAdapter(apiKey);
-  const generator = new ContentGenerator(adapter);
+  const model = createModel();
+  const generator = new ContentGenerator(model);
 
   for (const pieceId of pieceIds) {
     try {
@@ -123,14 +123,16 @@ export async function POST(
     return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
+  try {
+    createModel(); // validate that a model provider is configured
+  } catch {
     return NextResponse.json(
-      { error: "ANTHROPIC_API_KEY is not configured" },
+      { error: "AI service not configured. Set ANTHROPIC_API_KEY, OPENAI_API_KEY, or GOOGLE_AI_API_KEY." },
       { status: 500 }
     );
   }
 
+  const apiKey = process.env.ANTHROPIC_API_KEY ?? process.env.OPENAI_API_KEY ?? process.env.GOOGLE_AI_API_KEY ?? "";
   const now = new Date();
   const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 

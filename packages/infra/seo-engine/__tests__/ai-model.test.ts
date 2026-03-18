@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from "vitest";
 import type { ContentModel, GenerateResponse } from "../src/ai/model";
 import { ClaudeAdapter } from "../src/ai/claude";
 import { OpenAIAdapter } from "../src/ai/openai";
+import { GeminiAdapter } from "../src/ai/gemini";
+import { createModel } from "../src/ai/factory";
 
 // ---------------------------------------------------------------------------
 // Mock model fulfills interface
@@ -134,14 +136,188 @@ describe("ClaudeAdapter", () => {
 // OpenAIAdapter stub
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// OpenAIAdapter
+// ---------------------------------------------------------------------------
+
 describe("OpenAIAdapter", () => {
   it("has name gpt-4o", () => {
-    const adapter = new OpenAIAdapter();
+    const adapter = new OpenAIAdapter("sk-test");
     expect(adapter.name).toBe("gpt-4o");
   });
 
-  it("generate throws not implemented", async () => {
-    const adapter = new OpenAIAdapter();
-    await expect(adapter.generate("test")).rejects.toThrow("not implemented");
+  it("throws on missing API key", () => {
+    expect(() => new OpenAIAdapter("")).toThrow("OpenAI API key is required");
+  });
+
+  it("buildRequest creates correct structure", () => {
+    const adapter = new OpenAIAdapter("sk-test");
+    const req = adapter.buildRequest("Hello", { maxTokens: 2048, temperature: 0.5 });
+    expect(req.model).toBe("gpt-4o");
+    expect(req.messages[0]).toEqual({ role: "user", content: "Hello" });
+    expect(req.max_tokens).toBe(2048);
+    expect(req.temperature).toBe(0.5);
+  });
+
+  it("parseResponse extracts text and tokenCount", () => {
+    const adapter = new OpenAIAdapter("sk-test");
+    const result = adapter.parseResponse({
+      choices: [{ message: { role: "assistant", content: "Generated text" } }],
+      usage: { prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 },
+    });
+    expect(result.text).toBe("Generated text");
+    expect(result.tokenCount).toBe(30);
+  });
+
+  it("generate calls OpenAI API and returns response", async () => {
+    const adapter = new OpenAIAdapter("sk-live");
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        choices: [{ message: { role: "assistant", content: "AI output" } }],
+        usage: { prompt_tokens: 5, completion_tokens: 10, total_tokens: 15 },
+      }),
+    });
+    vi.stubGlobal("fetch", mockFetch);
+
+    const result = await adapter.generate("test prompt");
+    expect(result.text).toBe("AI output");
+    expect(result.tokenCount).toBe(15);
+
+    const [url] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe("https://api.openai.com/v1/chat/completions");
+
+    vi.unstubAllGlobals();
+  });
+
+  it("generate throws on non-ok response", async () => {
+    const adapter = new OpenAIAdapter("sk-live");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: false, status: 429, text: async () => "Rate limited",
+    }));
+
+    await expect(adapter.generate("test")).rejects.toThrow("OpenAI API error 429");
+    vi.unstubAllGlobals();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GeminiAdapter
+// ---------------------------------------------------------------------------
+
+describe("GeminiAdapter", () => {
+  it("has name gemini-2.5-pro", () => {
+    const adapter = new GeminiAdapter("key-test");
+    expect(adapter.name).toBe("gemini-2.5-pro");
+  });
+
+  it("throws on missing API key", () => {
+    expect(() => new GeminiAdapter("")).toThrow("Google AI API key is required");
+  });
+
+  it("buildRequest creates correct structure", () => {
+    const adapter = new GeminiAdapter("key-test");
+    const req = adapter.buildRequest("Hello", { maxTokens: 4096, temperature: 0.7 });
+    expect(req.contents[0].parts[0].text).toBe("Hello");
+    expect(req.generationConfig?.maxOutputTokens).toBe(4096);
+    expect(req.generationConfig?.temperature).toBe(0.7);
+  });
+
+  it("buildRequest omits generationConfig when no options", () => {
+    const adapter = new GeminiAdapter("key-test");
+    const req = adapter.buildRequest("Hello");
+    expect(req.generationConfig).toBeUndefined();
+  });
+
+  it("parseResponse extracts text and tokenCount", () => {
+    const adapter = new GeminiAdapter("key-test");
+    const result = adapter.parseResponse({
+      candidates: [{ content: { parts: [{ text: "Gemini output" }] } }],
+      usageMetadata: { promptTokenCount: 8, candidatesTokenCount: 12, totalTokenCount: 20 },
+    });
+    expect(result.text).toBe("Gemini output");
+    expect(result.tokenCount).toBe(20);
+  });
+
+  it("generate calls Gemini API with key in URL", async () => {
+    const adapter = new GeminiAdapter("my-api-key");
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        candidates: [{ content: { parts: [{ text: "response" }] } }],
+        usageMetadata: { promptTokenCount: 5, candidatesTokenCount: 10, totalTokenCount: 15 },
+      }),
+    });
+    vi.stubGlobal("fetch", mockFetch);
+
+    const result = await adapter.generate("test");
+    expect(result.text).toBe("response");
+    expect(result.tokenCount).toBe(15);
+
+    const [url] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(url).toContain("generativelanguage.googleapis.com");
+    expect(url).toContain("key=my-api-key");
+
+    vi.unstubAllGlobals();
+  });
+
+  it("generate throws on non-ok response", async () => {
+    const adapter = new GeminiAdapter("key");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: false, status: 403, text: async () => "Forbidden",
+    }));
+
+    await expect(adapter.generate("test")).rejects.toThrow("Gemini API error 403");
+    vi.unstubAllGlobals();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// createModel factory
+// ---------------------------------------------------------------------------
+
+describe("createModel", () => {
+  it("creates ClaudeAdapter when provider is claude", () => {
+    vi.stubEnv("ANTHROPIC_API_KEY", "sk-test");
+    const model = createModel("claude");
+    expect(model.name).toBe("claude-sonnet-4");
+    vi.unstubAllEnvs();
+  });
+
+  it("creates OpenAIAdapter when provider is openai", () => {
+    vi.stubEnv("OPENAI_API_KEY", "sk-test");
+    const model = createModel("openai");
+    expect(model.name).toBe("gpt-4o");
+    vi.unstubAllEnvs();
+  });
+
+  it("creates GeminiAdapter when provider is gemini", () => {
+    vi.stubEnv("GOOGLE_AI_API_KEY", "key-test");
+    const model = createModel("gemini");
+    expect(model.name).toBe("gemini-2.5-pro");
+    vi.unstubAllEnvs();
+  });
+
+  it("reads SEO_MODEL env var when no provider given", () => {
+    vi.stubEnv("SEO_MODEL", "gemini");
+    vi.stubEnv("GOOGLE_AI_API_KEY", "key-test");
+    const model = createModel();
+    expect(model.name).toBe("gemini-2.5-pro");
+    vi.unstubAllEnvs();
+  });
+
+  it("defaults to claude when no provider or env var", () => {
+    vi.stubEnv("ANTHROPIC_API_KEY", "sk-test");
+    const model = createModel();
+    expect(model.name).toBe("claude-sonnet-4");
+    vi.unstubAllEnvs();
+  });
+
+  it("throws on missing API key", () => {
+    expect(() => createModel("openai")).toThrow("OPENAI_API_KEY is required");
+  });
+
+  it("throws on unknown provider", () => {
+    expect(() => createModel("llama" as any)).toThrow("Unknown model provider: llama");
   });
 });

@@ -8,6 +8,9 @@ export { triggerVercelDeploy } from "./publish/deploy-trigger";
 export type { ModelOptions, GenerateResponse, ContentModel } from "./ai/model";
 export { ClaudeAdapter } from "./ai/claude";
 export { OpenAIAdapter } from "./ai/openai";
+export { GeminiAdapter } from "./ai/gemini";
+export { createModel } from "./ai/factory";
+export type { ModelProvider } from "./ai/factory";
 
 // Keyword types (exported first to avoid re-export conflicts)
 export type { KeywordSuggestion } from "./types/keyword";

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@velo/db";
-import { ClaudeAdapter, VerticalKeywordProvider } from "@velo/seo-engine";
+import { createModel, VerticalKeywordProvider } from "@velo/seo-engine";
 
 // GET /api/sites/:id/seo/keywords?vertical=restaurant&location=Bali
 export async function GET(
@@ -34,14 +34,12 @@ export async function GET(
     );
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json(
-      { error: "AI service not configured" },
-      { status: 503 }
-    );
+  let model;
+  try {
+    model = createModel();
+  } catch {
+    return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
   }
-  const model = new ClaudeAdapter(apiKey);
   const provider = new VerticalKeywordProvider(model);
 
   const keywords = await provider.getKeywords(vertical, location, channels);

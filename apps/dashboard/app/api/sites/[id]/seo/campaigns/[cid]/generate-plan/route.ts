@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@velo/db";
-import { ClaudeAdapter, CampaignPlanner } from "@velo/seo-engine";
+import { createModel, CampaignPlanner } from "@velo/seo-engine";
 
 // POST /api/sites/:id/seo/campaigns/:cid/generate-plan
 // Synchronous — user waits in the wizard for the plan to be returned.
@@ -29,14 +29,6 @@ export async function POST(
     return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json(
-      { error: "ANTHROPIC_API_KEY is not configured" },
-      { status: 500 }
-    );
-  }
-
   const body = await request.json();
   const { keywords, vertical, businessName, location } = body;
 
@@ -47,8 +39,8 @@ export async function POST(
   };
 
   try {
-    const adapter = new ClaudeAdapter(apiKey);
-    const planner = new CampaignPlanner(adapter);
+    const model = createModel();
+    const planner = new CampaignPlanner(model);
 
     const plan = await planner.generatePlan({
       campaignName: campaign.name,
