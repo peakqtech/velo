@@ -35,7 +35,7 @@ export function Testimonials() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto">
+    <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto" style={{ borderTop: "1px solid rgba(59,130,246,0.12)" }}>
       {/* Header row */}
       <div className="flex items-start justify-between mb-14">
         <div>

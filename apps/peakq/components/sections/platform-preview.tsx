@@ -25,7 +25,7 @@ export function PlatformPreview() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section className="py-20 px-4 md:px-8 overflow-hidden">
+    <section className="py-20 px-4 md:px-8 overflow-hidden" style={{ borderTop: "1px solid rgba(59,130,246,0.12)" }}>
       <div className="max-w-4xl mx-auto">
         {/* Eyebrow + H2 */}
         <div className="text-center mb-12">

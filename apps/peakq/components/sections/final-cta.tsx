@@ -13,6 +13,7 @@ export function FinalCta() {
       className="py-24 px-4 text-center relative overflow-hidden"
       style={{
         background: "linear-gradient(135deg, #020a1a, #050f2e, #020a1a)",
+        borderTop: "1px solid rgba(59,130,246,0.12)",
       }}
     >
       {/* Radial glow */}

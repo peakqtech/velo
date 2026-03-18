@@ -48,7 +48,7 @@ export function ServicesPreview() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto">
+    <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto" style={{ borderTop: "1px solid rgba(59,130,246,0.12)" }}>
       {/* Eyebrow */}
       <p
         className="text-[11px] uppercase tracking-[0.15em] mb-4"
