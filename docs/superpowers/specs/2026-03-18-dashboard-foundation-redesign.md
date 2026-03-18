@@ -24,10 +24,22 @@ Redesign the Velo Dashboard from a CRUD admin scaffold into a CEO command center
 
 ### Setup
 
-Install shadcn/ui in the dashboard app following the Next.js setup:
+Install shadcn/ui in the dashboard app following the Next.js + Tailwind v4 setup:
 - `pnpm dlx shadcn@latest init` in `apps/dashboard/`
-- Configure for dark mode (class strategy), zinc color palette, CSS variables
-- This creates `components/ui/` directory and `lib/utils.ts` (cn helper)
+- The wizard should detect Tailwind v4 (CSS-based config, no `tailwind.config.ts`) and use the v4-compatible path
+- Config: `rsc: true`, `tsx: true`, style: "new-york", base color: zinc
+- This creates `components/ui/` directory, `lib/utils.ts` (cn helper), and `components.json`
+- Dark mode: the existing `className="dark"` on `<html>` in root layout is preserved — shadcn/ui dark mode works via CSS variables that respond to this class
+- No `tailwind.config.ts` is generated — Tailwind v4 uses CSS `@theme` blocks in `globals.css`
+- `lucide-react` is added as a dependency (shadcn components use it for icons, replacing existing inline SVGs)
+
+### Tailwind v4 Compatibility
+
+The dashboard uses Tailwind CSS v4 with PostCSS (`@tailwindcss/postcss`). Key differences from v3:
+- No `tailwind.config.ts` — all config is in `globals.css` via `@theme { }` and `@source` directives
+- Dark mode via `@custom-variant dark (&:where(.dark, .dark *))` in CSS, not `darkMode: "class"` in JS
+- shadcn/ui's CSS variables are added to `globals.css` inside `@theme` blocks
+- Verify shadcn init generates CSS-only theming (no JS config file)
 
 ### Components to Install
 
@@ -141,23 +153,22 @@ The dashboard layout itself should be a server component:
 ```typescript
 // app/(dashboard)/layout.tsx (Server Component)
 import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/sidebar";
 
 export default async function DashboardLayout({ children }) {
+  // Auth protection handled by middleware.ts — this call is for reading session data only
   const session = await auth();
-  if (!session) redirect("/login");
 
   return (
     <div className="flex h-screen">
-      <Sidebar user={session.user} />
+      <Sidebar user={session?.user} />
       <main className="flex-1 overflow-y-auto">{children}</main>
     </div>
   );
 }
 ```
 
-The sidebar renders immediately with the page content streaming in. No layout flash.
+The sidebar renders immediately with the page content streaming in. No layout flash. **Note:** middleware.ts handles auth redirects — the layout only reads session data to pass to the Sidebar (user name, avatar).
 
 ### What Changes
 
@@ -168,6 +179,26 @@ The sidebar renders immediately with the page content streaming in. No layout fl
 | Sequential API waterfalls | Parallel `Suspense` boundaries |
 | Full page spinner on navigation | Instant shell + streaming data |
 | API routes for everything | API routes for mutations only |
+
+### Error Handling
+
+Each route group gets an `error.tsx` boundary:
+
+```typescript
+// app/(dashboard)/error.tsx
+"use client";
+export default function DashboardError({ error, reset }) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+      <h2 className="text-lg font-semibold">Something went wrong</h2>
+      <p className="text-sm text-muted-foreground">{error.message}</p>
+      <Button onClick={reset}>Try again</Button>
+    </div>
+  );
+}
+```
+
+Server component loader functions should NOT use try/catch — let errors bubble to the boundary. This gives consistent error UI across all pages.
 
 ### What Stays
 
@@ -197,6 +228,8 @@ The sidebar renders immediately with the page content streaming in. No layout fl
 │   ◎ Content         │
 │                     │
 │ SYSTEM              │
+│   ◎ Integrations    │
+│   ◎ QA Reports      │
 │   ◎ Settings        │
 │                     │
 │ ─────────────────── │
@@ -205,13 +238,27 @@ The sidebar renders immediately with the page content streaming in. No layout fl
 └─────────────────────┘
 ```
 
+### Navigation Mapping (existing pages → new sidebar)
+
+| Old Location | New Sidebar Location | Notes |
+|-------------|---------------------|-------|
+| `/` (clients list) | MANAGE → Clients (`/clients`) | Home becomes overview |
+| `/changes` | MANAGE → Changes | Unchanged |
+| `/billing` | OVERVIEW → Revenue | Unchanged |
+| `/settings` | SYSTEM → Settings | Unchanged |
+| `/integrations` | SYSTEM → Integrations | Was a site-level page, promoted to top-level |
+| `/qa-reports` | SYSTEM → QA Reports | Was a site-level page, promoted to top-level |
+| `/content` | Accessed via site detail | Stays as deep link, not in sidebar |
+| `/reservations` | Accessed via site detail | Stays as deep link, not in sidebar |
+
 ### New Pages
 
 | Route | Purpose |
 |-------|---------|
 | `/` | Dashboard home — dense KPI overview |
+| `/clients` | Clients list (moved from /) |
 | `/sites` | All sites across clients (new first-class page) |
-| `/seo` | Cross-client SEO overview (new aggregate page) |
+| `/seo` | Placeholder page ("Coming soon — managed per-client in Sub-project 3") |
 
 ### Breadcrumb Navigation
 
@@ -221,7 +268,7 @@ Every page gets auto-breadcrumbs from the URL:
 Dashboard > Clients > Sushi Masa > Sites > velocity-demo > SEO > Q2 Campaign
 ```
 
-Segments map to human-readable labels via a lookup (clientId → client name from DB, siteId → site name, etc.).
+Segments map to human-readable labels. **Performance note:** breadcrumb data is fetched as part of the page's server component data (the page already queries the client/site), then passed as a `breadcrumbs` prop to the `PageHeader` component. The `nav-breadcrumb.tsx` component does NOT independently query the DB — it receives pre-resolved segments from the page.
 
 ### URL Structure (unchanged)
 
@@ -276,7 +323,7 @@ All fetched server-side via Prisma (no API calls):
 
 | KPI | Query |
 |-----|-------|
-| Revenue | `prisma.invoice.aggregate({ where: { period: currentMonth, status: "PAID" }, _sum: { amount: true } })` |
+| Revenue | `prisma.client.aggregate({ where: { paymentStatus: "PAID" }, _sum: { monthlyPrice: true } })` — uses client monthly prices (consistent with existing home page). Invoice-based revenue tracking deferred to Sub-project 2. |
 | Clients | `prisma.client.count()` |
 | Sites | `prisma.site.count({ where: { ownerId } })` + deployed count |
 | Pending Changes | `prisma.changeRequest.count({ where: { status: { in: ["PENDING", "IN_PROGRESS", "REVIEW"] } } })` |
@@ -345,7 +392,7 @@ Moves from `/` to `/clients`. Gets the same performance treatment:
 | `apps/dashboard/app/(dashboard)/clients/page.tsx` | **New** — Clients list (moved from /) |
 | `apps/dashboard/app/(dashboard)/sites/page.tsx` | **New** — All sites list |
 | `apps/dashboard/app/(dashboard)/seo/page.tsx` | **New** — Cross-client SEO overview |
-| `apps/dashboard/app/globals.css` | **Modified** — shadcn/ui CSS variables + Tailwind config |
-| `apps/dashboard/tailwind.config.ts` | **New/Modified** — shadcn/ui theme configuration |
-| `apps/dashboard/package.json` | **Modified** — shadcn/ui dependencies |
+| `apps/dashboard/app/(dashboard)/error.tsx` | **New** — Error boundary for dashboard routes |
+| `apps/dashboard/app/globals.css` | **Modified** — shadcn/ui CSS variables via `@theme` blocks (Tailwind v4) |
+| `apps/dashboard/package.json` | **Modified** — add shadcn/ui deps, lucide-react, class-variance-authority, clsx, tailwind-merge |
 | Existing page files | **Modified** — Progressive migration to server components |
