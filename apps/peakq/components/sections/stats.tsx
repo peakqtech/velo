@@ -27,6 +27,7 @@ export function Stats() {
         WebkitBackdropFilter: "blur(8px)",
       }}
     >
+      <div className="max-w-7xl mx-auto">
       {/* Section label */}
       <div
         className="flex items-center gap-3 px-8 py-5"
@@ -68,10 +69,11 @@ export function Stats() {
             animate={inView ? "visible" : "hidden"}
             variants={fadeUpVariants}
             custom={i}
+            whileHover={shouldReduceMotion ? {} : { backgroundColor: "rgba(59,130,246,0.04)" }}
           >
             {/* Accent underline — expands on hover */}
             <motion.div
-              className="absolute bottom-0 left-0 h-[2px] origin-left"
+              className="absolute bottom-0 left-0 h-[3px] origin-left"
               style={{ background: "var(--accent)", width: "100%" }}
               initial={{ scaleX: 0 }}
               whileHover={shouldReduceMotion ? {} : { scaleX: 1 }}
@@ -98,6 +100,7 @@ export function Stats() {
             </div>
           </motion.div>
         ))}
+      </div>
       </div>
     </section>
   );

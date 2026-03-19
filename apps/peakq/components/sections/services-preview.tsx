@@ -18,31 +18,43 @@ const SERVICES = [
     icon: Globe,
     title: "Website & Landing Pages",
     description: "Custom-built sites that convert. Designed for your industry, optimised for search, live in 48 hours.",
+    learnMoreHref: "/services/website",
+    learnMoreLabel: "See Templates",
   },
   {
     icon: FileText,
     title: "Blog & Content",
     description: "Weekly articles, SEO content, and thought-leadership — written, published, and promoted for you.",
+    learnMoreHref: "/services/blog",
+    learnMoreLabel: "Learn More",
   },
   {
     icon: Megaphone,
     title: "Ads & Campaigns",
     description: "Google, Meta, and retargeting campaigns managed end-to-end. You set the budget; we maximise it.",
+    learnMoreHref: "/services/ads",
+    learnMoreLabel: "Learn More",
   },
   {
     icon: Mail,
     title: "Email & Follow-Ups",
     description: "Automated sequences that nurture leads, recover abandoned carts, and keep customers coming back.",
+    learnMoreHref: "/services/email",
+    learnMoreLabel: "Learn More",
   },
   {
     icon: Star,
     title: "Reviews & Reputation",
     description: "Automated review requests, response templates, and reputation monitoring across Google and Yelp.",
+    learnMoreHref: "/services/reviews",
+    learnMoreLabel: "Learn More",
   },
   {
     icon: BarChart3,
     title: "Analytics & Reporting",
     description: "A single dashboard showing your traffic, leads, conversions, and ROI — updated in real time.",
+    learnMoreHref: "/services/analytics",
+    learnMoreLabel: "Learn More",
   },
 ];
 
@@ -66,6 +78,7 @@ export function ServicesPreview({ id }: ServicesPreviewProps) {
         WebkitBackdropFilter: "blur(12px)",
       }}
     >
+      <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="px-8 pt-14 pb-10" style={{ borderBottom: "1px solid var(--border)" }}>
         {/* Eyebrow */}
@@ -142,11 +155,13 @@ export function ServicesPreview({ id }: ServicesPreviewProps) {
               style={{
                 borderRight: "1px solid var(--border)",
                 borderBottom: "1px solid var(--border)",
+                transition: "background 0.25s ease",
               }}
               initial={shouldReduceMotion ? "visible" : "hidden"}
               animate={inView ? "visible" : "hidden"}
               variants={fadeUpVariants}
               custom={i + 3}
+              whileHover={shouldReduceMotion ? {} : { backgroundColor: "rgba(59,130,246,0.05)" }}
             >
               <div
                 className="w-8 h-8 flex items-center justify-center"
@@ -169,6 +184,19 @@ export function ServicesPreview({ id }: ServicesPreviewProps) {
                   {service.description}
                 </p>
               </div>
+              <a
+                href={service.learnMoreHref}
+                className="mt-auto text-[9px] uppercase tracking-[.1em] transition-colors"
+                style={{
+                  color: "var(--accent)",
+                  fontFamily: "var(--font-mono, monospace)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                }}
+              >
+                {service.learnMoreLabel} →
+              </a>
             </motion.div>
           );
         })}
@@ -193,6 +221,7 @@ export function ServicesPreview({ id }: ServicesPreviewProps) {
           All coordinated by our Business AI Operating System — replacing your agency, freelancer, and marketing stack.
         </span>
       </motion.div>
+      </div>
     </section>
   );
 }
