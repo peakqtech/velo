@@ -568,6 +568,8 @@ model AgentConfig {
   updatedAt        DateTime             @updatedAt
   runs             AgentRun[]
   opportunities    ContentOpportunity[]
+
+  @@map("agent_configs")
 }
 
 model AgentRun {
@@ -586,6 +588,11 @@ model AgentRun {
   startedAt          DateTime    @default(now())
   completedAt        DateTime?
   lockToken          String?     @unique
+
+  @@index([siteId])
+  @@index([configId])
+  @@index([status])
+  @@map("agent_runs")
 }
 
 model ContentOpportunity {
@@ -610,6 +617,11 @@ model ContentOpportunity {
   vetoDeadline   DateTime?
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
+
+  @@index([siteId])
+  @@index([status])
+  @@index([configId])
+  @@map("content_opportunities")
 }
 
 model GeoSnapshot {
@@ -624,6 +636,10 @@ model GeoSnapshot {
   position     Int?
   competitors  Json?
   createdAt    DateTime      @default(now())
+
+  @@index([siteId])
+  @@index([engine])
+  @@map("geo_snapshots")
 }
 
 model GeoScore {
@@ -631,7 +647,7 @@ model GeoScore {
   siteId       String
   site         Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
   engine       AiEngine
-  period       DateTime
+  period       String /// Weekly bucket key, e.g. "2026-W12"
   visibility   Float
   avgPosition  Float?
   totalQueries Int
@@ -640,4 +656,6 @@ model GeoScore {
   createdAt    DateTime @default(now())
 
   @@unique([siteId, engine, period])
+  @@index([siteId])
+  @@map("geo_scores")
 }
