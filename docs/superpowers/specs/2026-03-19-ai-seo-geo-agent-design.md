@@ -79,7 +79,7 @@ model AgentConfig {
   oversightMode   OversightMode
   vetoWindowHours Int?           @default(24)
   channels        Channel[]
-  cadence         Json           // per-channel frequency, e.g. { blog: "2/week", gbp: "3/week" }
+  cadence         Json           // Zod-validated: { blog?: { max: number, period: "week"|"month" }, ... }
   competitors     String[]
   verticalKeywords String[]
   geoEnabled      Boolean        @default(false)
@@ -87,12 +87,34 @@ model AgentConfig {
   isActive        Boolean        @default(true)
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+  runs            AgentRun[]
+  opportunities   ContentOpportunity[]
+}
+
+model AgentRun {
+  id              String       @id @default(cuid())
+  configId        String
+  config          AgentConfig  @relation(fields: [configId], references: [id])
+  siteId          String
+  site            Site         @relation(fields: [siteId], references: [id])
+  status          RunStatus    // RUNNING, COMPLETED, FAILED, CANCELLED
+  currentStep     String?      // which step the loop is on (for resumability)
+  opportunitiesFound Int       @default(0)
+  contentGenerated   Int       @default(0)
+  contentPublished   Int       @default(0)
+  geoQueriesRun      Int       @default(0)
+  error           String?      // error message if FAILED
+  startedAt       DateTime     @default(now())
+  completedAt     DateTime?
+  lockToken       String?      @unique // prevents concurrent runs for same site
 }
 
 model ContentOpportunity {
   id              String              @id @default(cuid())
   siteId          String
   site            Site                @relation(fields: [siteId], references: [id])
+  configId        String?
+  config          AgentConfig?        @relation(fields: [configId], references: [id])
   signal          Signal
   keyword         String
   title           String?
@@ -101,8 +123,14 @@ model ContentOpportunity {
   status          OpportunityStatus
   contentPieceId  String?
   contentPiece    ContentPiece?       @relation(fields: [contentPieceId], references: [id])
+  campaignId      String?             // optional — agent may create or reuse a campaign
+  campaign        SEOCampaign?        @relation(fields: [campaignId], references: [id])
   metadata        Json?               // signal-specific data
+  approvalStatus  ApprovalStatus?     // for oversight flow
+  approvalNote    String?             // reviewer comment on approve/reject
+  vetoDeadline    DateTime?           // for VETO_WINDOW mode
   createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
 }
 
 model GeoSnapshot {
@@ -115,7 +143,7 @@ model GeoSnapshot {
   cited           Boolean
   citationType    CitationType?
   position        Int?
-  competitors     Json?
+  competitors     Json?        // array of { name: string, domain?: string, position?: number }
   createdAt       DateTime     @default(now())
 }
 
@@ -125,10 +153,11 @@ model GeoScore {
   site            Site     @relation(fields: [siteId], references: [id])
   engine          AiEngine
   period          DateTime // weekly rollup date
-  visibility      Float    // 0-100 score
-  citationRate    Float
-  avgPosition     Float?
-  topQueries      Json
+  visibility      Float    // 0-100, percentage of queries where client was cited
+  avgPosition     Float?   // mean position when cited in ranked lists
+  totalQueries    Int      // denominator for visibility calculation
+  citedQueries    Int      // numerator for visibility calculation
+  topQueries      Json     // top-performing queries with scores
   createdAt       DateTime @default(now())
 
   @@unique([siteId, engine, period])
@@ -138,18 +167,61 @@ enum Tier { STARTER GROWTH SCALE ENTERPRISE }
 enum OversightMode { AUTO_PUBLISH VETO_WINDOW APPROVAL_REQUIRED }
 enum Channel { BLOG GBP SOCIAL EMAIL }
 enum Signal { KEYWORD_GAP COMPETITOR AI_ANSWER }
-enum OpportunityStatus { DISCOVERED PLANNED GENERATING PUBLISHED SKIPPED }
+enum OpportunityStatus { DISCOVERED PLANNED PENDING_APPROVAL APPROVED GENERATING PUBLISHED FAILED SKIPPED }
+enum ApprovalStatus { PENDING APPROVED REJECTED VETOED AUTO_SKIPPED }
+enum RunStatus { RUNNING COMPLETED FAILED CANCELLED }
 enum AiEngine { CHATGPT PERPLEXITY GEMINI AI_OVERVIEW }
+enum AiModel { CLAUDE OPENAI GEMINI }
 enum CitationType { NAMED LINKED RECOMMENDED ABSENT }
+```
+
+### Cadence Schema (Zod validation)
+
+```typescript
+const CadenceSchema = z.record(
+  z.enum(['blog', 'gbp', 'social', 'email']),
+  z.object({
+    max: z.number().int().positive(),
+    period: z.enum(['week', 'month']),
+  })
+)
+// Example: { blog: { max: 2, period: "week" }, gbp: { max: 3, period: "week" } }
 ```
 
 ### Key Relationships
 
 - `AgentConfig` is 1:1 with `Site` — each client site has one agent configuration
-- `ContentOpportunity` bridges intelligence → content — tracks the journey from discovery to published piece
+- `AgentRun` tracks each execution of the agent loop — used for dashboard run history and concurrency locking
+- `ContentOpportunity` bridges intelligence → content — tracks the journey from discovery to published piece. Optional `campaignId` links to `SEOCampaign` (agent auto-creates campaigns for batches of related opportunities)
+- `ContentPiece.campaignId` remains optional — agent-generated content may or may not belong to a campaign
 - `GeoSnapshot` stores raw AI monitoring results (individual queries)
-- `GeoScore` aggregates into weekly visibility scores per engine
-- Existing `ContentPiece`, `SEOCampaign`, and `Site` models stay as-is
+- `GeoScore` aggregates into weekly visibility scores per engine with explicit `totalQueries`/`citedQueries` counts
+- Existing `ContentPiece`, `SEOCampaign`, and `Site` models gain reverse relations to new models
+
+### Site Model Additions
+
+The existing `Site` model requires these new reverse relations:
+
+```prisma
+model Site {
+  // ... existing fields ...
+  agentConfig        AgentConfig?
+  agentRuns          AgentRun[]
+  contentOpportunities ContentOpportunity[]
+  geoSnapshots       GeoSnapshot[]
+  geoScores          GeoScore[]
+}
+```
+
+### ContentPiece Model Additions
+
+```prisma
+model ContentPiece {
+  // ... existing fields ...
+  campaignId    String?          // make optional (was required) — agent content may not have a campaign
+  opportunities ContentOpportunity[]
+}
+```
 
 ---
 
@@ -158,8 +230,14 @@ enum CitationType { NAMED LINKED RECOMMENDED ABSENT }
 The core cycle runs on cron (initially daily, configurable per client).
 
 ```
-GATHER → ANALYZE → PLAN → GENERATE → GATE → PUBLISH → MONITOR → REPORT
+ACQUIRE LOCK → GATHER → ANALYZE → PLAN → GENERATE → GATE → PUBLISH → MONITOR → REPORT → RELEASE LOCK
 ```
+
+### Concurrency Control
+
+Before any work begins, the agent acquires a lock by creating an `AgentRun` record with a unique `lockToken`. If an active `AgentRun` (status `RUNNING`) already exists for the site, the cron invocation is skipped. The `lockToken` has a TTL — if a run has been `RUNNING` for more than 1 hour, it's considered stale and can be superseded (marked `FAILED` with timeout error).
+
+Each step updates `AgentRun.currentStep` as it progresses. On resume after failure, the agent reads the last `currentStep` and skips completed steps.
 
 ### Step 1 — GATHER (data collection)
 
@@ -180,7 +258,7 @@ Three analyzers run in parallel, each producing scored opportunities:
 
 ### Step 3 — PLAN (content calendar)
 
-- Merge all opportunities, deduplicate by topic similarity (embedding-based)
+- Merge all opportunities, deduplicate by topic similarity using keyword normalization (lowercase, stem, strip stopwords) and Jaccard similarity on keyword n-grams (threshold: 0.7). No embedding model required in v1 — upgrade to embedding-based dedup when opportunity volume warrants it.
 - Score: `weight = (searchVolume × 0.3) + (competitorUrgency × 0.3) + (aiCitationPotential × 0.4)`
 - GEO-weighted scoring — AI citation potential gets the highest weight
 - Apply tier gate: filter to allowed channels only
@@ -199,8 +277,8 @@ Three analyzers run in parallel, each producing scored opportunities:
 Based on `AgentConfig.oversightMode`:
 
 - **AUTO_PUBLISH** → straight to publish
-- **VETO_WINDOW** → set publish time = now + vetoWindowHours, notify via dashboard + email. If vetoed, mark `SKIPPED`
-- **APPROVAL_REQUIRED** → queue in dashboard, wait for explicit approval
+- **VETO_WINDOW** → set `vetoDeadline` = now + vetoWindowHours, update `approvalStatus` to `PENDING`, notify via dashboard + email. If vetoed before deadline, set `approvalStatus` to `VETOED` and status to `SKIPPED`. If deadline passes with no veto, set `approvalStatus` to `APPROVED` and proceed to publish.
+- **APPROVAL_REQUIRED** → set `approvalStatus` to `PENDING`, queue in dashboard. Status moves to `APPROVED` on explicit approval, `REJECTED` on reject. Only `APPROVED` items proceed to publish.
 
 Escalation: approval queue exceeds 10 items → reminder email. After 7 days unactioned → auto-skip and log.
 
@@ -228,7 +306,12 @@ Uses `seo-engine` publish pipeline per channel:
 
 ### Error Handling
 
-Each step is idempotent. If the agent crashes mid-loop, it picks up from the last uncommitted step on next run. Failed generations retry once, then mark opportunity as `SKIPPED` with error metadata.
+Each step is idempotent. The `AgentRun` record tracks `currentStep`, so if the agent crashes mid-loop, the next invocation detects the stale run (RUNNING > 1 hour), marks it `FAILED`, and starts a new run that skips already-completed steps by checking opportunity statuses and snapshot timestamps.
+
+- Failed content generations: retry once, then mark opportunity as `FAILED` with error in metadata
+- Failed GEO queries: log and skip — do not block the rest of the loop
+- Failed publishes: mark opportunity `FAILED`, content piece stays in draft — retryable on next run
+- All errors logged to `AgentRun.error` (aggregated) and surfaced in dashboard run history
 
 ### Cron → Event-Driven Migration Path
 
@@ -453,8 +536,8 @@ GET    /api/sites/[id]/opportunities       — List opportunities (filterable)
 PATCH  /api/sites/[id]/opportunities/[oid] — Update opportunity (skip, re-plan)
 GET    /api/sites/[id]/geo/scores          — Visibility scores over time
 GET    /api/sites/[id]/geo/snapshots       — Individual query results
-GET    /api/sites/[id]/approvals           — Pending approvals
-POST   /api/sites/[id]/approvals/[aid]     — Approve/reject/veto
+GET    /api/sites/[id]/approvals           — Pending approvals (queries ContentOpportunity where approvalStatus=PENDING)
+POST   /api/sites/[id]/approvals/[oid]    — Approve/reject/veto an opportunity (oid = ContentOpportunity.id)
 POST   /api/cron/agent-loop                — Cron trigger endpoint (secured)
 ```
 
@@ -464,7 +547,7 @@ POST   /api/cron/agent-loop                — Cron trigger endpoint (secured)
 
 1. **Cron-first, event-driven later** — Each agent loop step is a discrete, idempotent function. Migration to event-driven only changes the trigger mechanism.
 2. **GEO provider interface** — Abstract `GeoProvider` allows swapping in third-party APIs (Profound, Otterly, Peec AI) without changing agent logic.
-3. **Embedding-based deduplication** — Content opportunities are deduplicated by topic similarity to prevent generating overlapping content from different signals.
+3. **Keyword-based deduplication (v1)** — Content opportunities are deduplicated by keyword normalization + Jaccard n-gram similarity (threshold 0.7). Upgradeable to embedding-based when volume warrants it.
 4. **GEO-weighted scoring** — AI citation potential weighted at 0.4 (highest) in the opportunity scoring formula, reflecting the platform's differentiator.
 5. **Multi-model support** — Tier-gated model selection. Default Claude, with OpenAI/Gemini as fallbacks or choices for Enterprise.
 6. **Structural GEO optimization only** — JSON-LD, FAQ schema, clear answer paragraphs, entity markup. No manipulation techniques.
