@@ -1,84 +1,104 @@
+// apps/peakq/components/sections/stats.tsx
 "use client";
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
+import { fadeUpVariants, expandLineVariants } from "@/lib/animation-variants";
 
 const STATS = [
-  { number: 50, suffix: "+", label: "Industry Templates" },
-  { number: 3, suffix: "×", label: "Faster Deployment" },
-  { number: 98, suffix: "%", label: "Client Retention Rate" },
-  { number: 0, suffix: "", label: "Setup Cost — Ever", prefix: "$" },
+  { value: "200+", unit: "Active Clients",    sub: "Across 14 industries" },
+  { value: "40+",  unit: "Templates Ready",   sub: "Deploy in 48 hours" },
+  { value: "4.3×", unit: "Average ROI",        sub: "Measured over 90 days" },
+  { value: "48h",  unit: "Time to Launch",     sub: "From signup to live site" },
 ];
 
-function useCountUp(target: number, duration = 1200, trigger: boolean, reduce = false) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!trigger) return;
-    if (target === 0 || reduce) { setCount(target); return; }
-    let start = 0;
-    const step = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { setCount(target); clearInterval(timer); }
-      else setCount(Math.floor(start));
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target, duration, trigger, reduce]);
-  return count;
-}
-
-function StatItem({
-  stat,
-  delay,
-  trigger,
-  reduceMotion,
-}: {
-  stat: (typeof STATS)[0];
-  delay: number;
-  trigger: boolean;
-  reduceMotion: boolean;
-}) {
-  const count = useCountUp(stat.number, 1200, trigger, reduceMotion);
-  return (
-    <motion.div
-      className="flex flex-col items-center justify-center py-10 px-6 text-center"
-      initial={{ opacity: 0, y: 16 }}
-      animate={trigger ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
-      style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}
-    >
-      <div className="text-4xl font-bold mb-1" style={{ fontFamily: "var(--font-display)" }}>
-        {stat.prefix && <span style={{ color: "#3b82f6" }}>{stat.prefix}</span>}
-        <span className="text-white">{count}</span>
-        <span style={{ color: "#3b82f6" }}>{stat.suffix}</span>
-      </div>
-      <div
-        className="text-[10px] uppercase tracking-[0.12em]"
-        style={{ fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.45)" }}
-      >
-        {stat.label}
-      </div>
-    </motion.div>
-  );
-}
-
 export function Stats() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <div
+    <section
       ref={ref}
-      className="grid grid-cols-2 md:grid-cols-4"
       style={{
-        borderTop: "1px solid rgba(59,130,246,0.12)",
-        borderBottom: "1px solid rgba(59,130,246,0.12)",
+        borderBottom: "1px solid var(--border)",
+        background: "rgba(5,5,7,0.6)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
       }}
     >
-      {STATS.map((stat, i) => (
-        <StatItem key={stat.label} stat={stat} delay={i * 0.15} trigger={isInView} reduceMotion={!!shouldReduceMotion} />
-      ))}
-    </div>
+      {/* Section label */}
+      <div
+        className="flex items-center gap-3 px-8 py-5"
+        style={{ borderBottom: "1px solid var(--border)" }}
+      >
+        <motion.div
+          className="h-px flex-1 origin-left"
+          style={{ background: "var(--border-mid)" }}
+          initial={shouldReduceMotion ? "visible" : "hidden"}
+          animate={inView ? "visible" : "hidden"}
+          variants={expandLineVariants}
+        />
+        <span
+          className="text-[9px] uppercase tracking-[.14em]"
+          style={{ color: "var(--muted)", fontFamily: "var(--font-mono, monospace)" }}
+        >
+          By the numbers
+        </span>
+        <motion.div
+          className="h-px flex-1 origin-right"
+          style={{ background: "var(--border-mid)", transformOrigin: "right" }}
+          initial={shouldReduceMotion ? "visible" : "hidden"}
+          animate={inView ? "visible" : "hidden"}
+          variants={expandLineVariants}
+        />
+      </div>
+
+      {/* 4-column grid */}
+      <div
+        className="grid grid-cols-2 md:grid-cols-4"
+        style={{ borderLeft: "1px solid var(--border)" }}
+      >
+        {STATS.map((stat, i) => (
+          <motion.div
+            key={stat.unit}
+            className="group relative px-8 py-10 flex flex-col gap-1"
+            style={{ borderRight: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}
+            initial={shouldReduceMotion ? "visible" : "hidden"}
+            animate={inView ? "visible" : "hidden"}
+            variants={fadeUpVariants}
+            custom={i}
+          >
+            {/* Accent underline — expands on hover */}
+            <motion.div
+              className="absolute bottom-0 left-0 h-[2px] origin-left"
+              style={{ background: "var(--accent)", width: "100%" }}
+              initial={{ scaleX: 0 }}
+              whileHover={shouldReduceMotion ? {} : { scaleX: 1 }}
+              transition={{ duration: 0.25 }}
+            />
+
+            <div
+              className="text-[42px] font-black leading-none tracking-tight"
+              style={{ color: "var(--text)" }}
+            >
+              {stat.value}
+            </div>
+            <div
+              className="text-[10px] uppercase tracking-[.1em]"
+              style={{ color: "var(--accent)", fontFamily: "var(--font-mono, monospace)" }}
+            >
+              {stat.unit}
+            </div>
+            <div
+              className="text-[11px] leading-[1.5] mt-1"
+              style={{ color: "var(--muted)" }}
+            >
+              {stat.sub}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
   );
 }
