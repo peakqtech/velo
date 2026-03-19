@@ -1,43 +1,55 @@
 import Link from "next/link";
-import { BRAND } from "@/lib/constants";
 
 const FOOTER_LINKS = {
-  Platform: [
-    { label: "Templates", href: "/templates" },
-    { label: "Features", href: "/features" },
-    { label: "Pricing", href: "/pricing" },
+  Services: [
+    { label: "Website", href: "/services/website" },
+    { label: "Blog & Content", href: "/services/blog-content" },
+    { label: "Ads & Campaigns", href: "/services/ads-campaigns" },
+    { label: "Email", href: "/services/email" },
+    { label: "Reviews", href: "/services/reviews" },
+    { label: "Analytics", href: "/services/analytics" },
   ],
   Company: [
     { label: "About", href: "/about" },
-    { label: "Blog", href: "/blog" },
-    { label: "Contact", href: "/contact" },
+    { label: "Templates", href: "/templates" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "Careers", href: "/careers" },
   ],
-  Services: [
-    { label: "QA & Testing", href: "/services/qa-testing" },
-    { label: "Custom Dev", href: "/services/custom-development" },
-    { label: "Managed", href: "/services/managed-services" },
-  ],
-  "Get In Touch": [
-    { label: "hello@peakq.tech", href: "mailto:hello@peakq.tech" },
-    { label: "Book a Call", href: "/get-started" },
+  Legal: [
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Cookie Policy", href: "/cookies" },
   ],
 } as const;
 
 export function Footer() {
   return (
-    <footer style={{ backgroundColor: "#020a1a", borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "rgba(59,130,246,0.12)" }}>
+    <footer
+      style={{
+        background: "rgba(5,5,7,0.88)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderTop: "1px solid var(--border)",
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand column */}
-          <div className="md:col-span-1">
+          <div>
             <div
-              className="text-lg font-bold tracking-[0.12em] mb-2"
-              style={{ fontFamily: "var(--font-mono)" }}
+              className="text-lg font-bold tracking-[0.12em] mb-3"
+              style={{ fontFamily: "var(--font-mono)", color: "var(--text)" }}
             >
               PEAKQ
             </div>
-            <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>
-              {BRAND.tagline}
+            <p className="text-[13px] leading-relaxed mb-4" style={{ color: "var(--muted)" }}>
+              Your website, ads, blog, and digital presence — handled.
+            </p>
+            <p
+              className="text-[10px]"
+              style={{ fontFamily: "var(--font-mono)", color: "var(--muted)", opacity: 0.6 }}
+            >
+              // Powered by Business AI OS
             </p>
           </div>
 
@@ -47,7 +59,7 @@ export function Footer() {
               <div key={category}>
                 <h3
                   className="text-[10px] uppercase tracking-[0.12em] mb-4"
-                  style={{ fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.35)" }}
+                  style={{ fontFamily: "var(--font-mono)", color: "var(--muted)" }}
                 >
                   {category}
                 </h3>
@@ -57,7 +69,7 @@ export function Footer() {
                       <Link
                         href={link.href}
                         className="text-[13px] transition-colors hover:text-blue-400"
-                        style={{ color: "rgba(255,255,255,0.45)" }}
+                        style={{ color: "var(--muted)" }}
                       >
                         {link.label}
                       </Link>
@@ -72,19 +84,19 @@ export function Footer() {
         {/* Bottom bar */}
         <div
           className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "rgba(255,255,255,0.06)" }}
+          style={{ borderTop: "1px solid var(--border)" }}
         >
           <p
             className="text-[10px]"
-            style={{ fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.2)" }}
+            style={{ fontFamily: "var(--font-mono)", color: "var(--muted)", opacity: 0.5 }}
           >
             © 2026 PeakQ. All rights reserved.
           </p>
           <p
             className="text-[10px]"
-            style={{ fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.15)" }}
+            style={{ fontFamily: "var(--font-mono)", color: "var(--muted)", opacity: 0.4 }}
           >
-            {BRAND.subtleProof}
+            // Powered by Business AI OS
           </p>
         </div>
       </div>
