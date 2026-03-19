@@ -4,3 +4,5 @@ export type {
 } from './types.js'
 
 export { CitationDetector } from './detection/citation-detector.js'
+export { QueryExpander } from './detection/query-expander.js'
+export { VisibilityScorer } from './scoring/visibility-scorer.js'
