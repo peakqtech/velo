@@ -64,3 +64,6 @@ export { CampaignExecutor, getNextDuePieces } from "./campaign/executor";
 // Content generator
 export type { GenerateOptions, GenerateResult } from "./content/generator";
 export { ContentGenerator } from "./content/generator";
+
+// Agent config types
+export { CadenceSchema, type Cadence, type ChannelCadenceConfig } from "./types/agent";
