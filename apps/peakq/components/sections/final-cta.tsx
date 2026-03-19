@@ -1,99 +1,156 @@
+// apps/peakq/components/sections/final-cta.tsx
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
+import { revealVariants, fadeUpVariants } from "@/lib/animation-variants";
 
-export function FinalCta() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+const DELIVERABLE_PILLS = ["Websites", "Blogs", "Ads", "Email", "Reviews", "Analytics"];
+
+const HEADLINE_LINES = [
+  { text: "YOUR WEBSITE.", outline: false, accent: false },
+  { text: "YOUR ADS.",     outline: true,  accent: false },
+  { text: "YOUR REVIEWS.", outline: false, accent: false },
+  { text: "ALL HANDLED.",  outline: false, accent: true  },
+];
+
+interface FinalCtaProps {
+  id?: string;
+}
+
+export function FinalCta({ id }: FinalCtaProps) {
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <section
-      className="py-24 px-4 text-center relative overflow-hidden"
+      id={id}
+      ref={ref}
+      className="relative overflow-hidden"
       style={{
-        background: "linear-gradient(135deg, #020a1a, #050f2e, #020a1a)",
-        borderTop: "1px solid rgba(59,130,246,0.12)",
+        borderBottom: "1px solid var(--border)",
+        background: "rgba(5,5,7,0.6)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
       }}
     >
-      {/* Radial glow */}
+      {/* Radial blue glow */}
       <div
         className="absolute inset-0 pointer-events-none"
+        aria-hidden="true"
         style={{
-          background: "radial-gradient(ellipse 600px 300px at 50% 50%, rgba(59,130,246,0.08), transparent)",
+          background:
+            "radial-gradient(ellipse 60% 40% at 50% 60%, rgba(59,130,246,0.07) 0%, transparent 70%)",
         }}
       />
 
-      <div ref={ref} className="relative z-10 max-w-3xl mx-auto">
-        {/* H2 */}
-        <motion.h2
-          initial={{ opacity: 0, y: 24 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: "easeOut" as const }}
+      <div className="relative z-10 px-8 py-20 max-w-[860px]">
+        {/* Eyebrow */}
+        <motion.div
+          className="flex items-center gap-2 mb-8"
+          initial={shouldReduceMotion ? "visible" : "hidden"}
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUpVariants}
+          custom={0}
+        >
+          <span
+            className="text-[9px] uppercase tracking-[.14em]"
+            style={{ color: "var(--accent)", fontFamily: "var(--font-mono, monospace)" }}
+          >
+            10 / Get Started
+          </span>
+        </motion.div>
+
+        {/* Headline */}
+        <h2
           style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(48px, 6vw, 80px)",
-            letterSpacing: "-0.01em",
-            lineHeight: 1,
+            fontSize: "clamp(40px, 5.5vw, 68px)",
+            fontWeight: 900,
+            textTransform: "uppercase",
+            letterSpacing: "-.03em",
+            lineHeight: 0.94,
+            marginBottom: "2rem",
           }}
         >
-          STOP HIRING.<br />
-          START DEPLOYING.
-        </motion.h2>
+          {HEADLINE_LINES.map((line, i) => (
+            <div key={i} style={{ overflow: "hidden", display: "block", marginBottom: 4 }}>
+              <motion.span
+                style={{
+                  display: "block",
+                  ...(line.outline
+                    ? { color: "transparent", WebkitTextStroke: "1.5px rgba(255,255,255,0.32)" }
+                    : line.accent
+                    ? { color: "var(--accent)" }
+                    : { color: "var(--text)" }),
+                }}
+                initial={shouldReduceMotion ? "visible" : "hidden"}
+                animate={inView ? "visible" : "hidden"}
+                variants={revealVariants}
+                custom={i}
+              >
+                {line.text}
+              </motion.span>
+            </div>
+          ))}
+        </h2>
 
-        {/* Body with accent animations */}
+        {/* Subtext */}
         <motion.p
-          className="mt-8 text-base leading-relaxed"
-          initial={{ opacity: 0, y: 16 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" as const }}
-          style={{ color: "rgba(255,255,255,0.55)" }}
+          className="text-[13px] leading-[1.7] mb-8 max-w-[480px]"
+          style={{ color: "var(--muted)" }}
+          initial={shouldReduceMotion ? "visible" : "hidden"}
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUpVariants}
+          custom={5}
         >
-          AI-powered tools that{" "}
-          <span className="relative inline-block">
-            <span className="relative z-10" style={{ color: "rgba(255,255,255,0.85)" }}>
-              cost less than one employee
-            </span>
-            <motion.span
-              className="absolute bottom-0 left-0 h-px bg-blue-400"
-              initial={{ width: "0%" }}
-              animate={isInView ? { width: "100%" } : {}}
-              transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" as const }}
-            />
-          </span>{" "}
-          and{" "}
-          <motion.span
-            animate={isInView ? { textShadow: "0 0 12px rgba(59,130,246,0.5)" } : {}}
-            transition={{ delay: 1.2, duration: 0.4 }}
-            style={{ color: "rgba(255,255,255,0.85)" }}
-          >
-            outperform an entire team
-          </motion.span>
-          .
+          One system. Every channel. No agency markup, no freelancer coordination, no monthly "strategy calls."
+          Just results.
         </motion.p>
+
+        {/* Deliverable pills */}
+        <motion.div
+          className="flex flex-wrap gap-2 mb-10"
+          initial={shouldReduceMotion ? "visible" : "hidden"}
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUpVariants}
+          custom={6}
+        >
+          {DELIVERABLE_PILLS.map((pill) => (
+            <span
+              key={pill}
+              className="text-[9px] uppercase tracking-[.1em] px-3 py-1.5"
+              style={{
+                border: "1px solid var(--border-mid)",
+                color: "var(--muted)",
+                background: "rgba(255,255,255,0.03)",
+              }}
+            >
+              {pill}
+            </span>
+          ))}
+        </motion.div>
 
         {/* CTAs */}
         <motion.div
-          className="mt-10 flex items-center justify-center gap-4 flex-wrap"
-          initial={{ opacity: 0, y: 16 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" as const }}
+          className="flex flex-wrap items-center gap-3"
+          initial={shouldReduceMotion ? "visible" : "hidden"}
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUpVariants}
+          custom={7}
         >
           <Link
             href="/get-started"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-4 text-[11px] uppercase tracking-[.08em] font-semibold transition-all hover:brightness-110"
+            style={{ background: "var(--accent)", color: "#fff" }}
           >
-            Deploy Now — It&apos;s Free →
+            Get Started — It&apos;s Free →
           </Link>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 font-semibold transition-colors hover:bg-blue-500/10"
-            style={{
-              borderWidth: "1px",
-              borderStyle: "solid",
-              borderColor: "rgba(59,130,246,0.3)",
-              color: "#60a5fa",
-            }}
+            className="inline-flex items-center gap-2 px-8 py-4 text-[11px] uppercase tracking-[.08em] transition-all"
+            style={{ border: "1px solid var(--border)", color: "var(--muted)" }}
           >
             Talk to Us First
           </Link>
