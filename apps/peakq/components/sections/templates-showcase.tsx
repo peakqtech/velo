@@ -120,6 +120,7 @@ export function TemplatesShowcase({ id }: TemplatesShowcaseProps) {
         WebkitBackdropFilter: "blur(12px)",
       }}
     >
+      <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="px-8 pt-14 pb-10" style={{ borderBottom: "1px solid var(--border)" }}>
         <motion.div
@@ -262,6 +263,7 @@ export function TemplatesShowcase({ id }: TemplatesShowcaseProps) {
         >
           Browse All 40+ Templates →
         </motion.a>
+      </div>
       </div>
     </section>
   );

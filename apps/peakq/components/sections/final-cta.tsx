@@ -46,7 +46,8 @@ export function FinalCta({ id }: FinalCtaProps) {
         }}
       />
 
-      <div className="relative z-10 px-8 py-20 max-w-[860px]">
+      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="px-8 py-20 max-w-[860px]">
         {/* Eyebrow */}
         <motion.div
           className="flex items-center gap-2 mb-8"
@@ -155,6 +156,7 @@ export function FinalCta({ id }: FinalCtaProps) {
             Talk to Us First
           </Link>
         </motion.div>
+      </div>
       </div>
     </section>
   );

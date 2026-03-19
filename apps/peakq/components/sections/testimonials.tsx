@@ -60,6 +60,7 @@ export function Testimonials({ id }: TestimonialsProps) {
         WebkitBackdropFilter: "blur(12px)",
       }}
     >
+      <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="px-8 pt-14 pb-10" style={{ borderBottom: "1px solid var(--border)" }}>
         <motion.div
@@ -169,6 +170,7 @@ export function Testimonials({ id }: TestimonialsProps) {
             </div>
           </motion.div>
         ))}
+      </div>
       </div>
     </section>
   );

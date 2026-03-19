@@ -42,7 +42,7 @@ export function PlatformPreview({ id }: PlatformPreviewProps) {
 
   return (
     <section id={id} className="py-20 px-4 md:px-8 overflow-hidden">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Eyebrow + H2 */}
         <div className="text-center mb-12" ref={headlineRef}>
           <p
