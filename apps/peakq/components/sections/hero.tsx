@@ -9,6 +9,7 @@ import {
   expandLineVariants,
   EASE_CINEMATIC,
 } from "@/lib/animation-variants";
+import { HeroShaderBg } from "@/components/hero-shader-bg";
 
 const NAV_LINKS = [
   { label: "Templates", href: "/templates" },
@@ -40,17 +41,21 @@ export function Hero({ id }: HeroProps) {
       style={{
         minHeight: "88vh",
         borderBottom: "1px solid var(--border)",
-        background: "transparent",
+        background: "#050507",
       }}
     >
-      {/* Blueprint grid overlay */}
+      {/* Shader mesh gradient background */}
+      <HeroShaderBg />
+
+      {/* Blueprint grid overlay — subtle on top of shader */}
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden="true"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px)",
+            "linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
+          zIndex: 1,
         }}
       />
 
