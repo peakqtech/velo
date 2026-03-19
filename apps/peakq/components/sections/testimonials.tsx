@@ -1,129 +1,170 @@
+// apps/peakq/components/sections/testimonials.tsx
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
+import { revealVariants, fadeUpVariants } from "@/lib/animation-variants";
 
 const TESTIMONIALS = [
   {
-    client: "APEX DENTAL",
     quote:
-      "PeakQ's review engine generated 3× more Google reviews in the first 30 days than we had collected in the previous year.",
-    name: "Sarah M.",
-    title: "Practice Owner",
-    initial: "SM",
+      "We went from zero web presence to a live site, active Google Ads, and 47 new leads in our first 30 days. Our agency couldn't have done this for three times the price.",
+    author: "Marcus T.",
+    role: "Owner",
+    business: "Urban HVAC Services",
+    metric: "+47 leads / Month 1",
   },
   {
-    client: "NOVA REALTY",
     quote:
-      "We recovered 14 leads in the first week through the automated follow-up sequences. Those were leads we had completely lost track of.",
-    name: "James T.",
-    title: "Brokerage Director",
-    initial: "JT",
+      "The email sequences alone paid for the whole year. We recovered $12,400 in abandoned bookings we would have just lost. The system runs without us touching it.",
+    author: "Priya S.",
+    role: "Director",
+    business: "Serenity Wellness Clinic",
+    metric: "$12,400 recovered",
   },
   {
-    client: "KLEO FITNESS",
     quote:
-      "Our front desk was overwhelmed. Now AI handles bookings, reminders, and review requests. We went from 40 to 200 monthly leads without adding staff.",
-    name: "Priya K.",
-    title: "Studio Founder",
-    initial: "PK",
+      "I was spending $3,200/month on a marketing agency and getting a PDF report. PeakQ replaced it completely — better results, a tenth of the cost.",
+    author: "James L.",
+    role: "Founder",
+    business: "Coastline Real Estate",
+    metric: "Agency replaced",
+  },
+  {
+    quote:
+      "Our Google rating went from 3.8 to 4.6 stars in 60 days. The review system just works — customers get the request at exactly the right moment.",
+    author: "Rosa M.",
+    role: "GM",
+    business: "Terra Rossa Restaurant",
+    metric: "3.8 → 4.6 ★ in 60 days",
   },
 ];
 
-export function Testimonials() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+interface TestimonialsProps {
+  id?: string;
+}
+
+export function Testimonials({ id }: TestimonialsProps) {
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto" style={{ borderTop: "1px solid rgba(59,130,246,0.12)" }}>
-      {/* Header row */}
-      <div className="flex items-start justify-between mb-14">
-        <div>
-          <p
-            className="text-[11px] uppercase tracking-[0.15em] mb-4"
-            style={{ fontFamily: "var(--font-mono)", color: "#3b82f6" }}
+    <section
+      id={id}
+      ref={ref}
+      style={{
+        borderBottom: "1px solid var(--border)",
+        background: "rgba(5,5,7,0.5)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+      }}
+    >
+      {/* Header */}
+      <div className="px-8 pt-14 pb-10" style={{ borderBottom: "1px solid var(--border)" }}>
+        <motion.div
+          className="flex items-center gap-2 mb-6"
+          initial={shouldReduceMotion ? "visible" : "hidden"}
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUpVariants}
+          custom={0}
+        >
+          <span
+            className="text-[9px] uppercase tracking-[.14em]"
+            style={{ color: "var(--accent)", fontFamily: "var(--font-mono, monospace)" }}
           >
-            Client Results
-          </p>
-          <h2
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(36px, 4vw, 52px)",
-              letterSpacing: "-0.01em",
-              lineHeight: 1.05,
-            }}
-          >
-            CONSISTENCY &amp; RELIABILITY<br />
-            DRIVE PARTNERSHIP.
-          </h2>
-        </div>
-        {/* Decorative prev/next — no carousel logic in this phase */}
-        <div className="hidden md:flex gap-2 mt-2">
-          {["←", "→"].map((arrow, i) => (
-            <button
-              key={i}
-              disabled
-              aria-disabled="true"
-              className="w-10 h-10 flex items-center justify-center text-sm transition-colors opacity-40 cursor-not-allowed"
-              style={{
-                borderWidth: "1px",
-                borderStyle: "solid",
-                borderColor: "rgba(59,130,246,0.2)",
-                color: "rgba(255,255,255,0.4)",
-                fontFamily: "var(--font-mono)",
-              }}
-              aria-label={i === 0 ? "Previous (coming soon)" : "Next (coming soon)"}
-            >
-              {arrow}
-            </button>
+            09 / Results
+          </span>
+        </motion.div>
+
+        <h2
+          style={{
+            fontSize: "clamp(26px, 3.2vw, 40px)",
+            fontWeight: 900,
+            textTransform: "uppercase",
+            letterSpacing: "-.03em",
+            lineHeight: 0.96,
+          }}
+        >
+          {[
+            { text: "REAL NUMBERS.",  outline: false },
+            { text: "REAL CLIENTS.",  outline: true  },
+          ].map((line, i) => (
+            <div key={i} style={{ overflow: "hidden", display: "block", marginBottom: 3 }}>
+              <motion.span
+                style={{
+                  display: "block",
+                  ...(line.outline
+                    ? { color: "transparent", WebkitTextStroke: "1.5px rgba(255,255,255,0.32)" }
+                    : { color: "var(--text)" }),
+                }}
+                initial={shouldReduceMotion ? "visible" : "hidden"}
+                animate={inView ? "visible" : "hidden"}
+                variants={revealVariants}
+                custom={i}
+              >
+                {line.text}
+              </motion.span>
+            </div>
           ))}
-        </div>
+        </h2>
       </div>
 
-      {/* Cards */}
-      <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* 2×2 testimonial grid */}
+      <div
+        className="grid grid-cols-1 md:grid-cols-2"
+        style={{ borderLeft: "1px solid var(--border)" }}
+      >
         {TESTIMONIALS.map((t, i) => (
           <motion.div
-            key={t.client}
-            className="flex flex-col gap-5 p-6"
+            key={t.author}
+            className="px-8 py-10 flex flex-col gap-6"
             style={{
-              backgroundColor: "rgba(5,13,31,0.8)",
-              borderWidth: "1px",
-              borderStyle: "solid",
-              borderColor: "rgba(255,255,255,0.06)",
+              borderRight: "1px solid var(--border)",
+              borderBottom: "1px solid var(--border)",
             }}
-            initial={{ opacity: 0, x: 20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: i * 0.12, ease: "easeOut" as const }}
+            initial={shouldReduceMotion ? "visible" : "hidden"}
+            animate={inView ? "visible" : "hidden"}
+            variants={fadeUpVariants}
+            custom={i + 2}
           >
-            <motion.div
-              className="text-[11px] uppercase tracking-[0.12em]"
-              style={{ fontFamily: "var(--font-mono)", color: "rgba(255,255,255,0.4)" }}
-              whileHover={{ opacity: 0.8 }}
-              transition={{ duration: 0.2 }}
+            {/* Metric highlight */}
+            <div
+              className="text-[9px] uppercase tracking-[.12em] px-2 py-1 self-start"
+              style={{
+                color: "var(--accent)",
+                border: "1px solid var(--accent-dim)",
+                background: "var(--accent-dim)",
+                fontFamily: "var(--font-mono, monospace)",
+              }}
             >
-              {t.client}
-            </motion.div>
-            <p className="text-[14px] leading-relaxed italic flex-1" style={{ color: "rgba(255,255,255,0.7)" }}>
-              &ldquo;{t.quote}&rdquo;
-            </p>
-            <div className="flex items-center gap-3">
+              {t.metric}
+            </div>
+
+            {/* Quote */}
+            <blockquote
+              className="text-[13px] leading-[1.75]"
+              style={{ color: "var(--muted)", fontStyle: "italic" }}
+            >
+              "{t.quote}"
+            </blockquote>
+
+            {/* Attribution */}
+            <div className="flex items-center gap-3 mt-auto">
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
-                style={{
-                  background: "linear-gradient(135deg, rgba(59,130,246,0.3), rgba(96,165,250,0.2))",
-                  borderWidth: "1px",
-                  borderStyle: "solid",
-                  borderColor: "rgba(59,130,246,0.2)",
-                  fontFamily: "var(--font-mono)",
-                  color: "#60a5fa",
-                }}
-              >
-                {t.initial}
-              </div>
+                className="w-6 h-6 flex-shrink-0"
+                style={{ background: "var(--accent-dim)", border: "1px solid var(--border-mid)" }}
+              />
               <div>
-                <div className="text-[12px] font-semibold">{t.name}</div>
-                <div className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>{t.title}</div>
+                <div className="text-[10px] font-semibold" style={{ color: "var(--text)" }}>
+                  {t.author} — {t.role}
+                </div>
+                <div
+                  className="text-[9px] uppercase tracking-[.08em]"
+                  style={{ color: "var(--muted)", fontFamily: "var(--font-mono, monospace)" }}
+                >
+                  {t.business}
+                </div>
               </div>
             </div>
           </motion.div>
