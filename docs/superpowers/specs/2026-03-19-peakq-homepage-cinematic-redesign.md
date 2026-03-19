@@ -235,7 +235,135 @@ ALL HANDLED.     ← accent blue
 
 ---
 
-## 6. Files to Create
+## 6. CSS Token Migration
+
+`app/globals.css` currently defines a different token set. **Replace all existing tokens** with the new set below — do not alias. All existing section components reference inline `rgba()` values directly (not CSS vars), so there is no cascade breakage risk.
+
+**Replace the `:root` block in `globals.css` with:**
+```css
+:root {
+  --bg:          #050507;
+  --bg-raised:   #0d0d10;
+  --border:      rgba(255,255,255,0.07);
+  --border-mid:  rgba(255,255,255,0.12);
+  --text:        #f0f0f0;
+  --muted:       rgba(255,255,255,0.35);
+  --accent:      #3b82f6;
+  --accent-dim:  rgba(59,130,246,0.15);
+}
+```
+Remove: `--bg-base`, `--bg-surface`, `--bg-elevated`, `--border-subtle`, `--border-blue`, `--accent-blue`, `--accent-blue-light`, `--accent-blue-muted`, `--text-primary`, `--text-muted`, `--text-dim`.
+
+**Hollow stroke utility class** — add to `globals.css`:
+```css
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.32);
+}
+.text-outline-thin {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.28);
+}
+```
+
+---
+
+## 6b. Updated `app/page.tsx` Structure
+
+```tsx
+import { EtherealBackground } from "@/components/ethereal-background";
+import { ScrollNav } from "@/components/scroll-nav";
+// ... all section imports
+
+const SECTIONS = [
+  { id: "hero",      label: "Hero" },
+  { id: "services",  label: "Services" },
+  { id: "templates", label: "Templates" },
+  { id: "platform",  label: "Platform" },
+  { id: "how",       label: "How It Works" },
+  { id: "results",   label: "Results" },
+  { id: "cta",       label: "Get Started" },
+];
+
+export default function HomePage() {
+  return (
+    <>
+      <EtherealBackground />
+      <ScrollNav sections={SECTIONS} />
+      <Hero id="hero" />
+      <LogoMarquee />
+      <Stats />
+      <ServicesPreview id="services" />
+      <TemplatesShowcase id="templates" />
+      <PlatformPreview id="platform" />
+      <CompoundingStack id="how" />
+      <Testimonials id="results" />
+      <FinalCta id="cta" />
+      <Footer />
+    </>
+  );
+}
+```
+
+Each section component accepts an optional `id?: string` prop and spreads it onto its root `<section>` element. `SectionDivider` components are removed — replaced by the scroll nav.
+
+---
+
+## 6c. Templates Data Structure
+
+Define in `components/sections/templates-showcase.tsx`:
+
+```ts
+interface Template {
+  id: string;
+  name: string;
+  industry: "Hospitality" | "Healthcare" | "Real Estate" | "Fitness" | "Restaurant" | "Other";
+  accentColor: string;        // hex, used for the mini CTA button color
+  demoUrl?: string;           // links to live demo page
+  screenshot?: string;        // optional real image path, falls back to generated mockup
+}
+
+const TEMPLATES: Template[] = [
+  { id: "hotel-pro",    name: "Hotel Pro",    industry: "Hospitality", accentColor: "#3b82f6" },
+  { id: "clinic-suite", name: "Clinic Suite", industry: "Healthcare",  accentColor: "#8b5cf6" },
+  { id: "realtor-os",   name: "Realtor OS",   industry: "Real Estate", accentColor: "#10b981" },
+  { id: "fitness-co",   name: "Fitness Co",   industry: "Fitness",     accentColor: "#f59e0b" },
+  { id: "restaurant",   name: "The Table",    industry: "Restaurant",  accentColor: "#ef4444" },
+  // ... additional templates
+];
+```
+
+**Screenshot fallback:** If `screenshot` is undefined, render a generated CSS mockup (nav bar + headline blocks + CTA button in `accentColor`) — same mini-site style shown in the mockup.
+
+**Filter logic:** `selectedIndustry === "All" ? TEMPLATES : TEMPLATES.filter(t => t.industry === selectedIndustry)`
+
+**Animation on tab switch:** `AnimatePresence` with `mode="wait"` — grid fades out then new cards fade in.
+
+---
+
+## 6d. Nav Links
+
+Nav renders 4 links: **Templates, Services, Pricing, About** — removing "Features" from the current hero.tsx list.
+
+---
+
+## 6e. Noise Texture for EtherealBackground
+
+Use an inline SVG data URI for the noise — no static asset required:
+
+```tsx
+// In EtherealBackground component:
+<div
+  className="absolute inset-0 opacity-[0.04] pointer-events-none"
+  style={{
+    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+  }}
+/>
+```
+
+---
+
+## 7. Files to Create
 
 | File | Purpose |
 |---|---|
