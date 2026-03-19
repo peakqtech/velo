@@ -1,104 +1,154 @@
+// apps/peakq/components/sections/compounding-stack.tsx
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
+import { revealVariants, fadeUpVariants } from "@/lib/animation-variants";
 
 const STEPS = [
   {
-    number: "01",
-    title: "Pick Your Template",
-    description:
-      "Choose from 50+ industry-specific templates built for conversion. Dental, legal, fitness, hospitality — every vertical has a proven foundation.",
+    num: "01",
+    title: "Tell Us Your Business",
+    body: "Answer 5 questions about your industry, audience, and goals. Takes under 3 minutes.",
   },
   {
-    number: "02",
-    title: "Deploy Your AI Team",
-    description:
-      "Activate AI agents for lead capture, review generation, follow-up sequences, and reporting. They work 24/7. No onboarding. No sick days.",
+    num: "02",
+    title: "We Build Everything",
+    body: "Your website, blog setup, ad campaigns, email sequences, and review system — configured and launched.",
   },
   {
-    number: "03",
-    title: "Watch It Compound",
-    description:
-      "Each AI action feeds the next. More reviews → higher search ranking → more leads → more reviews. The flywheel starts on day one.",
+    num: "03",
+    title: "AI Runs It Daily",
+    body: "Our Business AI OS monitors performance, publishes content, optimises ads, and sends follow-ups — automatically.",
+  },
+  {
+    num: "ROI",
+    title: "4.3× Average Return",
+    body: "Clients see measurable results within 90 days. We track every dollar in, every lead out.",
+    isMetric: true,
   },
 ];
 
-export function CompoundingStack() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+interface CompoundingStackProps {
+  id?: string;
+}
+
+export function CompoundingStack({ id }: CompoundingStackProps) {
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto" style={{ borderTop: "1px solid rgba(59,130,246,0.12)" }}>
-      <p
-        className="text-[11px] uppercase tracking-[0.15em] mb-4"
-        style={{ fontFamily: "var(--font-mono)", color: "#3b82f6" }}
-      >
-        How It Works
-      </p>
-      <h2
-        className="mb-14"
-        style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "clamp(36px, 4vw, 52px)",
-          letterSpacing: "-0.01em",
-          lineHeight: 1.05,
-        }}
-      >
-        EACH LAYER COMPOUNDS<br />
-        THE ONE BELOW IT.
-      </h2>
-
-      <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
-        {/* Connector lines (desktop only) */}
-        <svg
-          className="hidden md:block absolute top-8 left-0 w-full pointer-events-none"
-          width="100%"
-          style={{ height: "2px", zIndex: 0 }}
-          viewBox="0 0 100 2"
-          preserveAspectRatio="none"
+    <section
+      id={id}
+      ref={ref}
+      style={{
+        borderBottom: "1px solid var(--border)",
+        background: "rgba(5,5,7,0.5)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+      }}
+    >
+      {/* Header */}
+      <div className="px-8 pt-14 pb-10" style={{ borderBottom: "1px solid var(--border)" }}>
+        <motion.div
+          className="flex items-center gap-2 mb-6"
+          initial={shouldReduceMotion ? "visible" : "hidden"}
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUpVariants}
+          custom={0}
         >
-          <motion.path
-            d="M33,1 L67,1"
-            stroke="#3b82f6"
-            strokeWidth="0.5"
-            strokeDasharray="4 4"
-            fill="none"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={isInView ? { pathLength: 1, opacity: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          />
-        </svg>
+          <span
+            className="text-[9px] uppercase tracking-[.14em]"
+            style={{ color: "var(--accent)", fontFamily: "var(--font-mono, monospace)" }}
+          >
+            08 / How It Works
+          </span>
+        </motion.div>
 
+        <h2
+          style={{
+            fontSize: "clamp(26px, 3.2vw, 40px)",
+            fontWeight: 900,
+            textTransform: "uppercase",
+            letterSpacing: "-.03em",
+            lineHeight: 0.96,
+          }}
+        >
+          {[
+            { text: "UP AND RUNNING", outline: false },
+            { text: "IN 48 HOURS.",   outline: true  },
+          ].map((line, i) => (
+            <div key={i} style={{ overflow: "hidden", display: "block", marginBottom: 3 }}>
+              <motion.span
+                style={{
+                  display: "block",
+                  ...(line.outline
+                    ? { color: "transparent", WebkitTextStroke: "1.5px rgba(255,255,255,0.32)" }
+                    : { color: "var(--text)" }),
+                }}
+                initial={shouldReduceMotion ? "visible" : "hidden"}
+                animate={inView ? "visible" : "hidden"}
+                variants={revealVariants}
+                custom={i}
+              >
+                {line.text}
+              </motion.span>
+            </div>
+          ))}
+        </h2>
+      </div>
+
+      {/* 2×2 grid */}
+      <div
+        className="grid grid-cols-1 md:grid-cols-2"
+        style={{ borderLeft: "1px solid var(--border)" }}
+      >
         {STEPS.map((step, i) => (
           <motion.div
-            key={step.number}
-            className="flex flex-col gap-4 p-6 relative z-10"
+            key={step.num}
+            className="group relative px-8 py-10 flex flex-col gap-4 overflow-hidden"
             style={{
-              backgroundColor: "rgba(5,13,31,0.8)",
-              borderWidth: "1px",
-              borderStyle: "solid",
-              borderColor: "rgba(255,255,255,0.06)",
+              borderRight: "1px solid var(--border)",
+              borderBottom: "1px solid var(--border)",
             }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: i * 0.3, ease: "easeOut" as const }}
+            initial={shouldReduceMotion ? "visible" : "hidden"}
+            animate={inView ? "visible" : "hidden"}
+            variants={fadeUpVariants}
+            custom={i + 2}
           >
+            {/* Accent bar sweeps top on hover */}
+            <motion.div
+              className="absolute top-0 left-0 right-0 h-[2px] origin-left"
+              style={{ background: "var(--accent)" }}
+              initial={{ scaleX: 0 }}
+              whileHover={shouldReduceMotion ? {} : { scaleX: 1 }}
+              transition={{ duration: 0.3 }}
+            />
+
+            {/* Oversized step number */}
             <div
-              className="text-[11px] tracking-[0.1em]"
-              style={{ fontFamily: "var(--font-mono)", color: "#3b82f6" }}
+              className="text-[52px] font-black leading-none tracking-tight"
+              style={
+                step.isMetric
+                  ? { color: "var(--accent)" }
+                  : { color: "transparent", WebkitTextStroke: "1px rgba(255,255,255,0.2)" }
+              }
             >
-              {step.number}
+              {step.num}
             </div>
-            <div
-              className="text-xl uppercase"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {step.title}
+
+            <div>
+              <div
+                className="text-[11px] uppercase tracking-[.08em] font-semibold mb-2"
+                style={{ color: "var(--text)" }}
+              >
+                {step.title}
+              </div>
+              <p className="text-[12px] leading-[1.7]" style={{ color: "var(--muted)" }}>
+                {step.body}
+              </p>
             </div>
-            <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
-              {step.description}
-            </p>
           </motion.div>
         ))}
       </div>
