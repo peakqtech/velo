@@ -41,7 +41,16 @@ export function PlatformPreview({ id }: PlatformPreviewProps) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section id={id} className="py-20 px-4 md:px-8 overflow-hidden">
+    <section
+      id={id}
+      className="py-20 px-4 md:px-8 overflow-hidden"
+      style={{
+        background: "rgba(5,5,7,0.6)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderBottom: "1px solid var(--border)",
+      }}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Eyebrow + H2 */}
         <div className="text-center mb-12" ref={headlineRef}>
