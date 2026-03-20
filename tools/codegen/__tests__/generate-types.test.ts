@@ -134,8 +134,8 @@ describe("generateAllContentTypes", () => {
     const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
     const results = generateAllContentTypes(root);
 
-    // Should generate for all 6 templates
-    expect(Object.keys(results).length).toBe(6);
+    // Should generate for all templates with template.json manifests
+    expect(Object.keys(results).length).toBe(9);
     expect(results["velocity"]).toContain("VelocityContent");
     expect(results["ember"]).toContain("EmberContent");
     expect(results["haven"]).toContain("HavenContent");

@@ -17,7 +17,6 @@ export { GeoResponseCache } from './providers/response-cache.js'
 
 export {
   QueryScheduler,
-  type AiEngineName,
   type ScheduledQuery,
   type ScheduleConfig,
 } from './scheduling/query-scheduler.js'

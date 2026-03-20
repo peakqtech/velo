@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Hero, heroScrollConfig } from "@velo/hero";
 import { ProductShowcase, productShowcaseScrollConfig } from "@velo/product-showcase";
 import { BrandStory, brandStoryScrollConfig } from "@velo/brand-story";
@@ -32,13 +32,13 @@ interface PageClientProps {
  */
 function usePreviewMode(initialContent: VelocityContent) {
   const [content, setContent] = useState(initialContent);
-  const [isPreview, setIsPreview] = useState(false);
+  const [isPreview, setIsPreview] = useState(
+    () => typeof window !== "undefined" && window.self !== window.top,
+  );
 
   useEffect(() => {
     // Only enable preview mode when loaded in an iframe
-    if (window.self === window.top) return;
-
-    setIsPreview(true);
+    if (!isPreview) return;
 
     const handler = (event: MessageEvent) => {
       const { data } = event;
@@ -67,7 +67,7 @@ function usePreviewMode(initialContent: VelocityContent) {
     window.parent.postMessage({ type: "velo:preview-ready" }, "*");
 
     return () => window.removeEventListener("message", handler);
-  }, []);
+  }, [isPreview]);
 
   return { content, isPreview };
 }
