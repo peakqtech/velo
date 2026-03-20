@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@velo/db";
-import { AgentLoop, LockManager } from "@velo/seo-agent";
+import { AgentLoop, LockManager, EscalationManager } from "@velo/seo-agent";
 
 export const maxDuration = 300;
 
@@ -17,6 +17,9 @@ export async function POST(request: Request) {
   const singleSiteId = url.searchParams.get("siteId");
 
   try {
+    const escalationManager = new EscalationManager(prisma);
+    const escalationReport = await escalationManager.runEscalation();
+
     const configs = await prisma.agentConfig.findMany({
       where: {
         isActive: true,
@@ -54,6 +57,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       message: `Processed ${configs.length} site(s)`,
+      escalation: escalationReport,
       runs: summary,
     });
   } catch (error) {
