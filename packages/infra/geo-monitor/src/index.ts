@@ -14,3 +14,10 @@ export { AiOverviewEngine } from './providers/ai-overview-engine.js'
 export { InternalGeoProvider } from './providers/internal-provider.js'
 export { GeoRateLimiter, type RateLimiterConfig } from './providers/rate-limiter.js'
 export { GeoResponseCache } from './providers/response-cache.js'
+
+export {
+  QueryScheduler,
+  type AiEngineName,
+  type ScheduledQuery,
+  type ScheduleConfig,
+} from './scheduling/query-scheduler.js'
