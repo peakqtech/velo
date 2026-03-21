@@ -63,7 +63,7 @@ export function CompoundingStack({ id }: CompoundingStackProps) {
             className="text-[9px] uppercase tracking-[.14em]"
             style={{ color: "var(--accent)", fontFamily: "var(--font-mono, monospace)" }}
           >
-            08 / How It Works
+            05 / How It Works
           </span>
         </motion.div>
 

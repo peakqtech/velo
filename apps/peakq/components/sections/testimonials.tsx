@@ -74,7 +74,7 @@ export function Testimonials({ id }: TestimonialsProps) {
             className="text-[9px] uppercase tracking-[.14em]"
             style={{ color: "var(--accent)", fontFamily: "var(--font-mono, monospace)" }}
           >
-            09 / Results
+            06 / Results
           </span>
         </motion.div>
 

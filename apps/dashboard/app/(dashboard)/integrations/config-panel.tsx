@@ -617,7 +617,7 @@ function CmsForm({
         />
       </div>
 
-      {config.autoSave && (
+      {(config.autoSave as boolean) && (
         <div>
           <label className={labelClass}>Auto-save Interval (seconds)</label>
           <input

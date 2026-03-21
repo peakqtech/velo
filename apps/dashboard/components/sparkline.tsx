@@ -18,21 +18,21 @@ export function Sparkline({
   const range = max - min || 1;
 
   return (
-    <div className={cn("flex items-end gap-0.5 h-8", className)}>
+    <div className={cn("flex items-end gap-[3px] h-8", className)}>
       {data.map((value, index) => {
         const heightPercent = ((value - min) / range) * 100;
-        const minHeightPx = 8;
+        const minHeightPx = 6;
         const isLast = index === data.length - 1;
 
         return (
           <div
             key={index}
-            className={cn(color, isLast ? "opacity-100" : "opacity-60")}
+            className={cn(color, isLast ? "opacity-100" : "opacity-50")}
             style={{
               flex: "1",
               height: `max(${minHeightPx}px, ${heightPercent}%)`,
               minHeight: `${minHeightPx}px`,
-              borderRadius: "2px 2px 0 0",
+              borderRadius: "3px 3px 1px 1px",
             }}
           />
         );

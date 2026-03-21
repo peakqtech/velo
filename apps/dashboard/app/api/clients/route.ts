@@ -12,6 +12,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const includeChanges = url.searchParams.get("includeChanges") === "true";
   const includeInvoices = url.searchParams.get("includeInvoices") === "true";
+  const includeStats = url.searchParams.get("includeStats") === "true";
 
   const clients = await prisma.client.findMany({
     include: {
@@ -29,37 +30,43 @@ export async function GET(req: Request) {
     orderBy: { updatedAt: "desc" },
   });
 
-  // Compute pending changes count and last activity for each client
-  const enriched = await Promise.all(
-    clients.map(async (client) => {
-      const pendingChanges = await prisma.changeRequest.count({
-        where: { clientId: client.id, status: { in: ["PENDING", "IN_PROGRESS", "REVIEW"] } },
-      });
+  // Only compute expensive stats when explicitly requested
+  if (!includeStats) {
+    return NextResponse.json(clients);
+  }
 
-      // Last activity: most recent site update or change request
-      const lastSite = await prisma.site.findFirst({
-        where: { clientId: client.id },
-        orderBy: { updatedAt: "desc" },
-        select: { updatedAt: true },
-      });
+  // Batch-fetch pending counts and last activity in 2 queries instead of 3N
+  const [pendingCounts, lastSites, lastChanges] = await Promise.all([
+    prisma.changeRequest.groupBy({
+      by: ["clientId"],
+      where: { status: { in: ["PENDING", "IN_PROGRESS", "REVIEW"] } },
+      _count: { id: true },
+    }),
+    prisma.site.groupBy({
+      by: ["clientId"],
+      _max: { updatedAt: true },
+    }),
+    prisma.changeRequest.groupBy({
+      by: ["clientId"],
+      _max: { requestedAt: true },
+    }),
+  ]);
 
-      const lastChange = await prisma.changeRequest.findFirst({
-        where: { clientId: client.id },
-        orderBy: { requestedAt: "desc" },
-        select: { requestedAt: true },
-      });
+  const pendingMap = new Map(pendingCounts.map((r) => [r.clientId, r._count.id]));
+  const lastSiteMap = new Map(lastSites.map((r) => [r.clientId, r._max.updatedAt]));
+  const lastChangeMap = new Map(lastChanges.map((r) => [r.clientId, r._max.requestedAt]));
 
-      const lastActivity = [lastSite?.updatedAt, lastChange?.requestedAt, client.updatedAt]
-        .filter(Boolean)
-        .sort((a, b) => new Date(b!).getTime() - new Date(a!).getTime())[0] ?? null;
+  const enriched = clients.map((client) => {
+    const dates = [lastSiteMap.get(client.id), lastChangeMap.get(client.id), client.updatedAt]
+      .filter(Boolean)
+      .sort((a, b) => new Date(b!).getTime() - new Date(a!).getTime());
 
-      return {
-        ...client,
-        pendingChanges,
-        lastActivity: lastActivity ? new Date(lastActivity).toISOString() : null,
-      };
-    })
-  );
+    return {
+      ...client,
+      pendingChanges: pendingMap.get(client.id) ?? 0,
+      lastActivity: dates[0] ? new Date(dates[0]).toISOString() : null,
+    };
+  });
 
   return NextResponse.json(enriched);
 }

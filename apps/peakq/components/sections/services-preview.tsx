@@ -93,7 +93,7 @@ export function ServicesPreview({ id }: ServicesPreviewProps) {
             className="text-[9px] uppercase tracking-[.14em]"
             style={{ color: "var(--accent)", fontFamily: "var(--font-mono, monospace)" }}
           >
-            05 / What We Handle
+            02 / What We Handle
           </span>
         </motion.div>
 

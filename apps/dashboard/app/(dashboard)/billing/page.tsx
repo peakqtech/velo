@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { DollarSign, Receipt, AlertTriangle } from "lucide-react";
+import { StatCard } from "@/components/stat-card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { PageHeader } from "@/components/page-header";
 
 interface ClientWithInvoices {
   id: string;
@@ -26,11 +30,11 @@ function formatCurrency(amount: number, currency: string) {
 }
 
 const invoiceStatusColors: Record<string, string> = {
-  DRAFT: "text-zinc-400 bg-zinc-500/10 border-zinc-600",
-  SENT: "text-blue-400 bg-blue-500/10 border-blue-500/20",
-  PAID: "text-green-400 bg-green-500/10 border-green-500/20",
-  OVERDUE: "text-red-400 bg-red-500/10 border-red-500/20",
-  CANCELLED: "text-zinc-400 bg-zinc-500/10 border-zinc-600",
+  DRAFT: "text-slate-600 dark:text-slate-400 bg-slate-500/10 border-slate-500/20",
+  SENT: "text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20",
+  PAID: "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+  OVERDUE: "text-red-600 dark:text-red-400 bg-red-500/10 border-red-500/20",
+  CANCELLED: "text-slate-600 dark:text-slate-400 bg-slate-500/10 border-slate-500/20",
 };
 
 export default function RevenuePage() {
@@ -50,14 +54,23 @@ export default function RevenuePage() {
 
   if (loading) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-8 w-48 bg-zinc-800 rounded" />
+      <div className="space-y-8">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-72" />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 rounded-xl bg-zinc-800/50 border border-zinc-800" />
+            <div key={i} className="rounded-2xl border bg-card p-5 space-y-3">
+              <div className="flex items-center gap-2.5">
+                <Skeleton className="h-9 w-9 rounded-xl" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+              <Skeleton className="h-8 w-32" />
+            </div>
           ))}
         </div>
-        <div className="h-64 bg-zinc-800/50 rounded-xl border border-zinc-800" />
+        <Skeleton className="h-64 rounded-2xl" />
       </div>
     );
   }
@@ -71,43 +84,47 @@ export default function RevenuePage() {
   const paidCount = allInvoices.filter((i) => i.status === "PAID").length;
   const overdueInvoices = allInvoices.filter((i) => i.status === "OVERDUE");
 
-  const stats = [
-    { label: "Monthly Revenue", value: formatCurrency(totalMonthlyRevenue, "IDR"), accent: "from-green-500/20 to-green-600/5", border: "border-green-500/20" },
-    { label: "Paid Invoices", value: paidCount.toString(), accent: "from-blue-500/20 to-blue-600/5", border: "border-blue-500/20" },
-    { label: "Overdue Invoices", value: overdueInvoices.length.toString(), accent: "from-red-500/20 to-red-600/5", border: "border-red-500/20" },
-  ];
-
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Revenue</h1>
-        <p className="text-zinc-500 mt-1">Revenue overview and invoice management across all clients.</p>
-      </div>
+      <PageHeader
+        title="Revenue"
+        description="Revenue overview and invoice management across all clients."
+        breadcrumbs={[{ label: "Dashboard", href: "/" }, { label: "Revenue" }]}
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {stats.map((stat) => (
-          <div key={stat.label} className={`relative overflow-hidden rounded-xl border ${stat.border} bg-zinc-900/50 p-5`}>
-            <div className={`absolute inset-0 bg-gradient-to-br ${stat.accent} pointer-events-none`} />
-            <div className="relative">
-              <span className="text-sm text-zinc-400">{stat.label}</span>
-              <div className="text-2xl font-bold tracking-tight mt-1">{stat.value}</div>
-            </div>
-          </div>
-        ))}
+        <StatCard
+          label="Monthly Revenue"
+          value={formatCurrency(totalMonthlyRevenue, "IDR")}
+          icon={<DollarSign size={18} />}
+          color="emerald"
+        />
+        <StatCard
+          label="Paid Invoices"
+          value={paidCount.toString()}
+          icon={<Receipt size={18} />}
+          color="blue"
+        />
+        <StatCard
+          label="Overdue Invoices"
+          value={overdueInvoices.length.toString()}
+          icon={<AlertTriangle size={18} />}
+          color="rose"
+        />
       </div>
 
       {/* Charts placeholder */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center">
-          <p className="text-xs text-zinc-500 uppercase tracking-wider mb-2">Revenue Trend</p>
-          <div className="h-32 flex items-center justify-center text-zinc-600">
+        <div className="rounded-2xl border bg-card p-6 text-center">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-2">Revenue Trend</p>
+          <div className="h-32 flex items-center justify-center text-muted-foreground/50">
             <p className="text-sm">Chart coming soon</p>
           </div>
         </div>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center">
-          <p className="text-xs text-zinc-500 uppercase tracking-wider mb-2">Payment Status Breakdown</p>
-          <div className="h-32 flex items-center justify-center text-zinc-600">
+        <div className="rounded-2xl border bg-card p-6 text-center">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-2">Payment Status Breakdown</p>
+          <div className="h-32 flex items-center justify-center text-muted-foreground/50">
             <p className="text-sm">Chart coming soon</p>
           </div>
         </div>
@@ -115,46 +132,49 @@ export default function RevenuePage() {
 
       {/* All Invoices */}
       <div>
-        <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">All Invoices</h2>
+        <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">All Invoices</h2>
         {allInvoices.length === 0 ? (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-12 text-center">
-            <p className="text-sm text-zinc-400">No invoices yet.</p>
+          <div className="rounded-2xl border bg-card p-12 text-center">
+            <div className="h-12 w-12 rounded-xl bg-slate-500/10 flex items-center justify-center mx-auto mb-3">
+              <Receipt size={20} className="text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">No invoices yet.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-zinc-800">
+          <div className="overflow-x-auto rounded-2xl border bg-card">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-zinc-800 bg-zinc-900/60 text-left">
-                  <th className="px-4 py-3 font-medium text-zinc-400">Client</th>
-                  <th className="px-4 py-3 font-medium text-zinc-400">Period</th>
-                  <th className="px-4 py-3 font-medium text-zinc-400">Amount</th>
-                  <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
-                  <th className="px-4 py-3 font-medium text-zinc-400">Due Date</th>
-                  <th className="px-4 py-3 font-medium text-zinc-400">Paid Date</th>
+                <tr className="border-b text-left">
+                  <th className="px-4 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Client</th>
+                  <th className="px-4 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Period</th>
+                  <th className="px-4 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Amount</th>
+                  <th className="px-4 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Due Date</th>
+                  <th className="px-4 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">Paid Date</th>
                 </tr>
               </thead>
               <tbody>
                 {allInvoices.map((inv) => (
                   <tr
                     key={inv.id}
-                    className={`border-b border-zinc-800/60 transition-colors ${
-                      inv.status === "OVERDUE" ? "bg-red-950/10" : "hover:bg-zinc-800/30"
+                    className={`border-b last:border-b-0 transition-colors ${
+                      inv.status === "OVERDUE" ? "bg-red-500/5" : "hover:bg-accent/50"
                     }`}
                   >
                     <td className="px-4 py-3">
-                      <Link href={`/clients/${inv.clientId}/billing`} className="text-zinc-200 hover:text-blue-400 transition-colors">
+                      <Link href={`/clients/${inv.clientId}/billing`} className="text-foreground hover:text-primary transition-colors font-medium">
                         {inv.clientName}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-zinc-200">{inv.period}</td>
-                    <td className="px-4 py-3 text-zinc-200">{formatCurrency(inv.amount, inv.currency)}</td>
+                    <td className="px-4 py-3">{inv.period}</td>
+                    <td className="px-4 py-3 font-semibold tracking-tight">{formatCurrency(inv.amount, inv.currency)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${invoiceStatusColors[inv.status] ?? invoiceStatusColors.DRAFT}`}>
+                      <span className={`inline-block px-2.5 py-0.5 rounded-lg text-[11px] font-semibold border ${invoiceStatusColors[inv.status] ?? invoiceStatusColors.DRAFT}`}>
                         {inv.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-zinc-400">{new Date(inv.dueDate).toLocaleDateString()}</td>
-                    <td className="px-4 py-3 text-zinc-400">{inv.paidDate ? new Date(inv.paidDate).toLocaleDateString() : "-"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{new Date(inv.dueDate).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{inv.paidDate ? new Date(inv.paidDate).toLocaleDateString() : "—"}</td>
                   </tr>
                 ))}
               </tbody>

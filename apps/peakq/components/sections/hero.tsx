@@ -172,37 +172,11 @@ export function Hero({ id }: HeroProps) {
           custom={5}
         >
           Your website, blog, ads, and entire digital presence — built, managed, and grown by one
-          system. No agency. No freelancers.
-        </motion.p>
-
-        {/* Deliverable pills */}
-        <motion.div
-          className="flex flex-wrap gap-2 mb-10"
-          initial={shouldReduceMotion ? "visible" : "hidden"}
-          animate="visible"
-          variants={fadeUpVariants}
-          custom={6}
-        >
-          {DELIVERABLE_PILLS.map((pill) => (
-            <span
-              key={pill}
-              className="text-[9px] uppercase tracking-[.1em] px-3 py-1.5"
-              style={{
-                border: "1px solid var(--border-mid)",
-                color: "var(--muted)",
-                background: "rgba(255,255,255,0.03)",
-              }}
-            >
-              {pill}
-            </span>
-          ))}
-          <span
-            className="text-[9px] px-3 py-1.5"
-            style={{ color: "rgba(255,255,255,0.2)", fontStyle: "italic" }}
-          >
-            Powered by Business AI OS
+          system.{" "}
+          <span style={{ color: "var(--text)", fontWeight: 500 }}>
+            No agency. No freelancers.
           </span>
-        </motion.div>
+        </motion.p>
 
         {/* CTAs */}
         <motion.div
@@ -228,6 +202,71 @@ export function Hero({ id }: HeroProps) {
           </Link>
         </motion.div>
       </div>
+
+      {/* Spinning badge — bottom right */}
+      <motion.div
+        className="absolute bottom-8 right-8 z-10 w-[120px] h-[120px] hidden md:block"
+        initial={shouldReduceMotion ? "visible" : "hidden"}
+        animate="visible"
+        variants={fadeUpVariants}
+        custom={8}
+      >
+        {/* Rotating color arc ring */}
+        <motion.div
+          className="absolute inset-0"
+          animate={shouldReduceMotion ? {} : { rotate: -360 }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        >
+          <svg viewBox="0 0 120 120" className="w-full h-full" aria-hidden="true">
+            <defs>
+              <linearGradient id="arc-grad-1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#6366f1" />
+                <stop offset="50%" stopColor="#f472b6" />
+                <stop offset="100%" stopColor="#38bdf8" />
+              </linearGradient>
+              <linearGradient id="arc-grad-2" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#fbbf24" />
+                <stop offset="50%" stopColor="#34d399" />
+                <stop offset="100%" stopColor="#6366f1" />
+              </linearGradient>
+            </defs>
+            {/* Color arc segments */}
+            <circle cx="60" cy="60" r="38" fill="none" stroke="url(#arc-grad-1)" strokeWidth="3.5"
+              strokeDasharray="60 180" strokeLinecap="round" />
+            <circle cx="60" cy="60" r="38" fill="none" stroke="url(#arc-grad-2)" strokeWidth="3.5"
+              strokeDasharray="40 200" strokeDashoffset="-90" strokeLinecap="round" />
+            <circle cx="60" cy="60" r="38" fill="none" stroke="#f472b6" strokeWidth="3"
+              strokeDasharray="30 210" strokeDashoffset="-160" strokeLinecap="round" opacity="0.7" />
+          </svg>
+        </motion.div>
+
+        {/* Rotating text */}
+        <motion.svg
+          viewBox="0 0 120 120"
+          className="absolute inset-0 w-full h-full"
+          animate={shouldReduceMotion ? {} : { rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          aria-label="Websites, Blogs, Ads, Email, Reviews, Analytics — Powered by Business AI OS"
+        >
+          <defs>
+            <path
+              id="badge-text-path"
+              d="M 60,60 m -48,0 a 48,48 0 1,1 96,0 a 48,48 0 1,1 -96,0"
+              fill="none"
+            />
+          </defs>
+          <text
+            fill="rgba(255,255,255,0.6)"
+            fontSize="7.2"
+            fontFamily="var(--font-mono, monospace)"
+            letterSpacing="2.4"
+          >
+            <textPath href="#badge-text-path">
+              WEBSITES · BLOGS · ADS · EMAIL · REVIEWS · ANALYTICS ·
+            </textPath>
+          </text>
+        </motion.svg>
+      </motion.div>
 
       {/* Scroll hint */}
       <motion.div

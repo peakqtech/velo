@@ -89,7 +89,7 @@ Every section that uses Framer Motion (`motion.*`, `useScroll`, `useInView`, `us
 
 **Hero Content (centered column, `gap: 20px`):**
 1. Eyebrow badge: pulsing dot + "AI-Powered Business Operating System" in mono — pill shape with blue border
-2. H1: "YOUR INDUSTRY. / YOUR AI TEAM. / YOUR `[UNFAIR]` EDGE." — Impact, `clamp(56px,8vw,96px)`, word "UNFAIR" in `#3b82f6`
+2. H1: "YOUR INDUSTRY. / YOUR AI TEAM. / YOUR `[UNFAIR]` EDGE." — Bebas Neue (`var(--font-display)`), `clamp(56px,8vw,96px)`, word "UNFAIR" in `#3b82f6`
 3. Subtext: 16px, muted, max-width 520px
 4. CTAs: "Deploy Now →" (filled blue, box-shadow glow) + "View Pricing" (ghost blue)
 5. Proof note: `// This site runs on our platform. You're looking at the product.` — mono, 11px, very dim

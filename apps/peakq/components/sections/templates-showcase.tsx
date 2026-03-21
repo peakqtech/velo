@@ -134,7 +134,7 @@ export function TemplatesShowcase({ id }: TemplatesShowcaseProps) {
             className="text-[9px] uppercase tracking-[.14em]"
             style={{ color: "var(--accent)", fontFamily: "var(--font-mono, monospace)" }}
           >
-            06 / Templates
+            03 / Templates
           </span>
         </motion.div>
 

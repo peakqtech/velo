@@ -61,7 +61,7 @@ export class LockManager {
     return {
       acquired: true,
       runId: newRun.id,
-      lockToken: newRun.lockToken,
+      lockToken: newRun.lockToken ?? undefined,
     }
   }
 
