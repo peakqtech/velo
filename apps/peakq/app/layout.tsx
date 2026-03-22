@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Bebas_Neue, Space_Mono } from "next/font/google";
+import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -31,7 +32,9 @@ export default function RootLayout({
       className={`dark ${inter.variable} ${bebasNeue.variable} ${spaceMono.variable}`}
     >
       <body className="bg-[var(--bg-base)] text-white antialiased">
-        {children}
+        <SmoothScrollProvider>
+          {children}
+        </SmoothScrollProvider>
       </body>
     </html>
   );
