@@ -1,14 +1,16 @@
 // apps/peakq/components/sections/hero.tsx
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
 import Link from "next/link";
-import {
-  revealVariants,
-  fadeUpVariants,
-  expandLineVariants,
-  EASE_CINEMATIC,
-} from "@/lib/animation-variants";
+import gsap from "gsap";
+// @ts-ignore
+import { useGSAP } from "@gsap/react";
+// @ts-ignore
+import { SplitText } from "gsap/SplitText";
+// @ts-ignore
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import "@/lib/gsap-setup";
 import { HeroShaderBg } from "@/components/hero-shader-bg";
 
 const NAV_LINKS = [
@@ -32,10 +34,85 @@ interface HeroProps {
 }
 
 export function Hero({ id }: HeroProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const containerRef = useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      // Wait for fonts before SplitText
+      document.fonts.ready.then(() => {
+        // Set aria-label before splitting for accessibility
+        const headingEl = containerRef.current!.querySelector(".hero-headline");
+        if (headingEl) {
+          headingEl.setAttribute("aria-label", headingEl.textContent || "");
+        }
+
+        const split = new SplitText(".hero-headline", { type: "chars,words" });
+
+        const tl = gsap.timeline();
+
+        // 1. Headline chars reveal
+        tl.from(split.chars, {
+          y: 80,
+          opacity: 0,
+          rotationX: -90,
+          stagger: 0.02,
+          duration: 0.6,
+          ease: "back.out(1.7)",
+        })
+        // 2. Subheadline + pills
+        .from(".hero-sub", { y: 30, opacity: 0, duration: 0.6 }, "-=0.3")
+        .from(".hero-pill", { y: 20, opacity: 0, stagger: 0.05, duration: 0.4 }, "-=0.4")
+        // 3. CTA
+        .from(".hero-cta", { y: 20, opacity: 0, duration: 0.5 }, "-=0.2")
+        // 4. Badge SVG arcs — animate in then rotate
+        .from(".hero-arc", { opacity: 0, scale: 0.8, duration: 1.2, stagger: 0.2 }, 0)
+        .to(".hero-badge-rotate", { rotation: 360, duration: 20, repeat: -1, ease: "none" }, "-=1");
+
+        // SplitText resize handler
+        ScrollTrigger.addEventListener("refreshInit", () => {
+          split.revert();
+          const newSplit = new SplitText(".hero-headline", { type: "chars,words" });
+          gsap.set(newSplit.chars, { clearProps: "all" });
+        });
+
+        // Scroll hint bounce
+        gsap.to(".scroll-hint", {
+          y: 8,
+          duration: 1.2,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      });
+
+      // ScrollTrigger pin — hero pins and fades on scroll
+      gsap.to(".hero-content", {
+        scale: 0.95,
+        opacity: 0,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "+=800",
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+    });
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      gsap.set(".hero-headline, .hero-sub, .hero-pill, .hero-cta, .hero-arc", {
+        clearProps: "all",
+      });
+    });
+  }, { scope: containerRef });
 
   return (
     <section
+      ref={containerRef}
       id={id}
       className="relative flex flex-col overflow-hidden"
       style={{
@@ -91,7 +168,7 @@ export function Hero({ id }: HeroProps) {
         </ul>
         <Link
           href="/get-started"
-          className="text-[10px] uppercase tracking-[.1em] px-4 py-2 transition-all hover:bg-[var(--accent)] hover:text-white hover:border-[var(--accent)]"
+          className="hero-cta text-[10px] uppercase tracking-[.1em] px-4 py-2 transition-all hover:bg-[var(--accent)] hover:text-white hover:border-[var(--accent)]"
           style={{
             border: "1px solid var(--border-mid)",
             color: "var(--accent)",
@@ -102,15 +179,9 @@ export function Hero({ id }: HeroProps) {
       </nav>
 
       {/* Hero content */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-8 py-[72px] max-w-[860px]">
+      <div className="hero-content relative z-10 flex-1 flex flex-col justify-center px-8 py-[72px] max-w-[860px]">
         {/* Index line */}
-        <motion.div
-          className="flex items-center gap-2.5 mb-8"
-          initial={shouldReduceMotion ? "visible" : "hidden"}
-          animate="visible"
-          variants={fadeUpVariants}
-          custom={0}
-        >
+        <div className="flex items-center gap-2.5 mb-8">
           <div className="w-6 h-px" style={{ background: "var(--border-mid)" }} />
           <span
             className="text-[9px] uppercase tracking-[.14em]"
@@ -118,19 +189,17 @@ export function Hero({ id }: HeroProps) {
           >
             01 / HOMEPAGE
           </span>
-        </motion.div>
+        </div>
 
         {/* Expand line */}
-        <motion.div
+        <div
           className="w-full h-px mb-8 origin-left"
           style={{ background: "var(--border)" }}
-          initial={shouldReduceMotion ? "visible" : "hidden"}
-          animate="visible"
-          variants={expandLineVariants}
         />
 
-        {/* Headline with clip-path word reveals */}
+        {/* Headline with GSAP SplitText char reveals */}
         <h1
+          className="hero-headline"
           style={{
             fontSize: "clamp(48px, 6.5vw, 78px)",
             fontWeight: 900,
@@ -142,7 +211,7 @@ export function Hero({ id }: HeroProps) {
         >
           {HEADLINE_LINES.map((line, i) => (
             <div key={i} style={{ overflow: "hidden", display: "block", marginBottom: 4 }}>
-              <motion.span
+              <span
                 style={{
                   display: "block",
                   ...(line.outline
@@ -151,72 +220,65 @@ export function Hero({ id }: HeroProps) {
                     ? { color: "var(--accent)" }
                     : { color: "var(--text)" }),
                 }}
-                initial={shouldReduceMotion ? "visible" : "hidden"}
-                animate="visible"
-                variants={revealVariants}
-                custom={i}
               >
                 {line.text}
-              </motion.span>
+              </span>
             </div>
           ))}
         </h1>
 
         {/* Subheadline */}
-        <motion.p
-          className="text-[13px] leading-[1.7] mb-8 max-w-[480px]"
+        <p
+          className="hero-sub text-[13px] leading-[1.7] mb-8 max-w-[480px]"
           style={{ color: "var(--muted)" }}
-          initial={shouldReduceMotion ? "visible" : "hidden"}
-          animate="visible"
-          variants={fadeUpVariants}
-          custom={5}
         >
           Your website, blog, ads, and entire digital presence — built, managed, and grown by one
           system.{" "}
           <span style={{ color: "var(--text)", fontWeight: 500 }}>
             No agency. No freelancers.
           </span>
-        </motion.p>
+        </p>
+
+        {/* Deliverable pills */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          {DELIVERABLE_PILLS.map((pill) => (
+            <span
+              key={pill}
+              className="hero-pill text-[10px] uppercase tracking-[.08em] px-3 py-1"
+              style={{
+                border: "1px solid var(--border)",
+                color: "var(--muted)",
+                fontFamily: "var(--font-mono, monospace)",
+              }}
+            >
+              {pill}
+            </span>
+          ))}
+        </div>
 
         {/* CTAs */}
-        <motion.div
-          className="flex flex-wrap items-center gap-3"
-          initial={shouldReduceMotion ? "visible" : "hidden"}
-          animate="visible"
-          variants={fadeUpVariants}
-          custom={7}
-        >
+        <div className="flex flex-wrap items-center gap-3">
           <Link
             href="#services"
-            className="inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[.08em] font-semibold transition-all hover:brightness-110"
+            className="hero-cta inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[.08em] font-semibold transition-all hover:brightness-110"
             style={{ background: "var(--accent)", color: "#fff" }}
           >
             See What We Handle →
           </Link>
           <Link
             href="/templates"
-            className="inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[.08em] transition-all hover:border-[var(--border-mid)]"
+            className="hero-cta inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[.08em] transition-all hover:border-[var(--border-mid)]"
             style={{ border: "1px solid var(--border)", color: "var(--muted)" }}
           >
             View Templates
           </Link>
-        </motion.div>
+        </div>
       </div>
 
       {/* Spinning badge — bottom right */}
-      <motion.div
-        className="absolute bottom-8 right-8 z-10 w-[120px] h-[120px] hidden md:block"
-        initial={shouldReduceMotion ? "visible" : "hidden"}
-        animate="visible"
-        variants={fadeUpVariants}
-        custom={8}
-      >
+      <div className="absolute bottom-8 right-8 z-10 w-[120px] h-[120px] hidden md:block">
         {/* Rotating color arc ring */}
-        <motion.div
-          className="absolute inset-0"
-          animate={shouldReduceMotion ? {} : { rotate: -360 }}
-          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-        >
+        <div className="hero-badge-rotate absolute inset-0">
           <svg viewBox="0 0 120 120" className="w-full h-full" aria-hidden="true">
             <defs>
               <linearGradient id="arc-grad-1" x1="0" y1="0" x2="1" y2="1">
@@ -231,21 +293,19 @@ export function Hero({ id }: HeroProps) {
               </linearGradient>
             </defs>
             {/* Color arc segments */}
-            <circle cx="60" cy="60" r="38" fill="none" stroke="url(#arc-grad-1)" strokeWidth="3.5"
+            <circle className="hero-arc" cx="60" cy="60" r="38" fill="none" stroke="url(#arc-grad-1)" strokeWidth="3.5"
               strokeDasharray="60 180" strokeLinecap="round" />
-            <circle cx="60" cy="60" r="38" fill="none" stroke="url(#arc-grad-2)" strokeWidth="3.5"
+            <circle className="hero-arc" cx="60" cy="60" r="38" fill="none" stroke="url(#arc-grad-2)" strokeWidth="3.5"
               strokeDasharray="40 200" strokeDashoffset="-90" strokeLinecap="round" />
-            <circle cx="60" cy="60" r="38" fill="none" stroke="#f472b6" strokeWidth="3"
+            <circle className="hero-arc" cx="60" cy="60" r="38" fill="none" stroke="#f472b6" strokeWidth="3"
               strokeDasharray="30 210" strokeDashoffset="-160" strokeLinecap="round" opacity="0.7" />
           </svg>
-        </motion.div>
+        </div>
 
         {/* Rotating text */}
-        <motion.svg
+        <svg
           viewBox="0 0 120 120"
-          className="absolute inset-0 w-full h-full"
-          animate={shouldReduceMotion ? {} : { rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="hero-badge-rotate absolute inset-0 w-full h-full"
           aria-label="Websites, Blogs, Ads, Email, Reviews, Analytics — Powered by Business AI OS"
         >
           <defs>
@@ -265,22 +325,14 @@ export function Hero({ id }: HeroProps) {
               WEBSITES · BLOGS · ADS · EMAIL · REVIEWS · ANALYTICS ·
             </textPath>
           </text>
-        </motion.svg>
-      </motion.div>
+        </svg>
+      </div>
 
       {/* Scroll hint */}
-      <motion.div
-        className="absolute bottom-8 left-8 flex items-center gap-2"
-        initial={shouldReduceMotion ? "visible" : "hidden"}
-        animate="visible"
-        variants={fadeUpVariants}
-        custom={9}
-      >
-        <motion.div
+      <div className="scroll-hint absolute bottom-8 left-8 flex items-center gap-2">
+        <div
           className="w-px h-8"
           style={{ background: "var(--border-mid)", transformOrigin: "top" }}
-          animate={shouldReduceMotion ? {} : { scaleY: [1, 0.4, 1] }}
-          transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
         />
         <span
           className="text-[8px] uppercase tracking-[.14em]"
@@ -288,7 +340,7 @@ export function Hero({ id }: HeroProps) {
         >
           Scroll to explore
         </span>
-      </motion.div>
+      </div>
     </section>
   );
 }
