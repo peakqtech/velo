@@ -1,4 +1,4 @@
-import type { AiResponse, CitationResult, CitationTypeName, ClientEntity } from '../types.js'
+import type { AiResponse, CitationResult, CitationTypeName, ClientEntity } from '../types'
 
 const RECOMMEND_KEYWORDS = /\b(recommend|suggest|best choice|top pick)\b/i
 

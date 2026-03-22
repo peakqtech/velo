@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@velo/db'
-import type { AiEngineName } from '../types.js'
+import type { AiEngineName } from '../types'
 
 const ALL_ENGINES: AiEngineName[] = ['CHATGPT', 'PERPLEXITY', 'GEMINI', 'AI_OVERVIEW']
 

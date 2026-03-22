@@ -1,4 +1,4 @@
-import { CitationDetector } from '../detection/citation-detector.js'
+import { CitationDetector } from '../detection/citation-detector'
 import type {
   AiEngineName,
   AiResponse,
@@ -6,7 +6,7 @@ import type {
   ClientEntity,
   EngineAdapter,
   GeoProvider,
-} from '../types.js'
+} from '../types'
 
 export class InternalGeoProvider implements GeoProvider {
   private readonly adapters: Map<AiEngineName, EngineAdapter>

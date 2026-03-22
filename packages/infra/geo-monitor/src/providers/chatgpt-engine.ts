@@ -1,4 +1,4 @@
-import type { AiResponse, EngineAdapter } from '../types.js'
+import type { AiResponse, EngineAdapter } from '../types'
 
 export class ChatGPTEngine implements EngineAdapter {
   readonly name = 'CHATGPT' as const

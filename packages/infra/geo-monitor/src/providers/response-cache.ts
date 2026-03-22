@@ -1,5 +1,5 @@
 import type { PrismaClient, GeoSnapshot } from '@velo/db'
-import type { AiEngineName } from '../types.js'
+import type { AiEngineName } from '../types'
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours
 

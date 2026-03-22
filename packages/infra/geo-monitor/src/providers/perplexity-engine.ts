@@ -1,4 +1,4 @@
-import type { AiResponse, EngineAdapter } from '../types.js'
+import type { AiResponse, EngineAdapter } from '../types'
 
 export class PerplexityEngine implements EngineAdapter {
   readonly name = 'PERPLEXITY' as const

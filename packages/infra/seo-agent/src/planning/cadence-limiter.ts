@@ -1,4 +1,4 @@
-import type { ChannelLimit } from '../gates/tier-gate.js'
+import type { ChannelLimit } from '../gates/tier-gate'
 
 type Channel = 'BLOG' | 'GBP' | 'SOCIAL' | 'EMAIL'
 type ConfigKey = 'blog' | 'gbp' | 'social' | 'email'

@@ -1,4 +1,4 @@
-import type { AiResponse, EngineAdapter } from '../types.js'
+import type { AiResponse, EngineAdapter } from '../types'
 
 interface GroundingChunk {
   web?: { uri?: string; title?: string }

@@ -1,7 +1,7 @@
 import type { PrismaClient } from '@velo/db'
-import { TierGate } from '../gates/tier-gate.js'
-import { OversightGate } from '../gates/oversight-gate.js'
-import type { LockManager } from './concurrency.js'
+import { TierGate } from '../gates/tier-gate'
+import { OversightGate } from '../gates/oversight-gate'
+import type { LockManager } from './concurrency'
 
 export interface RunResult {
   success: boolean

@@ -1,4 +1,4 @@
-import type { AiEngineName, VisibilityReport } from '../types.js'
+import type { AiEngineName, VisibilityReport } from '../types'
 
 interface SnapshotInput {
   engine: AiEngineName
