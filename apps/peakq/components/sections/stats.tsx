@@ -4,8 +4,6 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-// @ts-ignore
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "@/lib/gsap-setup";
 
 const STATS = [
@@ -117,7 +115,7 @@ export function Stats() {
           className="grid grid-cols-2 md:grid-cols-4"
           style={{ borderLeft: "1px solid var(--border)" }}
         >
-          {STATS.map((stat, i) => (
+          {STATS.map((stat) => (
             <div
               key={stat.unit}
               className="stat-card group relative px-8 py-10 flex flex-col gap-1"

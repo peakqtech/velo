@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import gsap from "gsap";
-// @ts-ignore
+// @ts-expect-error — GSAP ships type files as kebab-case but subpaths are PascalCase; TS casing conflict on macOS
 import { useGSAP } from "@gsap/react";
 import "@/lib/gsap-setup";
 

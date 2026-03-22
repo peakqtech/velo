@@ -49,7 +49,7 @@ export function Footer() {
               className="text-[10px]"
               style={{ fontFamily: "var(--font-mono)", color: "var(--muted)", opacity: 0.6 }}
             >
-              // Powered by Business AI OS
+              {/* Powered by Business AI OS */}
             </p>
           </div>
 
@@ -96,7 +96,7 @@ export function Footer() {
             className="text-[10px]"
             style={{ fontFamily: "var(--font-mono)", color: "var(--muted)", opacity: 0.4 }}
           >
-            // Powered by Business AI OS
+            {/* Powered by Business AI OS */}
           </p>
         </div>
       </div>

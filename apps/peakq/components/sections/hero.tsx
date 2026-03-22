@@ -4,11 +4,11 @@
 import { useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
-// @ts-ignore
+// @ts-expect-error — GSAP ships type files as kebab-case but subpaths are PascalCase; TS casing conflict on macOS
 import { useGSAP } from "@gsap/react";
-// @ts-ignore
+// @ts-expect-error — same as above
 import { SplitText } from "gsap/SplitText";
-// @ts-ignore
+// @ts-expect-error — same as above
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "@/lib/gsap-setup";
 import { HeroShaderBg } from "@/components/hero-shader-bg";

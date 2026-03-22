@@ -30,7 +30,6 @@ export function useActiveSection(sectionIds: string[]): string {
   }, [sectionIds]);
 
   useEffect(() => {
-    handleScroll(); // set initial state
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);

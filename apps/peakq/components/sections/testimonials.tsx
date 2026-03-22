@@ -4,9 +4,9 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-// @ts-ignore
+// @ts-expect-error — GSAP ships type files as kebab-case but subpaths are PascalCase; TS casing conflict on macOS
 import { SplitText } from "gsap/SplitText";
-// @ts-ignore
+// @ts-expect-error — same as above
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "@/lib/gsap-setup";
 
@@ -166,7 +166,7 @@ export function Testimonials({ id }: TestimonialsProps) {
                 className="testimonial-quote text-[13px] leading-[1.75]"
                 style={{ color: "var(--muted)", fontStyle: "italic" }}
               >
-                "{t.quote}"
+                &quot;{t.quote}&quot;
               </blockquote>
 
               {/* Attribution */}

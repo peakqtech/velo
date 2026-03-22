@@ -5,9 +5,9 @@ import { useRef } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-// @ts-ignore
+// @ts-expect-error — GSAP ships type files as kebab-case but subpaths are PascalCase; TS casing conflict on macOS
 import { SplitText } from "gsap/SplitText";
-// @ts-ignore
+// @ts-expect-error — same as above
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "@/lib/gsap-setup";
 
@@ -134,7 +134,7 @@ export function FinalCta({ id }: FinalCtaProps) {
           className="text-[13px] leading-[1.7] mb-8 max-w-[480px]"
           style={{ color: "var(--muted)" }}
         >
-          One system. Every channel. No agency markup, no freelancer coordination, no monthly "strategy calls."
+          One system. Every channel. No agency markup, no freelancer coordination, no monthly &quot;strategy calls.&quot;
           Just results.
         </p>
 

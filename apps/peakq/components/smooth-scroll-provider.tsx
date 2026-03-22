@@ -1,10 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import gsap from "gsap";
-// @ts-ignore — GSAP ships type files as kebab-case but subpaths are PascalCase; TS casing conflict on macOS
+// @ts-expect-error — GSAP ships type files as kebab-case but subpaths are PascalCase; TS casing conflict on macOS
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-// @ts-ignore — same as above
+// @ts-expect-error — same as above
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useGSAP } from "@gsap/react";
 import "@/lib/gsap-setup";

@@ -10,11 +10,11 @@ import {
   Star,
   BarChart3,
 } from "lucide-react";
-// @ts-ignore
+// @ts-expect-error — GSAP ships type files as kebab-case but subpaths are PascalCase; TS casing conflict on macOS
 import gsap from "gsap";
-// @ts-ignore
+// @ts-expect-error — same as above
 import { useGSAP } from "@gsap/react";
-// @ts-ignore
+// @ts-expect-error — same as above
 import ScrollTrigger from "gsap/ScrollTrigger";
 import "@/lib/gsap-setup";
 
