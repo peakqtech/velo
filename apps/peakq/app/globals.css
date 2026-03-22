@@ -43,11 +43,6 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
-@keyframes marquee {
-  from { transform: translateX(0%); }
-  to   { transform: translateX(-50%); }
-}
-
 @keyframes bounce-dot {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(8px); }
