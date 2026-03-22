@@ -1,8 +1,12 @@
 "use client";
 
-import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
-import { revealVariants, fadeUpVariants } from "@/lib/animation-variants";
+import gsap from "gsap";
+// @ts-ignore
+import { useGSAP } from "@gsap/react";
+// @ts-ignore
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import "@/lib/gsap-setup";
 
 interface PlatformPreviewProps {
   id?: string;
@@ -34,15 +38,25 @@ const HEADLINE_LINES: { text: string; stroke: boolean }[] = [
 ];
 
 export function PlatformPreview({ id }: PlatformPreviewProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const headlineInView = useInView(headlineRef, { once: true, margin: "-60px" });
-  const shouldReduceMotion = useReducedMotion();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.from(".platform-mockup", {
+        y: 80, opacity: 0, duration: 0.8, ease: "power2.out",
+        scrollTrigger: { trigger: containerRef.current, start: "top 75%", once: true },
+      });
+    });
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      gsap.set(".platform-mockup", { clearProps: "all" });
+    });
+  }, { scope: containerRef });
 
   return (
     <section
       id={id}
+      ref={containerRef}
       className="py-20 px-4 md:px-8 overflow-hidden"
       style={{
         background: "rgba(5,5,7,0.6)",
@@ -53,7 +67,7 @@ export function PlatformPreview({ id }: PlatformPreviewProps) {
     >
       <div className="max-w-7xl mx-auto">
         {/* Eyebrow + H2 */}
-        <div className="text-center mb-12" ref={headlineRef}>
+        <div className="text-center mb-12">
           <p
             className="text-[11px] uppercase tracking-[0.15em] mb-4"
             style={{ fontFamily: "var(--font-mono)", color: "#3b82f6" }}
@@ -68,14 +82,10 @@ export function PlatformPreview({ id }: PlatformPreviewProps) {
               lineHeight: 1.05,
             }}
           >
-            {HEADLINE_LINES.map(({ text, stroke }, i) => (
+            {HEADLINE_LINES.map(({ text, stroke }) => (
               <div key={text} className="overflow-hidden">
-                <motion.span
+                <span
                   className="block"
-                  initial={shouldReduceMotion ? "visible" : "hidden"}
-                  animate={headlineInView ? "visible" : "hidden"}
-                  variants={revealVariants}
-                  custom={i}
                   style={
                     stroke
                       ? {
@@ -86,18 +96,16 @@ export function PlatformPreview({ id }: PlatformPreviewProps) {
                   }
                 >
                   {text}
-                </motion.span>
+                </span>
               </div>
             ))}
           </h2>
         </div>
 
         {/* Browser mockup */}
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: "easeOut" as const }}
+        <div
+          className="platform-mockup"
+          data-speed="0.95"
           style={{
             borderWidth: "1px",
             borderStyle: "solid",
@@ -205,7 +213,7 @@ export function PlatformPreview({ id }: PlatformPreviewProps) {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
