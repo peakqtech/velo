@@ -68,7 +68,7 @@ export function Testimonials({ id }: TestimonialsProps) {
                 const quoteEl = card.querySelector(".testimonial-quote");
                 if (quoteEl) {
                   quoteEl.setAttribute("aria-label", quoteEl.textContent || "");
-                  const split = new SplitText(quoteEl, { type: "words" });
+                  const split = new SplitText(quoteEl, { type: "words", tag: "span" });
                   gsap.from(split.words, { opacity: 0, y: 15, stagger: 0.02, duration: 0.4, ease: "power2.out" });
                 }
               });

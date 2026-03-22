@@ -48,7 +48,7 @@ export function Hero({ id }: HeroProps) {
           headingEl.setAttribute("aria-label", headingEl.textContent || "");
         }
 
-        const split = new SplitText(".hero-headline", { type: "chars,words" });
+        const split = new SplitText(".hero-headline", { type: "chars,words", tag: "span" });
 
         const tl = gsap.timeline();
 
@@ -73,7 +73,7 @@ export function Hero({ id }: HeroProps) {
         // SplitText resize handler
         ScrollTrigger.addEventListener("refreshInit", () => {
           split.revert();
-          const newSplit = new SplitText(".hero-headline", { type: "chars,words" });
+          const newSplit = new SplitText(".hero-headline", { type: "chars,words", tag: "span" });
           gsap.set(newSplit.chars, { clearProps: "all" });
         });
 

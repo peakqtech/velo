@@ -34,7 +34,7 @@ export function FinalCta({ id }: FinalCtaProps) {
         const headingEl = containerRef.current!.querySelector(".cta-headline");
         if (headingEl) {
           headingEl.setAttribute("aria-label", headingEl.textContent || "");
-          const split = new SplitText(headingEl, { type: "chars" });
+          const split = new SplitText(headingEl, { type: "chars", tag: "span" });
           gsap.from(split.chars, {
             y: 60, opacity: 0, stagger: 0.02, duration: 0.8, ease: "expo.out",
             scrollTrigger: { trigger: containerRef.current, start: "top 70%", once: true },
@@ -43,7 +43,7 @@ export function FinalCta({ id }: FinalCtaProps) {
           // Resize handler
           ScrollTrigger.addEventListener("refreshInit", () => {
             split.revert();
-            const newSplit = new SplitText(headingEl, { type: "chars" });
+            const newSplit = new SplitText(headingEl, { type: "chars", tag: "span" });
             gsap.set(newSplit.chars, { clearProps: "all" });
           });
         }
