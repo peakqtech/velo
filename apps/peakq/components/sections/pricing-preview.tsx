@@ -1,7 +1,5 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
 import Link from "next/link";
 
 const tiers = [
@@ -36,11 +34,8 @@ const tiers = [
 ];
 
 export function PricingPreview() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section className="px-6 py-24 max-w-6xl mx-auto" ref={ref}>
+    <section className="px-6 py-24 max-w-6xl mx-auto">
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
           Start Where You Are. Scale When You&rsquo;re Ready.
@@ -51,13 +46,10 @@ export function PricingPreview() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {tiers.map((tier, i) => (
-          <motion.div
+        {tiers.map((tier) => (
+          <div
             key={tier.name}
             className={`relative rounded-xl border ${tier.borderClass} bg-gray-900/50 p-6 text-center`}
-            initial={{ opacity: 0, y: 24 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
           >
             {tier.popular && (
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-500 text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">
@@ -69,7 +61,7 @@ export function PricingPreview() {
             </h3>
             <p className="text-3xl font-bold text-white mb-4">{tier.price}</p>
             <p className="text-gray-400 text-sm">{tier.features}</p>
-          </motion.div>
+          </div>
         ))}
       </div>
 
