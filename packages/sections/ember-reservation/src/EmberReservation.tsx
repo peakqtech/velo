@@ -211,7 +211,7 @@ export function EmberReservation({ content, reservationConfig, apiBaseUrl = "" }
   /* ---- Transition config ---- */
   const transition = shouldReduceMotion
     ? { duration: 0 }
-    : { duration: 0.35, ease: "easeInOut" };
+    : { duration: 0.35, ease: "easeInOut" as const };
 
   /* ======================================================================== */
   /*  Render                                                                  */
