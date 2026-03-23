@@ -1,0 +1,661 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  EDITOR
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  PENDING_DEPOSIT
+  CANCELLED
+  NO_SHOW
+}
+
+enum DeployStatus {
+  PENDING
+  BUILDING
+  DEPLOYED
+  FAILED
+}
+
+model User {
+  id              String          @id @default(cuid())
+  email           String          @unique
+  name            String?
+  passwordHash    String?
+  avatarUrl       String?
+  role            Role            @default(OWNER)
+  sites           Site[]
+  assignedChanges ChangeRequest[] @relation("AssignedTo")
+  reviewedContent ContentPiece[]  @relation("ContentReviewer")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@map("users")
+}
+
+enum ClientPlan {
+  BASIC
+  PREMIUM
+  ENTERPRISE
+  CUSTOM
+}
+
+enum PaymentStatus {
+  PAID
+  PENDING
+  OVERDUE
+  GRACE
+}
+
+enum ChangeStatus {
+  PENDING
+  IN_PROGRESS
+  REVIEW
+  DONE
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model Client {
+  id              String          @id @default(cuid())
+  name            String // Business name
+  contactPerson   String
+  email           String
+  phone           String?
+  whatsapp        String?
+  plan            ClientPlan      @default(BASIC)
+  monthlyPrice    Int             @default(0) // In smallest currency unit
+  currency        String          @default("IDR")
+  paymentStatus   PaymentStatus   @default(PENDING)
+  paymentDueDate  DateTime?
+  lastPaymentDate DateTime?
+  notes           String?
+  sites           Site[]
+  changeRequests  ChangeRequest[]
+  invoices        Invoice[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([paymentStatus])
+  @@map("clients")
+}
+
+model Site {
+  id                   String               @id @default(cuid())
+  name                 String
+  slug                 String               @unique
+  template             String
+  domain               String?              @unique
+  siteUrl              String? // Live URL (e.g., "https://sushimasa.vercel.app" or "https://sushimasa.com")
+  vercelProjectId      String?
+  deployStatus         DeployStatus         @default(PENDING)
+  owner                User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId              String
+  client               Client?              @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientId             String?
+  content              Json                 @default("{}")
+  themeOverrides       Json?
+  integrations         SiteIntegration[]
+  qaReports            QAReport[]
+  deployments          Deployment[]
+  bookings             Booking[]
+  products             Product[]
+  orders               Order[]
+  changeRequests       ChangeRequest[]
+  campaigns            Campaign[]
+  contentPieces        ContentPiece[]
+  keywordSources       KeywordSource[]
+  repoUrl              String?
+  repoBranch           String?
+  repoToken            String?
+  agentConfig          AgentConfig?
+  agentRuns            AgentRun[]
+  contentOpportunities ContentOpportunity[]
+  geoSnapshots         GeoSnapshot[]
+  geoScores            GeoScore[]
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  @@index([ownerId])
+  @@index([clientId])
+  @@index([template])
+  @@map("sites")
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model Product {
+  id           String      @id @default(cuid())
+  site         Site        @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId       String
+  name         String
+  slug         String
+  description  String?
+  price        Int // Smallest currency unit
+  comparePrice Int? // Original price (for showing discounts)
+  currency     String      @default("IDR")
+  images       Json        @default("[]") // Array of image URLs
+  category     String?
+  variants     Json? // [{name: "Size", options: ["S","M","L"]}, {name: "Color", options: ["Black","White"]}]
+  stock        Int         @default(0)
+  trackStock   Boolean     @default(true)
+  isActive     Boolean     @default(true)
+  weight       Int? // Grams, for shipping
+  sortOrder    Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  orderItems   OrderItem[]
+
+  @@unique([siteId, slug])
+  @@index([siteId, isActive])
+  @@index([siteId, category])
+  @@map("products")
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  site            Site        @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId          String
+  orderNumber     String      @unique // Human-readable: "ORD-0001"
+  status          OrderStatus @default(PENDING)
+  customerName    String
+  customerEmail   String?
+  customerPhone   String
+  shippingAddress Json? // {street, city, province, postalCode}
+  items           OrderItem[]
+  subtotal        Int // Smallest currency unit
+  shippingCost    Int         @default(0)
+  total           Int
+  currency        String      @default("IDR")
+  paymentMethod   String? // "xendit", "stripe", "midtrans", "cod"
+  paymentId       String? // External payment reference
+  paidAt          DateTime?
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([siteId, status])
+  @@index([siteId, createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  name      String // Snapshot at time of order
+  price     Int // Snapshot at time of order
+  quantity  Int
+  variant   String? // "Size: M, Color: Black"
+  total     Int // price × quantity
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+model ChangeRequest {
+  id           String       @id @default(cuid())
+  client       Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId     String
+  site         Site?        @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  siteId       String?
+  title        String
+  description  String
+  priority     String       @default("normal") // low, normal, high, urgent
+  status       ChangeStatus @default(PENDING)
+  assignedTo   User?        @relation("AssignedTo", fields: [assignedToId], references: [id])
+  assignedToId String?
+  requestedAt  DateTime     @default(now())
+  completedAt  DateTime?
+  notes        String?
+
+  @@index([clientId])
+  @@index([status])
+  @@index([assignedToId])
+  @@map("change_requests")
+}
+
+model Invoice {
+  id        String        @id @default(cuid())
+  client    Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId  String
+  amount    Int // In smallest currency unit
+  currency  String        @default("IDR")
+  period    String // "2026-03" (month)
+  status    InvoiceStatus @default(DRAFT)
+  dueDate   DateTime
+  paidDate  DateTime?
+  notes     String?
+  createdAt DateTime      @default(now())
+
+  @@index([clientId])
+  @@index([status])
+  @@index([dueDate])
+  @@map("invoices")
+}
+
+model SiteIntegration {
+  id          String   @id @default(cuid())
+  site        Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId      String
+  integration String
+  enabled     Boolean  @default(true)
+  config      Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([siteId, integration])
+  @@index([siteId])
+  @@map("site_integrations")
+}
+
+model QAReport {
+  id          String   @id @default(cuid())
+  site        Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId      String
+  healthScore Int
+  report      Json
+  createdAt   DateTime @default(now())
+
+  @@index([siteId])
+  @@index([createdAt])
+  @@map("qa_reports")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  site          Site          @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId        String
+  sectionType   String        @default("reservation") // "reservation", "booking", "appointment"
+  date          String // "2026-03-20" (ISO date string)
+  time          String // "19:00"
+  guestName     String
+  guestPhone    String
+  guestEmail    String?
+  partySize     Int           @default(1)
+  status        BookingStatus @default(PENDING)
+  depositAmount Int? // In smallest currency unit (cents/rupiah)
+  depositPaid   Boolean       @default(false)
+  paymentId     String? // External payment reference
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([siteId, date])
+  @@index([siteId, status])
+  @@index([createdAt])
+  @@map("bookings")
+}
+
+model Deployment {
+  id             String       @id @default(cuid())
+  site           Site         @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId         String
+  status         DeployStatus @default(PENDING)
+  vercelDeployId String?
+  url            String?
+  commitMessage  String?
+  createdAt      DateTime     @default(now())
+  completedAt    DateTime?
+
+  @@index([siteId])
+  @@index([createdAt])
+  @@map("deployments")
+}
+
+// ─── AI Agent Enums ─────────────────────────────────────────────────────────
+
+enum Tier {
+  STARTER
+  GROWTH
+  SCALE
+  ENTERPRISE
+}
+
+enum OversightMode {
+  AUTO_PUBLISH
+  VETO_WINDOW
+  APPROVAL_REQUIRED
+}
+
+enum Signal {
+  KEYWORD_GAP
+  COMPETITOR
+  AI_ANSWER
+}
+
+enum OpportunityStatus {
+  DISCOVERED
+  PLANNED
+  PENDING_APPROVAL
+  APPROVED
+  GENERATING
+  PUBLISHED
+  FAILED
+  SKIPPED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  VETOED
+  AUTO_SKIPPED
+}
+
+enum RunStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum AiEngine {
+  CHATGPT
+  PERPLEXITY
+  GEMINI
+  AI_OVERVIEW
+}
+
+enum AiModel {
+  CLAUDE
+  OPENAI
+  GEMINI
+}
+
+enum CitationType {
+  NAMED
+  LINKED
+  RECOMMENDED
+  ABSENT
+}
+
+// ─── SEO Engine Enums ───────────────────────────────────────────────────────
+
+enum CampaignStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+enum Channel {
+  BLOG
+  GBP
+  SOCIAL
+  EMAIL
+}
+
+enum ContentPieceStatus {
+  PLANNED
+  GENERATING
+  DRAFT
+  FAILED
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+  REJECTED
+}
+
+enum KeywordProvider {
+  VERTICAL
+  GSC
+  SERPAPI
+  SEMRUSH
+}
+
+enum KeywordIntent {
+  INFORMATIONAL
+  TRANSACTIONAL
+  NAVIGATIONAL
+  LOCAL
+}
+
+// ─── SEO Engine Models ───────────────────────────────────────────────────────
+
+model Campaign {
+  id             String               @id @default(cuid())
+  site           Site                 @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId         String
+  name           String
+  goal           String?
+  status         CampaignStatus       @default(DRAFT)
+  channels       Channel[]
+  totalPieces    Int
+  publishedCount Int                  @default(0)
+  schedule       Json
+  keywordTargets Json
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  contentPieces  ContentPiece[]
+  opportunities  ContentOpportunity[]
+
+  @@index([siteId])
+  @@map("campaigns")
+}
+
+model ContentPiece {
+  id                String               @id @default(cuid())
+  campaign          Campaign?            @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId        String?
+  site              Site                 @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId            String
+  channel           Channel
+  status            ContentPieceStatus   @default(PLANNED)
+  title             String
+  slug              String?
+  targetKeyword     String?
+  outline           String?
+  content           Json?
+  metaData          Json?
+  scheduledFor      DateTime?
+  publishedAt       DateTime?
+  modelUsed         String?
+  contentTemplateId String?
+  contentTemplate   ContentTemplate?     @relation(fields: [contentTemplateId], references: [id])
+  generatedAt       DateTime?
+  reviewedById      String?
+  reviewedBy        User?                @relation("ContentReviewer", fields: [reviewedById], references: [id])
+  reviewNote        String?
+  tokenCount        Int?
+  opportunities     ContentOpportunity[]
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  @@index([siteId])
+  @@index([campaignId])
+  @@index([status])
+  @@index([scheduledFor])
+  @@map("content_pieces")
+}
+
+model KeywordSource {
+  id         String          @id @default(cuid())
+  site       Site            @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId     String
+  provider   KeywordProvider
+  config     Json            @default("{}")
+  enabled    Boolean         @default(true)
+  lastSyncAt DateTime?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  keywords   KeywordData[]
+
+  @@unique([siteId, provider])
+  @@map("keyword_sources")
+}
+
+model KeywordData {
+  id           String        @id @default(cuid())
+  source       KeywordSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  sourceId     String
+  keyword      String
+  volume       Int?
+  difficulty   Int?
+  intent       KeywordIntent
+  relatedTerms String[]
+  fetchedAt    DateTime
+  updatedAt    DateTime      @updatedAt
+
+  @@unique([sourceId, keyword])
+  @@index([sourceId])
+  @@map("keyword_data")
+}
+
+model ContentTemplate {
+  id             String         @id @default(cuid())
+  vertical       String
+  channel        Channel
+  name           String
+  promptTemplate String
+  outputSchema   Json
+  tone           String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  contentPieces  ContentPiece[]
+
+  @@unique([vertical, channel, name])
+  @@map("content_templates")
+}
+
+// ─── AI Agent Models ────────────────────────────────────────────────────────
+
+model AgentConfig {
+  id               String               @id @default(cuid())
+  siteId           String               @unique
+  site             Site                 @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  tier             Tier
+  oversightMode    OversightMode        @default(AUTO_PUBLISH)
+  vetoWindowHours  Int?                 @default(24)
+  channels         Channel[]
+  cadence          Json /// Zod-validated: { blog?: { max: number, period: "week"|"month" }, ... }
+  competitors      String[]
+  verticalKeywords String[]
+  geoEnabled       Boolean              @default(false)
+  geoQueryPrompts  String[]
+  aiModel          AiModel              @default(CLAUDE)
+  isActive         Boolean              @default(true)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  runs             AgentRun[]
+  opportunities    ContentOpportunity[]
+
+  @@map("agent_configs")
+}
+
+model AgentRun {
+  id                 String      @id @default(cuid())
+  configId           String
+  config             AgentConfig @relation(fields: [configId], references: [id], onDelete: Cascade)
+  siteId             String
+  site               Site        @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  status             RunStatus   @default(RUNNING)
+  currentStep        String?
+  opportunitiesFound Int         @default(0)
+  contentGenerated   Int         @default(0)
+  contentPublished   Int         @default(0)
+  geoQueriesRun      Int         @default(0)
+  error              String?
+  startedAt          DateTime    @default(now())
+  completedAt        DateTime?
+  lockToken          String?     @unique
+
+  @@index([siteId])
+  @@index([configId])
+  @@index([status])
+  @@map("agent_runs")
+}
+
+model ContentOpportunity {
+  id             String            @id @default(cuid())
+  siteId         String
+  site           Site              @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  configId       String?
+  config         AgentConfig?      @relation(fields: [configId], references: [id])
+  signal         Signal
+  keyword        String
+  title          String?
+  score          Float /// Priority score 0-100
+  channel        Channel
+  status         OpportunityStatus @default(DISCOVERED)
+  contentPieceId String?
+  contentPiece   ContentPiece?     @relation(fields: [contentPieceId], references: [id])
+  campaignId     String?
+  campaign       Campaign?         @relation(fields: [campaignId], references: [id])
+  metadata       Json?
+  approvalStatus ApprovalStatus?
+  approvalNote   String?
+  vetoDeadline   DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([siteId])
+  @@index([status])
+  @@index([configId])
+  @@map("content_opportunities")
+}
+
+model GeoSnapshot {
+  id           String        @id @default(cuid())
+  siteId       String
+  site         Site          @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  engine       AiEngine
+  query        String
+  response     String
+  cited        Boolean
+  citationType CitationType?
+  position     Int?
+  competitors  Json?
+  createdAt    DateTime      @default(now())
+
+  @@index([siteId])
+  @@index([engine])
+  @@map("geo_snapshots")
+}
+
+model GeoScore {
+  id           String   @id @default(cuid())
+  siteId       String
+  site         Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  engine       AiEngine
+  period       String /// Weekly bucket key, e.g. "2026-W12"
+  visibility   Float
+  avgPosition  Float?
+  totalQueries Int
+  citedQueries Int
+  topQueries   Json
+  createdAt    DateTime @default(now())
+
+  @@unique([siteId, engine, period])
+  @@index([siteId])
+  @@map("geo_scores")
+}

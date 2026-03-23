@@ -15,17 +15,28 @@
     "eject": "tsx tools/eject/src/index.ts",
     "codegen": "tsx tools/codegen/src/index.ts",
     "qa": "tsx tools/qa/src/index.ts",
-    "ai-content": "tsx tools/ai-content/src/index.ts"
+    "ai-content": "tsx tools/ai-content/src/index.ts",
+    "db:generate": "pnpm --filter @velo/db db:generate",
+    "db:push": "pnpm --filter @velo/db db:push",
+    "db:seed": "pnpm --filter @velo/db db:seed",
+    "db:seed-seo": "pnpm --filter @velo/db db:seed-seo",
+    "db:studio": "pnpm --filter @velo/db db:studio",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@vitejs/plugin-react": "^6.0.0",
+    "husky": "^9.1.7",
     "jsdom": "^28.1.0",
-    "turbo": "^2",
+    "lint-staged": "^16.4.0",
     "tsx": "^4",
+    "turbo": "^2",
     "typescript": "^5",
     "vitest": "^4.1.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix --max-warnings 0"]
   },
   "pnpm": {
     "onlyBuiltDependencies": [

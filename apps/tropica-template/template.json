@@ -1,0 +1,10 @@
+{
+  "name": "tropica",
+  "displayName": "Tropica",
+  "description": "Luxury villa and property rental with booking system, availability calendar, and stunning photo galleries",
+  "businessType": "Villa / Property Rental",
+  "style": "Liquid Glass Tropical",
+  "contentType": "TropicaContent",
+  "features": ["property-listings", "booking-calendar", "photo-gallery", "guest-reviews", "admin-panel"],
+  "sections": {}
+}

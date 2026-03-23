@@ -1,0 +1,56 @@
+/* apps/peakq/app/globals.css */
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+:root {
+  --bg:         #050507;
+  --bg-raised:  #0d0d10;
+  --border:     rgba(255,255,255,0.07);
+  --border-mid: rgba(255,255,255,0.12);
+  --text:       #f0f0f0;
+  --muted:      rgba(255,255,255,0.35);
+  --accent:     #3b82f6;
+  --accent-dim: rgba(59,130,246,0.15);
+}
+
+/* Hollow stroke headline utility */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.32);
+}
+.text-outline-thin {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.28);
+}
+
+/* Brutalist grid borders helper */
+.grid-bordered {
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+.grid-bordered > * {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+@keyframes bounce-dot {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

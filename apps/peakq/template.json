@@ -1,0 +1,10 @@
+{
+  "name": "peakq",
+  "displayName": "PeakQ",
+  "description": "AI-Powered Business Operating System — the PeakQ company website",
+  "businessType": "SaaS / Technology Platform",
+  "style": "Modern Dark Tech",
+  "contentType": "PeakQContent",
+  "features": ["industry-templates", "ai-seo", "lead-capture", "pricing-tiers"],
+  "sections": {}
+}

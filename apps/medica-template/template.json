@@ -1,0 +1,14 @@
+{
+  "name": "medica",
+  "displayName": "Medica",
+  "description": "Medical/Dental Clinic — Clean medical design with trust-building teal tones and calming aesthetics",
+  "businessType": "Medical/Dental Clinic",
+  "style": "Clean Medical + Trust",
+  "sections": {
+    "hero": { "component": "Hero", "contentKey": "hero" },
+    "services": { "component": "Services", "contentKey": "services" },
+    "doctors": { "component": "Doctors", "contentKey": "doctors" },
+    "testimonials": { "component": "Testimonials", "contentKey": "testimonials" },
+    "contact": { "component": "Contact", "contentKey": "contact" }
+  }
+}

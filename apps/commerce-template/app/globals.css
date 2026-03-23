@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  /* Theme-driven variables (overridden by ThemeProvider) */
+  --color-bg: #FAF9F7;
+  --color-surface: #FFFFFF;
+  --color-text: #1A1A1A;
+  --color-text-secondary: #6B6B6B;
+  --color-primary: #1A1A1A;
+  --color-primary-hover: #333333;
+  --color-accent: #C5A572;
+  --color-border: #E8E5E0;
+  --color-card-bg: #FFFFFF;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --border-radius: 0px;
+
+  /* Backward-compatible aliases for cart/checkout pages */
+  --color-background: var(--color-bg);
+  --color-text-muted: var(--color-text-secondary);
+  --color-primary-light: var(--color-primary-hover);
+  --color-error: #ef4444;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Smooth transitions for theme switching — exclude color to prevent inheritance issues */
+*, *::before, *::after {
+  transition-property: background-color, border-color;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* Transparent navbar — force white text/icons over hero */
+.nav-transparent,
+.nav-transparent a,
+.nav-transparent span,
+.nav-transparent button,
+.nav-transparent p,
+.nav-transparent div,
+.nav-transparent * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+.nav-transparent svg {
+  stroke: #FFFFFF !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}

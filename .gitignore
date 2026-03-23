@@ -46,5 +46,5 @@ next-env.d.ts
 
 # turbo
 .turbo/
-peakq
-peakq.pub
+/peakq
+/peakq.pub

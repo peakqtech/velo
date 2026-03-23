@@ -1,0 +1,13 @@
+{
+  "name": "forma",
+  "displayName": "Forma",
+  "description": "Architecture / Interior Design — Exaggerated minimalism with dramatic whitespace, oversized typography, and portfolio gallery",
+  "businessType": "Architecture / Interior Design",
+  "style": "Exaggerated Minimalism + Portfolio Gallery",
+  "sections": {
+    "hero": { "component": "Hero", "contentKey": "hero" },
+    "projects": { "component": "Projects", "contentKey": "projects" },
+    "philosophy": { "component": "Philosophy", "contentKey": "philosophy" },
+    "studio": { "component": "Studio", "contentKey": "studio" }
+  }
+}

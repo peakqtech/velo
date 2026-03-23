@@ -1,0 +1,14 @@
+{
+  "name": "lexis",
+  "displayName": "Lexis",
+  "description": "Law Firm — Trust & Authority with dark sophistication, navy and gold palette, serif typography",
+  "businessType": "Law Firm",
+  "style": "Trust & Authority + Dark Sophistication",
+  "sections": {
+    "hero": { "component": "Hero", "contentKey": "hero" },
+    "practice-areas": { "component": "PracticeAreas", "contentKey": "practiceAreas" },
+    "attorneys": { "component": "Attorneys", "contentKey": "attorneys" },
+    "results": { "component": "Results", "contentKey": "results" },
+    "testimonials": { "component": "Testimonials", "contentKey": "testimonials" }
+  }
+}

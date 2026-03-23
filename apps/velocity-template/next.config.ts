@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
     "@velo/product-grid",
     "@velo/testimonials",
     "@velo/footer",
+    "@velo/blog",
   ],
 };
 

@@ -129,12 +129,376 @@
 - **Depends on:** Nothing.
 - **Status:** DONE — `generate()` now creates `app/api/og/route.tsx` using Next.js `ImageResponse`. Dynamic OG images with template name.
 
-## Phase 3: Platform (Weeks 17+)
+## Phase 3: Vertical SaaS Platform (Weeks 17+)
 
-### Client Dashboard / Admin UI
-### Template Marketplace
-### A/B Testing Infrastructure
-### White-label / Multi-tenant SaaS
+> Vision: Transform Velo from "generates websites" into "generates businesses online."
+> Each template is a vertical business solution with configurable business sections.
+> Business owners don't think "I need a Stripe integration" — they think "I need to take reservations."
+>
+> KEY INSIGHT (CEO review 2026-03-16, refined):
+> **Business sections, not integrations.** A restaurant template comes WITH a reservation
+> section — you configure it (time slots, deposit yes/no, notification via WhatsApp/email).
+> An event organizer template comes WITH a product catalog — you configure where clicks go
+> (WhatsApp order, external link, checkout). Technology (Stripe, WhatsApp API) is an
+> implementation detail hidden behind the business feature.
+>
+> Architecture decisions:
+> - Configurable business sections per vertical (not generic integration toggles)
+> - Dashboard configures business logic (slots, deposit, CTA targets)
+> - Supabase (Postgres) + Prisma ORM for persistence
+> - Notifications: WhatsApp to owner + Email (configurable per section)
+> - Payment: Stripe/Xendit/Durianpay/Midtrans for deposits/checkout
+> - Priority verticals: Restaurant, Event Organizer, Real Estate
+
+### Phase 3.0 — Platform Foundation
+
+#### P0 — Database + Auth Setup
+- **What:** Add Supabase + Prisma to the monorepo. Create base schema (User, Site, SiteIntegration, QAReport). Set up NextAuth with Supabase adapter in apps/dashboard. Environment variable management.
+- **Why:** Every other Phase 3 feature depends on persistent data and authentication.
+- **Schema:** See architecture doc for Prisma models (User, Site, SiteIntegration, QAReport, Role enum).
+- **Effort:** M (3-5 days)
+- **Depends on:** Nothing. Do first.
+- **Status:** TODO
+
+#### P0 — Integration Registry System
+- **What:** Create `packages/infra/integrations/` — a registry that discovers integration packages, validates their configs (Zod), and provides a `getIntegration(name)` API. Add `"integrations"` field to template.json schema. Each integration package exports: config, routes, components, dashboard module, and Prisma schema fragment.
+- **Why:** The plugin system that makes all integrations composable. Without this, every integration is bespoke.
+- **Integration package contract:**
+  ```
+  export interface VeloIntegration {
+    name: string;                    // "@velo/integration-stripe"
+    displayName: string;             // "Stripe Payments"
+    description: string;
+    icon: string;                    // Icon component or URL
+    configSchema: ZodSchema;         // Validates SiteIntegration.config
+    routes: Record<string, Handler>; // API route handlers
+    components: Record<string, ComponentType>; // Embeddable UI
+    dashboardModule?: ComponentType; // Settings panel in dashboard
+  }
+  ```
+- **Effort:** L (1-2 weeks)
+- **Depends on:** Database setup.
+- **Status:** TODO
+
+#### P0 — Dashboard Shell
+- **What:** Create `apps/dashboard/` — Next.js app with NextAuth login, sidebar layout, and empty module slots for: Overview, Content, Integrations, QA Reports, Settings, Billing. Dark theme consistent with gallery. Mobile-responsive sidebar.
+- **Why:** The dashboard is the product surface. Everything else plugs into it.
+- **Effort:** L (1-2 weeks)
+- **Depends on:** Database + Auth.
+- **Status:** TODO
+
+### Phase 3.1 — Universal 5 Integrations
+
+#### P1 — Payment Integration (`@velo/integration-payments`)
+- **What:** Multi-provider payment system with a unified interface. Supports 4 providers:
+  - **Stripe** — Global, best for international/SaaS (cards, subscriptions, billing portal)
+  - **Xendit** — Indonesia/SE Asia, best DX (VA, e-wallets: GoPay/OVO/Dana, QRIS, cards)
+  - **Durianpay** — Indonesia, best infra flexibility (aggregator, multi-acquirer routing)
+  - **Midtrans** — Indonesia, best ecosystem (Tokopedia/GoTo group, widest payment methods)
+- **Architecture:** Provider adapter pattern — a `PaymentProvider` interface with provider-specific adapters. Site owner picks their provider in dashboard settings. Unified API for the rest of the system.
+  ```
+  interface PaymentProvider {
+    name: string;
+    createCheckout(params: CheckoutParams): Promise<CheckoutSession>;
+    handleWebhook(payload: unknown, signature: string): Promise<PaymentEvent>;
+    getPaymentStatus(id: string): Promise<PaymentStatus>;
+    createBillingPortal?(customerId: string): Promise<string>; // Stripe-only
+    supportedMethods: PaymentMethod[]; // card, va, ewallet, qris, etc.
+  }
+  ```
+- **Why:** Payments = revenue for business owners. Indonesian businesses NEED local payment methods (70%+ of Indonesian e-commerce uses e-wallets/VA, not cards). Supporting Xendit/Midtrans/Durianpay alongside Stripe makes Velo viable for SE Asian market.
+- **Components:** `<CheckoutButton>`, `<PricingTable>`, `<PaymentStatus>`, `<PaymentMethodSelector>` (shows available methods per provider)
+- **Routes:** POST /checkout, POST /webhook/:provider, GET /status/:id, GET /portal
+- **Dashboard:** Revenue chart, recent transactions, provider selection dropdown, API key config per provider, supported payment methods display
+- **Provider comparison (for docs):**
+  | Feature | Stripe | Xendit | Durianpay | Midtrans |
+  |---------|--------|--------|-----------|----------|
+  | Cards | ✅ | ✅ | ✅ | ✅ |
+  | E-wallets (GoPay/OVO/Dana) | ❌ | ✅ | ✅ | ✅ |
+  | Virtual Account (bank transfer) | ❌ | ✅ | ✅ | ✅ |
+  | QRIS | ❌ | ✅ | ✅ | ✅ |
+  | Subscriptions | ✅ | ✅ | ❌ | ❌ |
+  | Billing Portal | ✅ | ❌ | ❌ | ❌ |
+  | Global coverage | ✅ | SE Asia | Indonesia | Indonesia |
+- **Effort:** XL (2-3 weeks — 1 week for abstraction + Stripe, then 2-3 days per additional provider)
+- **Depends on:** Integration registry, Dashboard shell.
+- **Status:** TODO
+
+#### P1 — Forms Integration (`@velo/integration-forms`)
+- **What:** Contact forms, lead capture forms, newsletter signup. Form submissions stored in Supabase + email notification via Resend/SendGrid. Dashboard module: form submissions list, export to CSV, email notification settings.
+- **Why:** Every business needs contact forms. Lead capture is the simplest integration that adds immediate value.
+- **Components:** `<ContactForm>`, `<LeadCaptureForm>`, `<NewsletterForm>`
+- **Routes:** POST /submit, GET /submissions
+- **Effort:** M (3-5 days)
+- **Depends on:** Integration registry.
+- **Status:** TODO
+
+#### P1 — Analytics Integration (`@velo/integration-analytics`)
+- **What:** Plausible Analytics (privacy-friendly, no cookie banner needed) or Google Analytics 4. Auto-inject tracking script. Dashboard module: visitor chart, top pages, referrers, real-time visitors.
+- **Why:** Business owners need to see if their site is working. Analytics is the proof.
+- **Components:** `<AnalyticsScript>` (head injection), `<AnalyticsDashboard>` (embed)
+- **Effort:** S (2-3 days)
+- **Depends on:** Integration registry.
+- **Status:** TODO
+
+#### P1 — CMS Integration (`@velo/integration-cms`)
+- **What:** Content editing via dashboard forms. Maps to the existing content type system. Edit content.json fields through a generated form UI (derived from TypeScript types/Zod schemas). Media upload to Supabase Storage. Preview changes before publish.
+- **Why:** Business owners can't edit .ts files. Visual content editing is table stakes.
+- **Components:** `<ContentEditor>`, `<MediaLibrary>`, `<PreviewFrame>`
+- **Routes:** GET/PUT /content/:siteId, POST /media/upload
+- **Effort:** XL (2-3 weeks) — this is the most complex integration
+- **Depends on:** Integration registry, content type codegen.
+- **Status:** TODO
+
+#### P2 — WhatsApp Integration (`@velo/integration-whatsapp`)
+- **What:** WhatsApp Business chat widget embedded on site. Click-to-chat with pre-filled message. Business hours awareness (show/hide based on operating hours). Dashboard module: WhatsApp number config, default message, business hours.
+- **Why:** WhatsApp is the #1 business communication channel in SE Asia, LATAM, and parts of Europe. Zero API cost (uses wa.me links).
+- **Components:** `<WhatsAppWidget>`, `<WhatsAppButton>`
+- **Effort:** S (1-2 days)
+- **Depends on:** Integration registry.
+- **Status:** TODO
+
+### Phase 3.2 — Dashboard Modules
+
+#### P1 — Site Overview Module
+- **What:** Dashboard landing page showing: site health score (from QA pipeline), visitor analytics (from analytics integration), recent form submissions, active integrations status, deployment status. Card-based layout.
+- **Why:** The first thing a business owner sees. Must answer: "Is my site working?"
+- **Effort:** M (3-5 days)
+- **Depends on:** Analytics + Forms + QA integrations.
+- **Status:** TODO
+
+#### P1 — Content Editor Module
+- **What:** Visual form-based editor for site content. Auto-generates form fields from content types (text inputs, image uploaders, array editors for lists). Live preview in iframe. Publish button triggers rebuild + deploy.
+- **Why:** THE core feature that makes this a product vs a CLI tool.
+- **Effort:** XL (2-3 weeks) — shares work with CMS integration
+- **Depends on:** CMS integration.
+- **Status:** TODO
+
+#### P1 — Integration Manager Module
+- **What:** Grid of available integrations with enable/disable toggles. Configuration panel per integration (rendered from integration's dashboardModule export). Status indicators (connected/error/pending).
+- **Why:** The control center for business functionality. Where integrations become tangible.
+- **Effort:** M (3-5 days)
+- **Depends on:** Integration registry, at least 2 integrations built.
+- **Status:** TODO
+
+#### P2 — QA Reports Module
+- **What:** Scheduled QA runs (weekly/monthly) using existing `@velo/qa` pipeline. Report history with health score trend. Detail view for each audit (Lighthouse, a11y, links, meta). Email notifications when health drops below threshold.
+- **Why:** Your QA consulting background becomes a product feature. Automated quality monitoring as a service.
+- **Effort:** M (3-5 days)
+- **Depends on:** QA pipeline (already built), Dashboard shell.
+- **Status:** TODO
+
+#### P2 — Billing Module
+- **What:** Subscription management for Velo itself (not client's customers). Uses Stripe for global billing or Xendit for Indonesian billing (IDR pricing). Plan tiers: Free (1 site, 3 integrations), Pro ($49/mo or Rp 499k/mo, unlimited sites + integrations), Agency ($199/mo or Rp 1.99M/mo, white-label + client management). Usage dashboard, invoice history, plan upgrade/downgrade.
+- **Why:** This is how Velo makes money. Indonesian pricing makes it accessible to local market.
+- **Effort:** L (1-2 weeks)
+- **Depends on:** Payment integration.
+- **Status:** TODO
+
+#### P2 — Settings Module
+- **What:** Site settings: name, domain, template, theme overrides. Team management: invite members, assign roles (Owner/Admin/Editor). Danger zone: delete site, export data. Profile: account settings, password change.
+- **Why:** Standard SaaS settings. Required for multi-user access.
+- **Effort:** M (3-5 days)
+- **Depends on:** Auth + Database.
+- **Status:** TODO
+
+### Phase 3.3 — Deployment Pipeline
+
+#### P1 — Vercel Deployment API
+- **What:** Programmatic site deployment via Vercel REST API. Create project, deploy from monorepo, assign custom domain, manage environment variables. Triggered from dashboard "Deploy" button or auto-deploy on content change.
+- **Why:** Business owners can't use CLI. One-click deploy from dashboard is the experience.
+- **Effort:** L (1-2 weeks)
+- **Depends on:** Dashboard shell, at least one integration working end-to-end.
+- **Status:** TODO
+
+#### P2 — Custom Domain Management
+- **What:** Dashboard UI for adding custom domains. DNS verification flow. Auto-SSL via Vercel. Domain status monitoring (propagation, SSL certificate health).
+- **Why:** Every business wants their own domain. "yourbusiness.com" not "yourbusiness.velo.app"
+- **Effort:** M (3-5 days)
+- **Depends on:** Vercel deployment API.
+- **Status:** TODO
+
+#### P2 — Auto-Deploy on Content Change
+- **What:** When content is edited via CMS/dashboard, automatically trigger a rebuild + deploy to Vercel. Incremental Static Regeneration (ISR) for near-instant updates without full rebuild. Deploy status shown in dashboard.
+- **Why:** "Edit → See it live in 10 seconds" is the experience that sells.
+- **Effort:** M (3-5 days)
+- **Depends on:** CMS integration, Vercel deployment API.
+- **Status:** TODO
+
+### Phase 3.4 — Vertical Business Sections (PRIORITY)
+
+> Philosophy: Business sections, not integrations. Each section solves a real business
+> problem and is configurable from the dashboard. Technology (payments, WhatsApp, email)
+> is invisible — it's just how the section works internally.
+
+#### P0 — Restaurant Vertical (Ember) 🔥 FIRST PRIORITY
+
+**Reservation Section** (`@velo/ember-reservation` — enhance existing)
+- Customer-facing: date picker → time slot picker → party size → guest name + phone → confirm
+- **Configurable from dashboard:**
+  - Operating days/hours per day (Mon: 11:00-14:00, 18:00-22:00)
+  - Time slot intervals (30min, 45min, 1hr)
+  - Max party size
+  - Slots per time block (e.g., max 5 reservations at 19:00)
+  - Blocked dates (holidays, private events)
+  - Deposit toggle: on/off
+  - Deposit amount: fixed (e.g., Rp 100k) or per-person (e.g., Rp 50k/person)
+  - Payment provider for deposit: Xendit/Midtrans/Stripe (uses existing payment adapters)
+  - Confirmation message (custom text)
+- **Notifications:**
+  - WhatsApp to owner: "New reservation: {name}, {date} {time}, {partySize} guests"
+  - Email to owner: formatted reservation details
+  - WhatsApp to customer: confirmation with details
+  - Configurable: owner picks which channels (WhatsApp/email/both)
+- **Dashboard module:** Today's reservations, upcoming bookings, calendar view, manage/cancel
+- **Database:** `Reservation` model (siteId, guestName, guestPhone, guestEmail, date, time, partySize, status, depositPaid, notes)
+- **Effort:** XL (2-3 weeks)
+- **Status:** TODO
+
+**Menu Section** (`@velo/ember-menu` — enhance existing)
+- Already exists as a static section. Enhance to be editable from dashboard:
+  - Add/edit/remove menu items from dashboard
+  - Toggle categories, reorder items
+  - Upload food photos
+  - Set prices, dietary tags (vegetarian, halal, gluten-free)
+  - Toggle show/hide prices
+- **Effort:** M (3-5 days)
+- **Status:** TODO
+
+#### P0 — Event Organizer Vertical (NEW TEMPLATE) 🎪
+
+**New template: `apps/event-template/`** with sections:
+
+**Event Catalog Section** (`@velo/event-catalog`)
+- Displays upcoming events as cards: image, title, date, venue, short description
+- Each event has a configurable CTA button:
+  - **WhatsApp order:** Click → opens WhatsApp with pre-filled message: "Hi, I want to register for {eventName} on {date}"
+  - **External link:** Click → redirects to external URL (e.g., Eventbrite, Loket.com)
+  - **Built-in checkout:** Click → payment flow for ticket purchase
+  - CTA type configurable per event from dashboard
+- Event statuses: upcoming / sold out / past (auto-calculated from date)
+- **Configurable from dashboard:**
+  - Add/edit/remove events
+  - Set CTA type + target per event
+  - WhatsApp number (shared or per-event)
+  - Message template with variables: {eventName}, {date}, {venue}, {price}
+  - Upload event images
+- **Database:** `Event` model (siteId, title, date, venue, description, image, price, ctaType, ctaTarget, status, capacity, soldCount)
+- **Effort:** L (1-2 weeks)
+- **Status:** TODO
+
+**Product/Merch Section** (`@velo/event-products`)
+- Product cards with image, name, price
+- Click action configurable per product:
+  - **WhatsApp order:** "Hi, I want to order {productName} ({price})" → configurable message template
+  - **External link:** redirect to Tokopedia/Shopee listing
+  - **Built-in checkout:** payment flow
+- **Configurable from dashboard:**
+  - Add/edit/remove products
+  - CTA type + target per product
+  - WhatsApp message template with {productName}, {price}, {quantity}
+  - Show/hide prices
+- **Effort:** M (3-5 days)
+- **Status:** TODO
+
+**Event Gallery Section** (`@velo/event-gallery`)
+- Photo grid of past events
+- Configurable from dashboard: upload photos, captions, reorder
+- **Effort:** S (1-2 days)
+- **Status:** TODO
+
+#### P1 — Real Estate Vertical (Haven) 🏠
+
+**Property Listings Section** (enhance existing `@velo/haven-properties`)
+- Already exists. Enhance to be configurable:
+  - Add/edit/remove properties from dashboard
+  - Configurable fields per property: beds, baths, area (sqft/sqm configurable), price, type (sale/rent), status (available/sold/pending)
+  - Photo gallery per property (upload from dashboard)
+  - Virtual tour embed URL (YouTube/Matterport)
+  - Location/map embed
+- **Per-listing CTA configurable:**
+  - WhatsApp inquiry: "Hi, I'm interested in {propertyName} at {address}"
+  - Contact form: inline form that emails the agent
+  - Phone call: click-to-call
+- **Configurable from dashboard:**
+  - Currency (USD, IDR, SGD, etc.)
+  - Area unit (sqft, sqm)
+  - Which fields to show/hide
+  - Agent assignment per listing
+  - WhatsApp number for inquiries
+- **Database:** `Property` model (siteId, title, address, price, beds, baths, area, type, status, images, virtualTourUrl, agentId)
+- **Effort:** L (1-2 weeks)
+- **Status:** TODO
+
+**Agent Section** (enhance existing `@velo/haven-agent`)
+- Agent profiles editable from dashboard
+- Each agent linked to their listings
+- Contact info, photo, bio, specialization
+- **Effort:** S (1-2 days)
+- **Status:** TODO
+
+#### P2 — Shared Business Infrastructure
+
+These support ALL verticals:
+
+**Notification Service** (shared infra)
+- WhatsApp notification: build wa.me URL with pre-filled message, configurable per section
+- Email notification: via Resend API (transactional emails)
+- Template variables: {guestName}, {date}, {productName}, {price}, etc.
+- Owner configures: which channels (WhatsApp/email), phone number, email address
+- **Effort:** M (3-5 days)
+- **Status:** TODO
+
+**Configurable CTA System** (shared component)
+- A reusable component that renders different CTAs based on config:
+  - WhatsApp: opens wa.me link with templated message
+  - External link: redirects to URL
+  - Checkout: triggers payment flow
+  - Contact form: inline form submission
+  - Phone call: click-to-call
+- Used by: Event Catalog, Product/Merch, Property Listings, Reservation deposit
+- Config stored per-item in the section's content JSON
+- **Effort:** M (3-5 days)
+- **Status:** TODO
+
+**Booking/Slot Engine** (shared infra)
+- Time slot management: define available slots per day, capacity per slot
+- Blocks fully-booked slots
+- Deposit flow: optional, integrates with payment adapters
+- Used by: Restaurant Reservation, Wellness Booking (future)
+- **Database:** `Booking` model (siteId, sectionType, guestName, guestContact, date, time, slotId, status, depositAmount, depositPaid, paymentId)
+- **Effort:** L (1-2 weeks)
+- **Status:** TODO
+
+### Phase 3.5 — Growth & Monetization
+
+#### P2 — Template Marketplace
+- **What:** Public marketplace where third-party designers can list templates. Submission flow, review process, revenue sharing. Built on existing gallery architecture.
+- **Why:** Network effects. More templates = more verticals = more customers = more template designers.
+- **Effort:** XL (3-4 weeks)
+- **Depends on:** Dashboard, billing, at least 3 verticals live.
+- **Status:** TODO
+
+#### P3 — White-label / Agency Mode
+- **What:** Agencies can reskin the dashboard with their branding. Client management (agency manages multiple clients' sites). Bulk operations, white-label QA reports, custom domain for dashboard (agency.clientportal.com).
+- **Why:** Agencies become distribution partners. They bring clients, you provide infrastructure.
+- **Effort:** XL (4-6 weeks)
+- **Depends on:** Full dashboard + billing.
+- **Status:** TODO
+
+#### P3 — A/B Testing Infrastructure
+- **What:** Split testing for content variants (headlines, CTAs, images). Traffic splitting via edge middleware. Conversion tracking via analytics integration. Dashboard module showing variant performance.
+- **Why:** Data-driven optimization. "Your variant B headline converts 23% better." Advanced feature for power users.
+- **Effort:** XL (3-4 weeks)
+- **Depends on:** Analytics integration, CMS, deployment pipeline.
+- **Status:** TODO
+
+#### P3 — AI Features (Phase 2 expansion)
+- **What:** AI receptionist chatbot (trained on business content), AI-powered SEO suggestions, AI content refresh ("rewrite this section for summer promotion"), AI-generated social media posts from site content.
+- **Why:** AI is the differentiator. This is what makes Velo 10x better than Squarespace.
+- **Effort:** XL (4-6 weeks)
+- **Depends on:** CMS, content system, AI content writer (already built).
+- **Status:** TODO
 
 ## Security Fixes (do alongside Phase 1)
 
