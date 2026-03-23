@@ -131,10 +131,12 @@ export async function POST(
   });
 
   // Increment campaign publishedCount
-  await prisma.campaign.update({
-    where: { id: piece.campaignId },
-    data: { publishedCount: { increment: 1 } },
-  });
+  if (piece.campaignId) {
+    await prisma.campaign.update({
+      where: { id: piece.campaignId },
+      data: { publishedCount: { increment: 1 } },
+    });
+  }
 
   return NextResponse.json({
     success: true,
