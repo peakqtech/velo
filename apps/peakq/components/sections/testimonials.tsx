@@ -4,9 +4,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-// @ts-expect-error — GSAP ships type files as kebab-case but subpaths are PascalCase; TS casing conflict on macOS
 import { SplitText } from "gsap/SplitText";
-// @ts-expect-error — same as above
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "@/lib/gsap-setup";
 
