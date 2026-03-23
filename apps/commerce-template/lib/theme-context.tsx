@@ -7,7 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { ThemeVariant, ThemeConfig, themes, getTheme, getThemeVariant } from "./themes";
+import { ThemeVariant, ThemeConfig, getTheme, getThemeVariant } from "./themes";
 
 interface ThemeContextType {
   theme: ThemeConfig;
@@ -40,19 +40,17 @@ export function ThemeProvider({
   children: ReactNode;
   initialVariant?: ThemeVariant;
 }) {
-  const [variant, setVariant] = useState<ThemeVariant>(
-    initialVariant || "luxury"
-  );
-  const theme = getTheme(variant);
-
-  useEffect(() => {
-    // Read from URL on mount
-    const params = new URLSearchParams(window.location.search);
-    const urlTheme = params.get("theme");
-    if (urlTheme) {
-      setVariant(getThemeVariant(urlTheme));
+  const [variant, setVariant] = useState<ThemeVariant>(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlTheme = params.get("theme");
+      if (urlTheme) {
+        return getThemeVariant(urlTheme);
+      }
     }
-  }, []);
+    return initialVariant || "luxury";
+  });
+  const theme = getTheme(variant);
 
   useEffect(() => {
     applyThemeCSSVariables(theme);

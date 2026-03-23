@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { demoProducts, formatPrice } from "@/lib/demo-products";
 
 const metrics = [
@@ -90,12 +91,12 @@ export default function AdminDashboard() {
       <div className="bg-zinc-900 border border-zinc-800 rounded-xl">
         <div className="p-5 border-b border-zinc-800 flex items-center justify-between">
           <h2 className="text-sm font-semibold">Recent Orders</h2>
-          <a
+          <Link
             href="/admin/orders"
             className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
           >
             View all &rarr;
-          </a>
+          </Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

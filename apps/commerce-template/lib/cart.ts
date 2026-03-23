@@ -6,6 +6,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useRef,
   ReactNode,
 } from "react";
 import React from "react";
@@ -53,19 +54,16 @@ function saveCart(items: CartItem[]) {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
-  const [mounted, setMounted] = useState(false);
+  const [items, setItems] = useState<CartItem[]>(loadCart);
+  const mountedRef = useRef(false);
 
   useEffect(() => {
-    setItems(loadCart());
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      saveCart(items);
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
     }
-  }, [items, mounted]);
+    saveCart(items);
+  }, [items]);
 
   const addItem = useCallback((newItem: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
